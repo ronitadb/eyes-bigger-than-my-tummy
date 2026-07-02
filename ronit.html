@@ -24,16 +24,16 @@
     <div style="position:fixed; inset:0; pointer-events:none; z-index:9999; mix-blend-mode:multiply; opacity:.06; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;); background-size:160px;"></div>
   </sc-if>
 
-  <header style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:24px clamp(20px,5vw,72px); border-bottom:1px solid rgba(34,48,47,.12);">
-    <a href="/" style="font-family:'Frank Ruhl Libre',serif; font-size:21px; font-weight:700; color:#22302F; text-decoration:none;">עיניים גדולות זה לא טוב</a>
-    <nav style="display:flex; flex-wrap:wrap; gap:22px;">
-      <a href="/" style="color:#445049; text-decoration:none; font-size:15px;">בית</a>
-      <a href="/book" style="color:#445049; text-decoration:none; font-size:15px;">על הספר</a>
-      <a href="/ronit" style="color:#445049; text-decoration:none; font-size:15px;">על רונית</a>
-      <a href="/zoom" style="color:#445049; text-decoration:none; font-size:15px;">קבוצות זום</a>
-      <a href="/materials" style="color:#445049; text-decoration:none; font-size:15px;">חומרי קריאה</a>
-      <a href="/media" style="color:#445049; text-decoration:none; font-size:15px;">תקשורת וביקורות</a>
-      <a href="/contact" style="color:#445049; text-decoration:none; font-size:15px;">צרו קשר</a>
+  <header id="top" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:24px clamp(20px,5vw,72px); border-bottom:1px solid rgba(34,48,47,.12);">
+    <a href="/" style="font-family:'Assistant',sans-serif; font-size:22px; font-weight:700; color:var(--accent); letter-spacing:.005em; text-decoration:none;">עיניים גדולות זה לא טוב</a>
+    <nav style="display:flex; flex-wrap:wrap; gap:30px;">
+      <a href="/" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">בית</a>
+      <a href="/book" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">על הספר</a>
+      <a href="/ronit" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">על רונית</a>
+      <a href="/zoom" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">קבוצות זום</a>
+      <a href="/materials" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">חומרי קריאה</a>
+      <a href="/media" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">תקשורת וביקורות</a>
+      <a href="/contact" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">צרו קשר</a>
     </nav>
   </header>
 
@@ -114,9 +114,20 @@
       <!-- editor -->
       <div style="max-width:62ch; margin:46px auto 0;">
         <div style="text-align:center;">
-          <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(21px,2.6vw,27px);">לְוֶרֶד זינגר, עורכת הספר</div>
+          <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(21px,2.6vw,27px);"><a href="https://www.facebook.com/wrd.zyngr/" target="_blank" rel="noopener" style="color:inherit; text-decoration:none; border-bottom:1px solid color-mix(in srgb, var(--accent) 45%, transparent);">לְוֶרֶד זינגר</a>, עורכת הספר</div>
           <div style="font-family:'Frank Ruhl Libre',serif; font-style:italic; color:#6E7C78; font-size:14px; margin-top:8px;">מתוך מכתב לעורך הראשי של הוצאת מטר · אפריל 2025</div>
         </div>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-end; gap:18px; max-width:820px; margin:26px auto 0;">
+          <img src="assets/vered-1.png" alt="פּוֹמֶלוֹ — ורד זינגר" style="height:150px; width:auto; display:block; border:1px solid rgba(34,48,47,.16); box-shadow:0 8px 20px rgba(34,48,47,.14);">
+          <img src="assets/vered-2.png" alt="נעולה — ורד זינגר" style="height:150px; width:auto; display:block; border:1px solid rgba(34,48,47,.16); box-shadow:0 8px 20px rgba(34,48,47,.14);">
+          <img src="assets/vered-3.png" alt="עורכת מלווה — ורד זינגר" style="height:150px; width:auto; display:block; border:1px solid rgba(34,48,47,.16); box-shadow:0 8px 20px rgba(34,48,47,.14);">
+          <img src="assets/vered-4.png" alt="חטא מאורגן — ורד זינגר" style="height:150px; width:auto; display:block; border:1px solid rgba(34,48,47,.16); box-shadow:0 8px 20px rgba(34,48,47,.14);">
+          <img src="assets/vered-5.png" alt="ריטריט — ורד זינגר" style="height:150px; width:auto; display:block; border:1px solid rgba(34,48,47,.16); box-shadow:0 8px 20px rgba(34,48,47,.14);">
+      </div>
+
+      <div style="max-width:62ch; margin:0 auto;">
         <div style="margin-top:30px; background:#F3F5F1; border:1px solid rgba(34,48,47,.12); border-inline-start:3px solid var(--accent); border-radius:3px; padding:clamp(28px,4vw,44px) clamp(24px,4vw,46px);">
           <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">היי בן,</p>
           <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">אני מקווה ששלומך בטוב! עכשיו, כשכתב היד חוזר אליך אחרי שלושה חודשים וחצי של עבודה עם ורד, רציתי לשתף אותך בעומק התודה שלי.</p>
@@ -136,9 +147,35 @@
       <!-- illustrator -->
       <div style="max-width:64ch; margin:0 auto;">
         <div style="text-align:center;">
-          <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(21px,2.6vw,27px);">לשרון רשב״ם פרופ, שהעניקה לספר פנים</div>
+          <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(21px,2.6vw,27px);"><a href="https://www.facebook.com/sharon.rashbamprop/" target="_blank" rel="noopener" style="color:inherit; text-decoration:none; border-bottom:1px solid color-mix(in srgb, var(--accent) 45%, transparent);">לשרון רשב״ם פרופ</a>, שהעניקה לספר פנים</div>
           <div style="font-family:'Frank Ruhl Libre',serif; font-style:italic; color:#6E7C78; font-size:14px; margin-top:8px;"><br></div>
         </div>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-start; gap:22px; max-width:900px; margin:26px auto 0;">
+          <figure style="margin:0; max-width:160px;">
+            <img src="assets/sharon-tricycle.png" alt="רוכבת בודדת — שרון רשב״ם פרופ" style="height:150px; width:auto; display:block; margin:0 auto; border:1px solid rgba(34,48,47,.16); box-shadow:0 8px 20px rgba(34,48,47,.14);">
+            <figcaption style="font-family:'Frank Ruhl Libre',serif; font-style:italic; color:#6E7C78; font-size:12.5px; line-height:1.45; text-align:center; margin-top:8px;">רוכבת בודדת<br>טכניקה מעורבת על בד · 2009</figcaption>
+          </figure>
+          <figure style="margin:0; max-width:160px;">
+            <img src="assets/sharon-swing.png" alt="ילדה על נדנדה — שרון רשב״ם פרופ" style="height:150px; width:auto; display:block; margin:0 auto; border:1px solid rgba(34,48,47,.16); box-shadow:0 8px 20px rgba(34,48,47,.14);">
+            <figcaption style="font-family:'Frank Ruhl Libre',serif; font-style:italic; color:#6E7C78; font-size:12.5px; line-height:1.45; text-align:center; margin-top:8px;">ילדה על נדנדה<br>עפרון ואקריליק על נייר</figcaption>
+          </figure>
+          <figure style="margin:0; max-width:160px;">
+            <img src="assets/sharon-ink.png" alt="דיו על נייר — שרון רשב״ם פרופ" style="height:150px; width:auto; display:block; margin:0 auto; border:1px solid rgba(34,48,47,.16); box-shadow:0 8px 20px rgba(34,48,47,.14);">
+            <figcaption style="font-family:'Frank Ruhl Libre',serif; font-style:italic; color:#6E7C78; font-size:12.5px; line-height:1.45; text-align:center; margin-top:8px;">דיו על נייר</figcaption>
+          </figure>
+          <figure style="margin:0; max-width:160px;">
+            <img src="assets/sharon-mother.png" alt="אמא או מטפלת — שרון רשב״ם פרופ" style="height:150px; width:auto; display:block; margin:0 auto; border:1px solid rgba(34,48,47,.16); box-shadow:0 8px 20px rgba(34,48,47,.14);">
+            <figcaption style="font-family:'Frank Ruhl Libre',serif; font-style:italic; color:#6E7C78; font-size:12.5px; line-height:1.45; text-align:center; margin-top:8px;">אמא או מטפלת<br>שמן על עץ · 2011</figcaption>
+          </figure>
+          <figure style="margin:0; max-width:160px;">
+            <img src="assets/sharon-sewage.png" alt="ביוב — שרון רשב״ם פרופ" style="height:150px; width:auto; display:block; margin:0 auto; border:1px solid rgba(34,48,47,.16); box-shadow:0 8px 20px rgba(34,48,47,.14);">
+            <figcaption style="font-family:'Frank Ruhl Libre',serif; font-style:italic; color:#6E7C78; font-size:12.5px; line-height:1.45; text-align:center; margin-top:8px;">ביוב<br>טכניקה מעורבת · 2016</figcaption>
+          </figure>
+      </div>
+
+      <div style="max-width:64ch; margin:0 auto;">
         <div style="margin-top:34px;">
           <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">הבנתי שהספר הוא ׳ספר׳ כשהגיעה ההזמנה מההוצאה להתחיל לעבוד על הכריכה. רגע לפני שהוא נמלא בהתרגשות, הלב חיסר פעימה… הספר באמת יקבל עכשיו פנים? …אצליח להעניק לו את הפנים שהן באמת שלו?</p>
           <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">לא ידעתי איך תיראה הכריכה, וידעתי בדיוק איך תיראה הכריכה. אבל בעיקר — לא היה לי מושג איך למצוא את האנשים שיובילו את הדרך בה רעיון ילבש צורה.</p>
@@ -168,13 +205,20 @@
 
     <section style="background:#E6EEEA; border-radius:3px; padding:50px clamp(28px,5vw,60px); margin-bottom:34px; text-align:center;">
       <h2 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(24px,3vw,34px); margin:0;">מילה אישית</h2>
-      <p style="max-width:56ch; margin:18px auto 0; font-size:17px; line-height:1.95; color:#414B48;">אם הספר נגע בכם, אם הוא עורר זיכרון או שאלה — אשמח לשמוע. הדלת פתוחה, וכל סיפור שמגיע אליי הופך לחלק מהמסע המשותף הזה.</p>
+      <p style="max-width:56ch; margin:18px auto 0; font-size:17px; line-height:1.95; color:#414B48;">אם הספר נגע בכם, אם הוא עורר זיכרון או שאלה — אשמח לשמוע. <br>הדלת פתוחה, וכל סיפור שמגיע אליי מצטרף לפסיפס.</p>
       <a href="/contact" style="display:inline-block; margin-top:26px; background:var(--accent); color:#F4F8F4; padding:14px 32px; border-radius:2px; font-size:16px; font-weight:600; text-decoration:none;">כתבו לי</a>
     </section>
 
   </main>
 
-  <footer style="max-width:980px; margin:0 auto; padding:34px clamp(20px,5vw,40px); display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between; border-top:1px solid rgba(34,48,47,.12);">
+    <!-- back to top -->
+  <div style="max-width:1120px; margin:0 auto; padding:0 clamp(20px,5vw,40px);">
+    <div style="border-top:1px solid rgba(34,48,47,.12); padding:22px 0; text-align:center;">
+      <a href="#top" style="display:inline-flex; align-items:center; gap:8px; color:var(--accent); text-decoration:none; font-size:15px; font-weight:600;">חזרה לראש הדף <span style="font-size:17px;">↑</span></a>
+    </div>
+  </div>
+
+<footer style="max-width:980px; margin:0 auto; padding:34px clamp(20px,5vw,40px); display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between; border-top:1px solid rgba(34,48,47,.12);">
     <div>
       <div style="font-family:'Frank Ruhl Libre',serif; font-weight:700; font-size:18px;">עיניים גדולות זה לא טוב</div>
       <div style="font-size:14px; color:#6E7C78; margin-top:4px;">הבית הדיגיטלי של הספר ושל הקהילה סביבו.</div>

@@ -24,16 +24,16 @@
     <div style="position:fixed; inset:0; pointer-events:none; z-index:9999; mix-blend-mode:multiply; opacity:.06; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;); background-size:160px;"></div>
   </sc-if>
 
-  <header style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:24px clamp(20px,5vw,72px); border-bottom:1px solid rgba(34,48,47,.12);">
-    <a href="/" style="font-family:'Frank Ruhl Libre',serif; font-size:21px; font-weight:700; color:#22302F; text-decoration:none;">עיניים גדולות זה לא טוב</a>
-    <nav style="display:flex; flex-wrap:wrap; gap:22px;">
-      <a href="/" style="color:#445049; text-decoration:none; font-size:15px;">בית</a>
-      <a href="/book" style="color:#445049; text-decoration:none; font-size:15px;">על הספר</a>
-      <a href="/ronit" style="color:#445049; text-decoration:none; font-size:15px;">על רונית</a>
-      <a href="/zoom" style="color:#445049; text-decoration:none; font-size:15px;">קבוצות זום</a>
-      <a href="/materials" style="color:#445049; text-decoration:none; font-size:15px;">חומרי קריאה</a>
-      <a href="/media" style="color:#445049; text-decoration:none; font-size:15px;">תקשורת וביקורות</a>
-      <a href="/contact" style="color:#445049; text-decoration:none; font-size:15px;">צרו קשר</a>
+  <header id="top" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:24px clamp(20px,5vw,72px); border-bottom:1px solid rgba(34,48,47,.12);">
+    <a href="/" style="font-family:'Assistant',sans-serif; font-size:22px; font-weight:700; color:var(--accent); letter-spacing:.005em; text-decoration:none;">עיניים גדולות זה לא טוב</a>
+    <nav style="display:flex; flex-wrap:wrap; gap:30px;">
+      <a href="/" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">בית</a>
+      <a href="/book" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">על הספר</a>
+      <a href="/ronit" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">על רונית</a>
+      <a href="/zoom" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">קבוצות זום</a>
+      <a href="/materials" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">חומרי קריאה</a>
+      <a href="/media" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">תקשורת וביקורות</a>
+      <a href="/contact" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">צרו קשר</a>
     </nav>
   </header>
 
@@ -46,8 +46,12 @@
       <span style="display:block; max-width:24ch; margin:0 auto; text-align:center; font-family:'Frank Ruhl Libre',serif; color:var(--paper); font-weight:400; font-size:clamp(38px,5.4vw,70px); line-height:1.1;">בואו נחזור לבֶּיתֶלָדִים</span>
     </h1>
     <div style="text-align:center; padding:0 8px; max-width:56ch; margin-inline:auto;">
-      <p style="font-family: 'Frank Ruhl Libre',serif; font-size: clamp(18px,2vw,22px); line-height: 1.7; color: #6E7C78; margin: 26px 0 0; width: 600px; position: relative; left: 90px">מפגשי זום פתוחים בעקבות הספר ״עיניים גדולות זה לא טוב״</p>
+      <p style="font-family: 'Assistant',sans-serif; font-size: clamp(18px,2vw,22px); line-height: 1.7; color: #6E7C78; margin: 26px 0 0; width: 600px; position: relative; left: 90px">מפגשי זום פתוחים בעקבות הספר ״עיניים גדולות זה לא טוב״</p>
     </div>
+
+    <figure style="margin:clamp(30px,4vw,46px) auto 0; max-width:min(980px,92vw); text-align:center;">
+      <img src="assets/beityeladim-diningroom.png" alt="חדר האוכל בבית הילדים — שולחן עגול, כיסאות ומקרר" style="width:100%; height:auto; display:block; border:1px solid rgba(34,48,47,.16); box-shadow:0 18px 40px rgba(34,48,47,.16);">
+    </figure>
 
     <section style="max-width:60ch; margin-inline:auto; padding:clamp(40px,6vw,66px) 0 clamp(30px,5vw,50px);">
       <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 22px; text-wrap:pretty;">יש זיכרונות שלא נשארים בעבר. הם ממשיכים לחיות בקשרים שלנו, בדרך שבה אנחנו אוהבים, נפרדים, מחכים, מתקרבים ומתרחקים.</p>
@@ -93,7 +97,14 @@
 
   </main>
 
-  <footer style="max-width:1040px; margin:0 auto; padding:34px clamp(20px,5vw,40px); display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between; border-top:1px solid rgba(34,48,47,.12);">
+    <!-- back to top -->
+  <div style="max-width:1120px; margin:0 auto; padding:0 clamp(20px,5vw,40px);">
+    <div style="border-top:1px solid rgba(34,48,47,.12); padding:22px 0; text-align:center;">
+      <a href="#top" style="display:inline-flex; align-items:center; gap:8px; color:var(--accent); text-decoration:none; font-size:15px; font-weight:600;">חזרה לראש הדף <span style="font-size:17px;">↑</span></a>
+    </div>
+  </div>
+
+<footer style="max-width:1040px; margin:0 auto; padding:34px clamp(20px,5vw,40px); display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between; border-top:1px solid rgba(34,48,47,.12);">
     <div>
       <div style="font-family:'Frank Ruhl Libre',serif; font-weight:700; font-size:18px;">עיניים גדולות זה לא טוב</div>
       <div style="font-size:14px; color:#6E7C78; margin-top:4px;">הבית הדיגיטלי של הספר ושל הקהילה סביבו.</div>

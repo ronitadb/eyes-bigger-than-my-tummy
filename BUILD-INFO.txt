@@ -1,0 +1,3 @@
+BUILD 2026-07-02T05:30:50.834Z
+pages: book.html, contact.html, index.html, materials.html, media.html, ronit.html, visual-identity.html, zoom.html
+assets (23): beityeladim-diningroom.png, beityeladim-nosheochel.png, beityeladim-room.png, beityeladim-shelf.png, beityeladim-showers.png, book-cover.jpg, chalk-green.png, cover-art.jpg, image-slot.js, nature-corner.png, reading-corner.png, ronit.jpg, sharon-ink.png, sharon-mother.png, sharon-sewage.png, sharon-swing.png, sharon-tricycle.png, title-handwriting.png, vered-1.png, vered-2.png, vered-3.png, vered-4.png, vered-5.png
