@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    img{max-width:100%;display:block;}
+  </style>
+</helmet>
+
+<div lang="he" dir="rtl" style="--accent:#3D7468; --banner:#56847A; --paper:#FAF8F4; --head-font:'Assistant',sans-serif; --head-color:#2F5248; background:#FAF8F4; min-height:100vh; font-family:'Assistant',-apple-system,sans-serif; color:#22302F; -webkit-font-smoothing:antialiased;">
+
+  <sc-if value="{{ grain }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed; inset:0; pointer-events:none; z-index:9999; mix-blend-mode:multiply; opacity:.06; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;); background-size:160px;"></div>
+  </sc-if>
+
+  <header style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:24px clamp(20px,5vw,72px); border-bottom:1px solid rgba(34,48,47,.12);">
+    <a href="/" style="font-family:'Frank Ruhl Libre',serif; font-size:21px; font-weight:700; color:#22302F; text-decoration:none;">עיניים גדולות זה לא טוב</a>
+    <nav style="display:flex; flex-wrap:wrap; gap:22px;">
+      <a href="/" style="color:#445049; text-decoration:none; font-size:15px;">בית</a>
+      <a href="/book" style="color:#445049; text-decoration:none; font-size:15px;">על הספר</a>
+      <a href="/ronit" style="color:#445049; text-decoration:none; font-size:15px;">על רונית</a>
+      <a href="/zoom" style="color:#445049; text-decoration:none; font-size:15px;">קבוצות זום</a>
+      <a href="/materials" style="color:#445049; text-decoration:none; font-size:15px;">חומרי קריאה</a>
+      <a href="/media" style="color:#445049; text-decoration:none; font-size:15px;">תקשורת וביקורות</a>
+      <a href="/contact" style="color:#445049; text-decoration:none; font-size:15px;">צרו קשר</a>
+    </nav>
+  </header>
+
+  <main style="max-width:1000px; margin:0 auto; padding:0 clamp(20px,5vw,40px);">
+
+    <div style="text-align:center; padding:clamp(46px,6vw,80px) 8px 4px;">
+      <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600;">צרו קשר</div>
+    </div>
+    <h1 style="width:100vw; margin-top:16px; margin-inline:calc(50% - 50vw); background:var(--banner); padding:clamp(32px,4.2vw,58px) clamp(20px,5vw,40px);">
+      <span style="display:block; max-width:24ch; margin:0 auto; text-align:center; font-family:'Frank Ruhl Libre',serif; color:var(--paper); font-weight:400; font-size:clamp(38px,5.4vw,68px); line-height:1.1;">הישארו בקשר</span>
+    </h1>
+    <div style="text-align:center; padding:0 8px; max-width:60ch; margin-inline:auto;">
+      <p style="font-size:18px; line-height:1.95; color:#414B48; margin:30px 0 0;">יש לכם זיכרון לשתף, שאלה, או רצון להזמין מפגש? נשמח לשמוע. אפשר לכתוב ישירות, או להצטרף לרשימת התפוצה ולהתעדכן.</p>
+    </div>
+
+    <section style="padding:40px 0; border-top:1px solid rgba(34,48,47,.12);">
+      <div style="font-size:13px; letter-spacing:.04em; color:var(--accent); font-weight:600; margin-bottom:30px;">דרכים להגיע אלינו</div>
+      <div style="display:flex; flex-wrap:wrap; gap:24px;">
+        <div style="flex:1 1 240px; border:1px solid rgba(34,48,47,.16); background:#F0F4F1; padding:28px 26px;">
+          <h3 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:21px; margin:0 0 6px;">במייל</h3>
+          <div style="font-size:15px; color:#475451; margin-bottom:16px;">ronit.adiv@gmail.com</div>
+          <a href="mailto:ronit.adiv@gmail.com" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">שליחת מייל ←</a>
+        </div>
+        <div style="flex:1 1 240px; border:1px solid rgba(34,48,47,.16); background:#F0F4F1; padding:28px 26px;">
+          <h3 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:21px; margin:0 0 6px;">בפייסבוק</h3>
+          <div style="font-size:15px; color:#475451; margin-bottom:16px;">עמוד הספר והקהילה</div>
+          <a href="https://www.facebook.com/profile.php?id=61585440045934" target="_blank" rel="noopener" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">למעבר לעמוד ←</a>
+        </div>
+        <div style="flex:1 1 240px; border:1px solid rgba(34,48,47,.16); background:#F0F4F1; padding:28px 26px;">
+          <h3 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:21px; margin:0 0 6px;">הזמנת מפגש</h3>
+          <div style="font-size:15px; color:#475451; margin-bottom:16px;">מפגשי קריאה וקבוצות</div>
+          <a href="/zoom" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">לפרטים ←</a>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:48px 0 80px;">
+      <div style="background:#E6EEEA; border-radius:4px; padding:48px clamp(28px,5vw,56px);">
+        <div style="font-size:13px; letter-spacing:.04em; color:var(--accent); font-weight:600; margin-bottom:22px;">כתבו לנו</div>
+        <form onSubmit="{{ noSubmit }}" style="display:flex; flex-direction:column; gap:16px; max-width:600px;">
+          <div style="display:flex; flex-wrap:wrap; gap:16px;">
+            <input name="name" type="text" placeholder="שם" style="flex:1 1 200px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
+            <input name="email" type="email" placeholder="אימייל" style="flex:1 1 200px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
+          </div>
+          <textarea name="message" placeholder="ההודעה שלכם" rows="5" style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit; resize:vertical;"></textarea>
+          <div style="display:flex; flex-wrap:wrap; gap:18px; align-items:center;">
+            <button type="submit" style="background:var(--accent); color:#F4F8F4; border:none; padding:14px 34px; border-radius:2px; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit;">שליחה</button>
+            <span style="font-size:13px; color:#8A7C64;">* השליחה תיפתח בתוכנת המייל שלכם עם ההודעה מוכנה.</span>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <section style="text-align:center; background:#22302F; color:#EEF3EF; padding:72px clamp(24px,6vw,80px);">
+    <div style="font-size:13px; letter-spacing:.04em; color:color-mix(in srgb, var(--accent) 70%, #EEF3EF); font-weight:600;">הישארו בקשר</div>
+    <h2 style="font-family:var(--head-font); color:#FAF8F4; font-weight:700; font-size:clamp(26px,3.4vw,40px); margin:10px 0 0;">מכתב מדי פעם, בלי רעש</h2>
+    <p style="max-width:52ch; margin:16px auto 0; font-size:16px; line-height:1.9; color:#AEC0BA;">עדכון קצר על מפגשים חדשים, חומרי קריאה ורשמים מהקהילה. בלי ספאם, אפשר להפסיק בכל רגע.</p>
+    <form onSubmit="{{ noSubmit }}" style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; max-width:520px; margin:28px auto 0;">
+      <input type="email" placeholder="כתובת האימייל שלכם" style="flex:1 1 240px; background:#2E3C3B; border:1px solid #43524F; color:#EEF3EF; padding:14px 18px; border-radius:2px; font-size:16px; font-family:inherit;">
+      <button type="submit" style="background:var(--accent); color:#F4F8F4; border:none; padding:14px 30px; border-radius:2px; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit;">הרשמה</button>
+    </form>
+  </section>
+
+  <footer style="max-width:1000px; margin:0 auto; padding:34px clamp(20px,5vw,40px); display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between;">
+    <div>
+      <div style="font-family:'Frank Ruhl Libre',serif; font-weight:700; font-size:18px;">עיניים גדולות זה לא טוב</div>
+      <div style="font-size:14px; color:#6E7C78; margin-top:4px;">הבית הדיגיטלי של הספר ושל הקהילה סביבו.</div>
+    </div>
+    <div style="display:flex; gap:20px; align-items:center;">
+      <a href="https://www.facebook.com/profile.php?id=61585440045934" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none; font-weight:600; font-size:15px;">עקבו אחרינו בפייסבוק</a>
+      <a href="/visual-identity" style="font-size:13px; color:#8A9692; text-decoration:none; border-bottom:1px solid rgba(34,48,47,.18); padding-bottom:1px;">שפה חזותית</a>
+      <span style="font-size:13px; color:#8A9692;">© 2026 רונית בלנרו-אדיב · בהוצאת מטר</span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;showGrain&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;מראה&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      grain: this.props.showGrain !== false,
+      noSubmit: (e) => {
+        e.preventDefault();
+        const f = e.target;
+        const name = (f.name && f.name.value ? f.name.value : "").trim();
+        const email = (f.email && f.email.value ? f.email.value : "").trim();
+        const message = (f.message && f.message.value ? f.message.value : "").trim();
+        const subject = "פנייה מהאתר" + (name ? " מאת " + name : "");
+        const body = (message || "") + (email ? "\n\nמייל לחזרה: " + email : "");
+        window.location.href = "mailto:ronit.adiv@gmail.com?subject=" +
+          encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

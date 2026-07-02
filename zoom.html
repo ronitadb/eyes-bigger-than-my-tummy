@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&amp;family=Assistant:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    img{max-width:100%;display:block;}
+  </style>
+</helmet>
+
+<div lang="he" dir="rtl" style="--accent:#3D7468; --banner:#56847A; --paper:#FAF8F4; --head-font:'Assistant',sans-serif; --head-color:#2F5248; background:#FAF8F4; min-height:100vh; font-family:'Assistant',-apple-system,sans-serif; color:#22302F; -webkit-font-smoothing:antialiased;">
+
+  <sc-if value="{{ grain }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed; inset:0; pointer-events:none; z-index:9999; mix-blend-mode:multiply; opacity:.06; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;); background-size:160px;"></div>
+  </sc-if>
+
+  <header style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:24px clamp(20px,5vw,72px); border-bottom:1px solid rgba(34,48,47,.12);">
+    <a href="/" style="font-family:'Frank Ruhl Libre',serif; font-size:21px; font-weight:700; color:#22302F; text-decoration:none;">עיניים גדולות זה לא טוב</a>
+    <nav style="display:flex; flex-wrap:wrap; gap:22px;">
+      <a href="/" style="color:#445049; text-decoration:none; font-size:15px;">בית</a>
+      <a href="/book" style="color:#445049; text-decoration:none; font-size:15px;">על הספר</a>
+      <a href="/ronit" style="color:#445049; text-decoration:none; font-size:15px;">על רונית</a>
+      <a href="/zoom" style="color:#445049; text-decoration:none; font-size:15px;">קבוצות זום</a>
+      <a href="/materials" style="color:#445049; text-decoration:none; font-size:15px;">חומרי קריאה</a>
+      <a href="/media" style="color:#445049; text-decoration:none; font-size:15px;">תקשורת וביקורות</a>
+      <a href="/contact" style="color:#445049; text-decoration:none; font-size:15px;">צרו קשר</a>
+    </nav>
+  </header>
+
+  <main style="max-width:1040px; margin:0 auto; padding:0 clamp(20px,5vw,40px);">
+
+    <div style="text-align:center; padding:clamp(46px,6vw,80px) 8px 4px;">
+      <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600;">קבוצות זום</div>
+    </div>
+    <h1 style="width:100vw; margin-top:16px; margin-inline:calc(50% - 50vw); background:var(--banner); padding:clamp(32px,4.2vw,58px) clamp(20px,5vw,40px);">
+      <span style="display:block; max-width:24ch; margin:0 auto; text-align:center; font-family:'Frank Ruhl Libre',serif; color:var(--paper); font-weight:400; font-size:clamp(38px,5.4vw,70px); line-height:1.1;">בואו נחזור לבֶּיתֶלָדִים</span>
+    </h1>
+    <div style="text-align:center; padding:0 8px; max-width:56ch; margin-inline:auto;">
+      <p style="font-family: 'Frank Ruhl Libre',serif; font-size: clamp(18px,2vw,22px); line-height: 1.7; color: #6E7C78; margin: 26px 0 0; width: 600px; position: relative; left: 90px">מפגשי זום פתוחים בעקבות הספר ״עיניים גדולות זה לא טוב״</p>
+    </div>
+
+    <section style="max-width:60ch; margin-inline:auto; padding:clamp(40px,6vw,66px) 0 clamp(30px,5vw,50px);">
+      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 22px; text-wrap:pretty;">יש זיכרונות שלא נשארים בעבר. הם ממשיכים לחיות בקשרים שלנו, בדרך שבה אנחנו אוהבים, נפרדים, מחכים, מתקרבים ומתרחקים.</p>
+      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 22px; text-wrap:pretty;">אני מזמינה אתכם לחזור יחד אל הבֶּיתֶלָדִים - אותנו, הילדים, ואתכם - הורינו.</p>
+      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 22px; text-wrap:pretty;">המפגשים פתוחים לנו - בני ובנות קיבוץ, לכם - ההורים - ולכל אחד שמוצא בהם עניין. יש דברים שהדפנו מלשמוע כשנאמרו על ידי הורינו-שלנו, אבל אולי נוכל לשמוע מהורים אחרים; יש דברים שנהדפו על ידי הורינו כשנאמרו על-ידינו, ילדיהם-שלהם, אבל אולי יוכלו להישמע מילדים שאינם אנחנו.</p>
+      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 26px; text-wrap:pretty;">בכל מפגש נעלה את אחד הטקסים שכולנו מכירים - ההתעוררות בבוקר, המקלחות, הארוחות, ההשכבה, הלילה ועוד רבים אחרים. נחזור אל הריצה ברגליים יחפות, אל החיבוק לאבא או לאמא שהלכו בסוף ההשכבה, אל רותק׳ה שמדדה לנו חום בחדר איזולציה. נחזור אל הרגעים הקטנים שעיצבו אותנו, וננסה להתבונן מחדש בילדות שלנו, מתוך הפרספקטיבה שיש לנו היום כמבוגרים:</p>
+      <div style="margin:0 0 30px; padding-inline-start:20px; border-inline-start:2px solid color-mix(in srgb, var(--accent) 45%, transparent);">
+        <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:19px; line-height:1.8; color:#3A4744; margin:0 0 12px; text-wrap:pretty;">מה ילד צריך כדי לגדול?</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:19px; line-height:1.8; color:#3A4744; margin:0 0 12px; text-wrap:pretty;">איך ילדים מסתגלים כשהצרכים שלהם אינם מקבלים מענה?</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:19px; line-height:1.8; color:#3A4744; margin:0; text-wrap:pretty;">איך דרכי ההסתגלות שפיתחנו אז ממשיכות לעיתים ללוות אותנו גם היום – בזוגיות, בהורות, בקשרים שלנו עם אחרים ובעיקר ביחס שלנו לעצמנו?</p>
+      </div>
+      <div style="text-align:center; margin:34px 0;">
+        <p style="font-family:'Frank Ruhl Libre',serif; font-weight:500; font-size:clamp(21px,2.6vw,29px); line-height:1.5; color:var(--accent); margin:0 0 6px;">לא כדי לשפוט.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-weight:500; font-size:clamp(21px,2.6vw,29px); line-height:1.5; color:var(--accent); margin:0 0 6px;">לא כדי להאשים.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-weight:500; font-size:clamp(21px,2.6vw,29px); line-height:1.5; color:var(--accent); margin:0 0 6px;">אלא כדי להבין.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-weight:500; font-size:clamp(21px,2.6vw,29px); line-height:1.5; color:var(--accent); margin:0 0 6px;">להבין את המערכת שבתוכה גדלנו.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-weight:500; font-size:clamp(21px,2.6vw,29px); line-height:1.5; color:var(--accent); margin:0;">להבין את עצמנו.</p>
+      </div>
+      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 22px; text-wrap:pretty;">ננסה להחזיק יחד שתי אמיתות שאינן סותרות זו את זו: להבין שהמערכת שבתוכה גדלנו לא יכלה מעולם לתת במלואו את שלשמו נבנתה, ובה בעת להבין שהמגבלות שלה אינן מבטלות את האהבה שמתוכה נבנתה.</p>
+      <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,26px); line-height:1.55; color:#2F5248; text-align:center; margin:26px auto 0; max-width:52ch;">ואם דרך אלה, תמצא, ולו נפש אחת, מעט יותר שלום עם העבר החי שלנו - דייני.</p>
+    </section>
+
+    <section style="padding:8px 0 76px;">
+      <div style="max-width:600px; margin:0 auto; background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(30px,4vw,44px) clamp(26px,4vw,46px);">
+        <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0 0 20px;">פרטי המפגשים</div>
+        <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:13px;">
+          <li style="display:flex; gap:12px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;"><span style="color:var(--accent);">•</span><span>מפגש זום פתוח</span></li>
+          <li style="display:flex; gap:12px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;"><span style="color:var(--accent);">•</span><span>משך המפגש: שעה וחצי</span></li>
+          <li style="display:flex; gap:12px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;"><span style="color:var(--accent);">•</span><span>ימי שלישי | 19:00</span></li>
+          <li style="display:flex; gap:12px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;"><span style="color:var(--accent);">•</span><span>אחת לשלושה שבועות</span></li>
+          <li style="display:flex; gap:12px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;"><span style="color:var(--accent);">•</span><span>נושא כל מפגש יתפרסם מראש באתר ובדף הפייסבוק של הספר</span></li>
+          <li style="display:flex; gap:12px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;"><span style="color:var(--accent);">•</span><span>המפגש הראשון: __________</span></li>
+        </ul>
+        <div style="border-top:1px solid rgba(34,48,47,.14); margin-top:28px; padding-top:26px;">
+          <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0 0 16px;">להרשמה ולעדכונים</div>
+          <div style="display:flex; flex-direction:column; gap:10px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;">
+            <div>אתר: __________</div>
+            <div>דף הפייסבוק: __________</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer style="max-width:1040px; margin:0 auto; padding:34px clamp(20px,5vw,40px); display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between; border-top:1px solid rgba(34,48,47,.12);">
+    <div>
+      <div style="font-family:'Frank Ruhl Libre',serif; font-weight:700; font-size:18px;">עיניים גדולות זה לא טוב</div>
+      <div style="font-size:14px; color:#6E7C78; margin-top:4px;">הבית הדיגיטלי של הספר ושל הקהילה סביבו.</div>
+    </div>
+    <div style="display:flex; gap:20px; align-items:center;">
+      <a href="https://www.facebook.com/profile.php?id=61585440045934" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none; font-weight:600; font-size:15px;">עקבו אחרינו בפייסבוק</a>
+      <a href="/visual-identity" style="font-size:13px; color:#8A9692; text-decoration:none; border-bottom:1px solid rgba(34,48,47,.18); padding-bottom:1px;">שפה חזותית</a>
+      <span style="font-size:13px; color:#8A9692;">© 2026 רונית בלנרו-אדיב · בהוצאת מטר</span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;showGrain&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;מראה&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      grain: this.props.showGrain !== false,
+    };
+  }
+}
+</script>
+</body>
+</html>

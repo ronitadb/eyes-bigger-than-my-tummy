@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&amp;family=Assistant:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    img{max-width:100%;display:block;}
+  </style>
+</helmet>
+
+<div lang="he" dir="rtl" style="--accent:#3D7468; --banner:#56847A; --paper:#FAF8F4; --head-font:'Assistant',sans-serif; --head-color:#2F5248; background:#FAF8F4; min-height:100vh; font-family:'Assistant',-apple-system,sans-serif; color:#22302F; -webkit-font-smoothing:antialiased;">
+
+  <sc-if value="{{ grain }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed; inset:0; pointer-events:none; z-index:9999; mix-blend-mode:multiply; opacity:.06; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;); background-size:160px;"></div>
+  </sc-if>
+
+  <header style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:24px clamp(20px,5vw,72px); border-bottom:1px solid rgba(34,48,47,.12);">
+    <a href="/" style="font-family:'Frank Ruhl Libre',serif; font-size:21px; font-weight:700; color:#22302F; text-decoration:none;">עיניים גדולות זה לא טוב</a>
+    <nav style="display:flex; flex-wrap:wrap; gap:22px;">
+      <a href="/" style="color:#445049; text-decoration:none; font-size:15px;">בית</a>
+      <a href="/book" style="color:#445049; text-decoration:none; font-size:15px;">על הספר</a>
+      <a href="/ronit" style="color:#445049; text-decoration:none; font-size:15px;">על רונית</a>
+      <a href="/zoom" style="color:#445049; text-decoration:none; font-size:15px;">קבוצות זום</a>
+      <a href="/materials" style="color:#445049; text-decoration:none; font-size:15px;">חומרי קריאה</a>
+      <a href="/media" style="color:#445049; text-decoration:none; font-size:15px;">תקשורת וביקורות</a>
+      <a href="/contact" style="color:#445049; text-decoration:none; font-size:15px;">צרו קשר</a>
+    </nav>
+  </header>
+
+  <main style="max-width:1040px; margin:0 auto; padding:0 clamp(20px,5vw,40px);">
+
+    <div style="text-align:center; padding:clamp(46px,6vw,80px) 8px 4px;">
+      <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600;">תקשורת וביקורות</div>
+    </div>
+    <h1 style="width:100vw; margin-top:16px; margin-inline:calc(50% - 50vw); background:var(--banner); padding:clamp(32px,4.2vw,58px) clamp(20px,5vw,40px);">
+      <span style="display:block; max-width:24ch; margin:0 auto; text-align:center; font-family:'Frank Ruhl Libre',serif; color:var(--paper); font-weight:400; font-size:clamp(38px,5.4vw,68px); line-height:1.1;">מה אומרים על הספר</span>
+    </h1>
+    <div style="text-align:center; padding:0 8px; max-width:62ch; margin-inline:auto;">
+      <p style="font-size:18px; line-height:1.95; color:#414B48; margin:30px 0 0;">ביקורות, הופעות בתקשורת וקולות מן הקהילה</p>
+    </div>
+
+    <section style="padding:50px 0; border-top:1px solid rgba(34,48,47,.12);">
+      <div style="font-size:13px; letter-spacing:.04em; color:var(--accent); font-weight:600; margin-bottom:24px;">בשידור</div>
+      <a href="https://omny.fm/shows/kan-3364/20-2-2026?in_playlist=podcast" target="_blank" rel="noopener" style="display:flex; flex-wrap:wrap; align-items:center; gap:26px; background:var(--accent); color:#F4F8F4; padding:36px clamp(28px,4vw,44px); text-decoration:none;">
+        <div style="flex:0 0 auto; width:70px; height:70px; border-radius:50%; background:var(--paper); display:flex; align-items:center; justify-content:center;">
+          <span style="display:block; width:0; height:0; border-style:solid; border-width:14px 0 14px 23px; border-color:transparent transparent transparent var(--accent); margin-inline-start:6px;"></span>
+        </div>
+        <div style="flex:1 1 240px;">
+          <div style="font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:rgba(244,248,244,.8); font-weight:700; margin-bottom:8px;">בשידור · רדיו כאן · 20.2.2026</div>
+          <div style="font-family:var(--head-font); font-weight:800; font-size:clamp(24px,2.8vw,32px); line-height:1.15;">מגזין שבת עם רון נשיאל</div>
+          <div style="font-size:16px; line-height:1.7; color:rgba(244,248,244,.85); margin-top:8px;">שיחה על הספר, על הילדוּת בלינה המשותפת ועל הדרך אל הכתיבה.</div>
+        </div>
+        <div style="flex:0 0 auto; font-size:15px; font-weight:700; color:var(--accent); background:var(--paper); padding:13px 26px; border-radius:2px;">להאזנה לראיון ←</div>
+      </a>
+    </section>
+
+    <section style="padding:50px 0; border-top:1px solid rgba(34,48,47,.12);">
+      <div style="font-size:13px; letter-spacing:.04em; color:var(--accent); font-weight:600; margin-bottom:34px;">בתקשורת וביקורות</div>
+      <div style="display:flex; flex-direction:column; gap:24px;">
+        <div style="background:#F0F4F1; border:1px solid rgba(34,48,47,.14); padding:34px 34px 30px;">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,27px); line-height:1.5; color:#22302F; margin:0;">יומן חוויות אישי ומרגש. אני ממליץ בחום על הספר המיוחד הזה לכל מי שמעוניין להכיר את החיים בחברה הקיבוצית מנקודת מבטה של ילדה קטנה, מוכשרת ורגישה למתרחש סביבה.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; justify-content:space-between; margin-top:18px;">
+            <cite style="font-style:normal; font-size:15px; color:#6E7C78;">קבוצת ביקורות ספרים · פייסבוק</cite>
+            <a href="https://www.facebook.com/groups/realbookreviews/posts/2066308200768396/" target="_blank" rel="noopener" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">לביקורת המלאה ←</a>
+          </div>
+        </div>
+        <div style="background:#F0F4F1; border:1px solid rgba(34,48,47,.14); padding:34px 34px 30px;">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,27px); line-height:1.5; color:#22302F; margin:0;">כל אחד מהם [הסיפורים] – פנינה של רגש, מחשבה והבנה. הקריאה שלו הסבה לי עונג צרוף.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; justify-content:space-between; margin-top:18px;">
+            <cite style="font-style:normal; font-size:15px; color:#6E7C78;">עופרה עופר אורן · מבקרת ספרות</cite>
+            <a href="https://ofra-offer-oren.com/2026/01/22/%d7%a8%d7%95%d7%a0%d7%99%d7%aa-%d7%91%d7%9c%d7%a0%d7%a8%d7%95%d6%be%d7%90%d7%93%d7%99%d7%91-%d7%a2%d7%99%d7%a0%d7%99%d7%99%d7%9d-%d7%92%d7%93%d7%95%d7%9c%d7%95%d7%aa-%d7%96%d7%94-%d7%9c%d7%90/" target="_blank" rel="noopener" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">לביקורת המלאה ←</a>
+          </div>
+        </div>
+        <div style="background:#F0F4F1; border:1px solid rgba(34,48,47,.14); padding:34px 34px 30px;">
+          <div style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,27px); line-height:1.5; color:#22302F; margin:0;"><h2 style="font-family: EzerShemesh; margin: 0px; padding: 0px; color: rgb(0, 0, 0); font-style: normal; text-align: center;"><span disabled="" class="subTitle" contenteditable="false" style="font-size: 28px; line-height: 34px; font-weight: 400; font-style: italic">רונית בלנרו־אדיב, בוגרת הלינה המשותפת, חלתה בסרטן ובחרה לכרות את השדיים ולא לעבור שחזור. בספרה "עיניים גדולות זה לא טוב" היא מספרת על החיים בקיבוץ מנקודת מבטה של ילדה. "ריחמתי על עצמי, אבל לא נתקעתי בזה, קמתי כמו 'נחום־תקום' ועל זה יש לי המון תודה לחינוך הקיבוצי", היא אומרת מביתה בניו זילנד</span></h2></div>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; justify-content:space-between; margin-top:18px;">
+            <cite style="font-style:normal; font-size:15px; color:#6E7C78;">לאשה · ynet</cite>
+            <a href="https://www.ynet.co.il/laisha/article/syxm66vowl" target="_blank" rel="noopener" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">לכתבה ←</a>
+          </div>
+        </div>
+        <div style="background:#F0F4F1; border:1px solid rgba(34,48,47,.14); padding:34px 34px 30px;">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,27px); line-height:1.5; color:#22302F; margin:0;">ספר רגיש — ברמה שמשפטים מסוימים עשו לי צמרמורת ולחלוחית בעיניים — כתוב באופן חכם, קולח ומרתק. ממליצה מאוד!</p>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; justify-content:space-between; margin-top:18px;">
+            <cite style="font-style:normal; font-size:15px; color:#6E7C78;">סקירת ספרים · פייסבוק</cite>
+            <a href="https://www.facebook.com/groups/366099626809655/search/?q=%D7%A2%D7%99%D7%A0%D7%99%D7%99%D7%9D%20%D7%92%D7%93%D7%95%D7%9C%D7%95%D7%AA%20%D7%96%D7%94%20%D7%9C%D7%90%20%D7%98%D7%95%D7%91" target="_blank" rel="noopener" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">לפוסט בפייסבוק ←</a>
+          </div>
+        </div>
+        <div style="background:#F0F4F1; border:1px solid rgba(34,48,47,.14); padding:34px 34px 30px;">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,27px); line-height:1.5; color:#22302F; margin:0;">רומן צלול ומרגש, פוקח עיניים וצובט בכנותו.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; justify-content:space-between; margin-top:18px;">
+            <cite style="font-style:normal; font-size:15px; color:#6E7C78;">סלונט · המומלצים לפברואר 2026</cite>
+            <a href="https://salonet.org.il/%D7%94%D7%9E%D7%95%D7%9E%D7%9C%D7%A6%D7%99%D7%9D-%D7%A4%D7%91%D7%A8%D7%95%D7%90%D7%A8-2026/" target="_blank" rel="noopener" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">לרשימה ←</a>
+          </div>
+        </div>
+        <div style="background:#F0F4F1; border:1px solid rgba(34,48,47,.14); padding:34px 34px 30px;">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,27px); line-height:1.5; color:#22302F; margin:0;">אהבתי אותו לא בגלל נוסטלגיה אלא בגלל האמת שבו. הוא פשוט פתח דלת לעולם שחשבתי שאני זוכר, והראה לי אותו דרך שפה שעדיין מהדהדת בי.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; justify-content:space-between; margin-top:18px;">
+            <cite style="font-style:normal; font-size:15px; color:#6E7C78;">רשומה בפייסבוק · ילד חוץ לשעבר</cite>
+            <a href="https://www.facebook.com/story.php?story_fbid=1606603207079955&amp;id=100031908746674" target="_blank" rel="noopener" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">לרשומה המלאה ←</a>
+          </div>
+        </div>
+        <div style="background:#F0F4F1; border:1px solid rgba(34,48,47,.14); padding:34px 34px 30px;">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,27px); line-height:1.5; color:#22302F; margin:0;">נכתב ברגישות ונוסטלגיה מבורכת. הערכתי במיוחד את חוסר השיפוטיות שבה נכתב הספר — לא כתב ביקורת על החברה הקיבוצית, אלא פשוט את החוויות כפי שקרו.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; justify-content:space-between; margin-top:18px;">
+            <cite style="font-style:normal; font-size:15px; color:#6E7C78;">רשומת קריאה · פייסבוק</cite>
+            <a href="https://www.facebook.com/100063539352396/posts/1550498087078155/" target="_blank" rel="noopener" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">לרשומה המלאה ←</a>
+          </div>
+        </div>
+        <div style="background:#F0F4F1; border:1px solid rgba(34,48,47,.14); padding:34px 34px 30px;">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,27px); line-height:1.5; color:#22302F; margin:0;">אני רוצה לגדול לא כדי להיות גדולה, פשוט כדי לא להיות קטנה. על הקטנים מחליטים הגדולים, ואת הקטנים לא שומעים.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; justify-content:space-between; margin-top:18px;">
+            <cite style="font-style:normal; font-size:15px; color:#6E7C78;">וואלה תרבות · פרק ראשון מתוך הספר</cite>
+            <a href="https://e.walla.co.il/item/3816699" target="_blank" rel="noopener" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">לקריאת הפרק ←</a>
+          </div>
+        </div>
+        <div style="background:#F0F4F1; border:1px solid rgba(34,48,47,.14); padding:34px 34px 30px;">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,27px); line-height:1.5; color:#22302F; margin:0;">כבר בפרק הראשון בכיתי. ספר כתוב היטב, המתאר בצורה בלתי שיפוטית חלק בארץ ישראל שאינו קיים בימינו. ממליצה עליו בחום.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; justify-content:space-between; margin-top:18px;">
+            <cite style="font-style:normal; font-size:15px; color:#6E7C78;">סקירה בקבוצת ביקורות ספרים · פייסבוק</cite>
+            <a href="https://www.facebook.com/groups/realbookreviews/permalink/2059272801471936/" target="_blank" rel="noopener" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">לסקירה המלאה ←</a>
+          </div>
+        </div>
+        <div style="background:#F0F4F1; border:1px solid rgba(34,48,47,.14); padding:34px 34px 30px;">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,27px); line-height:1.5; color:#22302F; margin:0;">נהנתי מאוד מהספר. הקריאה זרמה, הדפים התחלפו מאליהם וחשפו טפח מהחיים בקיבוץ. הכתיבה איכותית וזורמת — השפה כמו שפת דיבור של ילדה בת שבע.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; justify-content:space-between; margin-top:18px;">
+            <cite style="font-style:normal; font-size:15px; color:#6E7C78;">מעבר לכריכה · פייסבוק</cite>
+            <a href="https://www.facebook.com/100091747574117/posts/840244442377134/" target="_blank" rel="noopener" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">לסקירה המלאה ←</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:54px 0 80px; border-top:1px solid rgba(34,48,47,.12);">
+      <div style="font-size:13px; letter-spacing:.04em; color:var(--accent); font-weight:600; margin-bottom:34px;">קולות מהקהילה</div>
+      <div style="display:flex; flex-wrap:wrap; gap:26px;">
+        <blockquote style="flex:1 1 280px; margin:0; padding:28px 26px; border-inline-start:3px solid color-mix(in srgb, var(--accent) 50%, transparent);">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:20px; line-height:1.55; color:#22302F; margin:0;">קראתי בנשימה אחת ובכיתי. חזרתי לבית הילדים שלי.</p>
+          <cite style="display:block; margin-top:14px; font-style:normal; font-size:14px; color:#6E7C78;">ק׳, בת קיבוץ בעמק</cite>
+        </blockquote>
+        <blockquote style="flex:1 1 280px; margin:0; padding:28px 26px; border-inline-start:3px solid color-mix(in srgb, var(--accent) 50%, transparent);">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:20px; line-height:1.55; color:#22302F; margin:0;">סוף-סוף מישהי כתבה את מה שלא ידעתי לומר.</p>
+          <cite style="display:block; margin-top:14px; font-style:normal; font-size:14px; color:#6E7C78;">י׳, בן-קיבוץ השומר הצעיר</cite>
+        </blockquote>
+        <blockquote style="flex:1 1 280px; margin:0; padding:28px 26px; border-inline-start:3px solid color-mix(in srgb, var(--accent) 50%, transparent);">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:20px; line-height:1.55; color:#22302F; margin:0;">נתתי את הספר לאמא שלי. דיברנו עליו שעות.</p>
+          <cite style="display:block; margin-top:14px; font-style:normal; font-size:14px; color:#6E7C78;">ד׳, דור שני בקיבוץ</cite>
+        </blockquote>
+      </div>
+    </section>
+
+  </main>
+
+  <footer style="max-width:1040px; margin:0 auto; padding:34px clamp(20px,5vw,40px); display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between; border-top:1px solid rgba(34,48,47,.12);">
+    <div>
+      <div style="font-family:'Frank Ruhl Libre',serif; font-weight:700; font-size:18px;">עיניים גדולות זה לא טוב</div>
+      <div style="font-size:14px; color:#6E7C78; margin-top:4px;">הבית הדיגיטלי של הספר ושל הקהילה סביבו.</div>
+    </div>
+    <div style="display:flex; gap:20px; align-items:center;">
+      <a href="https://www.facebook.com/profile.php?id=61585440045934" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none; font-weight:600; font-size:15px;">עקבו אחרינו בפייסבוק</a>
+      <a href="/visual-identity" style="font-size:13px; color:#8A9692; text-decoration:none; border-bottom:1px solid rgba(34,48,47,.18); padding-bottom:1px;">שפה חזותית</a>
+      <span style="font-size:13px; color:#8A9692;">© 2026 רונית בלנרו-אדיב · בהוצאת מטר</span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;showGrain&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;מראה&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      grain: this.props.showGrain !== false,
+    };
+  }
+}
+</script>
+</body>
+</html>

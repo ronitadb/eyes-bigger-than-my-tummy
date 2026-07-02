@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&amp;family=Assistant:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    img{max-width:100%;display:block;}
+  </style>
+</helmet>
+
+<div lang="he" dir="rtl" style="--accent:#3D7468; --banner:#56847A; --paper:#FAF8F4; --head-font:'Assistant',sans-serif; --head-color:#2F5248; background:#FAF8F4; min-height:100vh; font-family:'Assistant',-apple-system,sans-serif; color:#22302F; -webkit-font-smoothing:antialiased;">
+
+  <sc-if value="{{ grain }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed; inset:0; pointer-events:none; z-index:9999; mix-blend-mode:multiply; opacity:.06; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;); background-size:160px;"></div>
+  </sc-if>
+
+  <header style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:24px clamp(20px,5vw,72px); border-bottom:1px solid rgba(34,48,47,.12);">
+    <a href="/" style="font-family:'Frank Ruhl Libre',serif; font-size:21px; font-weight:700; color:#22302F; text-decoration:none;">עיניים גדולות זה לא טוב</a>
+    <nav style="display:flex; flex-wrap:wrap; gap:22px;">
+      <a href="/" style="color:#445049; text-decoration:none; font-size:15px;">בית</a>
+      <a href="/book" style="color:#445049; text-decoration:none; font-size:15px;">על הספר</a>
+      <a href="/ronit" style="color:#445049; text-decoration:none; font-size:15px;">על רונית</a>
+      <a href="/zoom" style="color:#445049; text-decoration:none; font-size:15px;">קבוצות זום</a>
+      <a href="/materials" style="color:#445049; text-decoration:none; font-size:15px;">חומרי קריאה</a>
+      <a href="/media" style="color:#445049; text-decoration:none; font-size:15px;">תקשורת וביקורות</a>
+      <a href="/contact" style="color:#445049; text-decoration:none; font-size:15px;">צרו קשר</a>
+    </nav>
+  </header>
+
+  <main style="max-width:980px; margin:0 auto; padding:0 clamp(20px,5vw,40px);">
+
+    <div style="text-align:center; padding:clamp(46px,6vw,72px) 8px 4px;">
+      <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600;">על המחברת</div>
+    </div>
+    <h1 style="width:100vw; margin-top:16px; margin-inline:calc(50% - 50vw); background:var(--banner); padding:clamp(32px,4.2vw,58px) clamp(20px,5vw,40px);">
+      <span style="display:block; max-width:24ch; margin:0 auto; text-align:center; font-family:'Frank Ruhl Libre',serif; color:var(--paper); font-weight:400; font-size:clamp(36px,5vw,64px); line-height:1.1;">רונית בלנרו-אדיב</span>
+    </h1>
+    <section style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:44px 0 52px;">
+      <figure style="margin:0;">
+        <img src="assets/ronit.jpg" alt="רונית בלנרו-אדיב" style="width:min(300px,72vw); height:auto; display:block; border:1px solid rgba(34,48,47,.16); box-shadow:0 16px 38px rgba(34,48,47,.18);">
+        <figcaption style="font-family:'Frank Ruhl Libre',serif; font-style:italic; color:#6E7C78; font-size:14px; margin-top:12px;"><br></figcaption>
+      </figure>
+      <div style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(17px,2.2vw,23px); color:#475451; margin-top:26px;">סופרת · פסיכולוגית קלינית · ילדת קיבוץ</div>
+    </section>
+
+    
+
+    <section style="padding:60px 0 40px; border-top:1px solid rgba(34,48,47,.12);">
+      <div style="text-align:center; margin-bottom:8px;">
+        <div style="font-size:13px; letter-spacing:.08em; color:var(--accent); font-weight:600;"><br></div>
+        <h2 style="font-family:var(--head-font); color:var(--head-color); font-weight:900; font-size:clamp(30px,4.4vw,52px); margin:12px 0 0;">בּוֹאִי, אמא</h2>
+      </div>
+      <div style="max-width:64ch; margin:38px auto 0;">
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">ילדיי רצים לפניי. הדרך מאובקת, רגליהם יחפות, עוד מספר צמחי תירס גבוהים ומאחורי הסיבוב תתגלה לעינינו שלולית הבוץ הגדולה. הם מכירים אותה, היא מכירה אותם. השעטה לעברה חגיגית כמעט, כל אחד ריצתו על-פי אורך רגליו, אך כל גופו ועיתותיו מושקעים בה. כשנחזור יהיו בגדיהם ספוגים בוץ ומים, עינייהם יזהרו. אני משתרכת מאחוריהם לאיטי. הם יחפים, אני בסנדלים. לעולם יהיה לי נעים יותר יחפה, אך גם בסנדלים כבר נוח לי. הרוח בפנינו, מרחבי השדות עצומים, האדמה המרגיעה כאן איתי, השמים קרובים, הזמן אינסופי. אני נושמת הכל לתוכי, שקועה ברגע שאינו ממהר לחמוק ולהתפוגג. צעדיי נחים על אדמת דרך העפר החשופה, אני בבית.</p>
+        <div style="text-align:center; color:#8A9692; letter-spacing:1.1em; font-size:18px; margin:30px 0 30px 1.1em;">✻</div>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">ילדוּת שפע. שפע ריחות, אדמה, מרחבים. העיניים אוספות את המראות, בולעות כל שאפשר; הידיים נוגעות, מרגישות; הגוף נמצא, סופג, רושם. התרחשות אינסופית של תגליות קטנות ומפעימות – עולם שאין בו רגע דל. ברגעים - מופלאה. לעתים, באותם רגעים ממש - אסון.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">בוקר-צהריים-ערב-לילה. ושוב בוקר.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">ילדיי גרים בביתם. שהוא ביתי. ממנו הם יוצאים בלכתם, ואליו הם שבים. הם אינם יודעים אחרת. אינם יכולים להעלות בדעתם אחרת. בינקותם, עוד טרם ידעו מי אני, ידעו כי אני כאן, לידם. בלילות הביאה אליהם ייפחתם זרועות מחבקות, שקע צוואר מוכר, מלמולי אמא – ה׳לבד׳ לא הורשה לגעת בם. כשגדלו, טפפו רגליהם בפסיעות-ריצה קטנות למיטתנו, וגוף מבוהל מצא נחמתו בגוף-אם-חם שכמו חיכה שם תמיד. כאן הם פוקחים את עיניהם כשעולה הבוקר, כאן הם עוצמים אותן עם רדת הלילה. כאן הוא ביתם ובו הם גדלים.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">כאן הם פוגשים אותנו, הוריהם. מפגש של בוקר-צהריים-ערב-לילה. ושוב בוקר. כולנו נעים יחד בתוך מעגל רגעים אינסופי של היומיום, של החיים. אנו מכירים אותם, את גופם, את נפשם. הם מכירים אותנו, את גופנו, את נפשנו. בצד נועם הרגעים הטובים נוכחים כל העת רגעי יומיום פשוטים של ריבים על כניסה לאמבטיה, סירוב ללכת לישון, טרוניית "שוב אין מה לאכול" אל מול שולחן עמוס, התארגנות בוקר לחוצה. הם מכירים אותנו על רגעי חוסר-סבלנותנו, עייפותנו, חוסר-פניותנו. הם מכירים אותנו על רגעי התעקשותנו איתם, עימותינו מולם כחלק מדאגתנו להם, מטיפולנו בהם – ׳ביחד׳ שהוא נתון טבעי בהוויה, חלק בלתי-נפרד ממנה. זוהי משפחתם.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">אנחנו, ילדי-הקיבוץ, גרנו בבית-הילדים. עשרים שעות בקבוצה מתוך עשרים-וארבע שעות-היממה. התקיימות חברתית שאינה נגמרת, שאין לאן לנוס מפניה. עשרים שעות בהן קרו חיינו, שעות מנותקות מבית ההורים.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">אנחנו, ילדי-הקיבוץ, נעדרנו מבית ההורים. בית, שכל אחד מאיתנו הגדיר כביתו, קרוב כל-כך, במרחק כמה מאות מטרים בלבד מבית-הילדים. ידענו מי הורינו, הדמויות החשובות ביותר בעולמנו, דמויות נעדרות תחליף. אוהבות כל-כך ואהובות כל-כך. מעולם לא בלבלנו בין המטפלות לבינם. בית הורינו היה ביתנו לכל דבר, רק לא גרנו בו. מהו בית?</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">לא אבא ואמא סירקו את שיערנו אל מול המראה, לא אבא ואמא ידעו איך אנחנו אוהבים לאכול את האורז ולהפריד את האפונה, לא אבא ואמא רחצו את גופנו ופגשו את השריטה האחרונה, שמעו את סיפור התרחשותה וחבשו אותה בשימת-לב.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">אמת, היו הורים שעשו את אלה גם הם בצד המטפלות. אימהות שהתעקשו לבשל, לאפות, למלא בניחוחות טיפול ואהבה את ביתן; אימהות שלבושו של ילדן העסיק אותן; בוודאי היו הורים שטיפחו באהבה את צמות ילדתם וחבשו ברוך את אצבע ילדם. ייתכן, כי דווקא אלה מאיתנו שזכו להורים שעשו כל זאת, שלא שעו לכללים כלשונם, הורים שחוו עצמם כהורים במלוא מובן המילה ואף פעלו לא פעם בניגוד למקובל – זכו באופן לא מדובר בתיקוף סדרי-העולם המתוקנים.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">ובצד כל זאת, אותם הורים ממש, השיבו אותנו ערב-ערב אל בית-הילדים, בחרו בהסכמה למסור את אותן זירות הוריות שכדרך-הטבע שייכות להם – לידיים אחרות. ויתרו על מפגשים קטנים ויומיומיים, שלכאורה ׳אינם-נחשבים׳, מפגשים שהם-הם כל עולמו של ילדם, שהם-הם משמע לגדל.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">רוצה אני להאמין, כי רובנו זכינו בהורים בריאים-דיים בנפשם, ובמטפלות בריאות-דיין בנפשן. רוצה אני להאמין, כי ידי המטפלות שנגעו בפיסות נפשנו, היו מיטיבות ורכות בעיקרן, וכי ידענו כי אנו אהובים על-ידי הורינו. אך אני גם זוכרת – לא אחד ולא שניים מאיתנו – מתגעגעים. כמהים. רוצים כל-כך. הביתה. לאבא ואמא. לא תמיד בקול רם, לא תמיד במילים. לעתים במצוקה אחרת שלא הובנה נכונה, לעתים בבדידות, בשקט.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">השפע היה סביבנו. במובנים כה רבים היינו מרכז עולמם של המבוגרים. כיצד, אם כן, יכלו אלה בינינו שנשאו בתוכם תחושה חסרת-שם ש׳משהו חסר׳, להסביר זאת לעצמם? אם יש כל-כך הרבה, איך זה עדיין מרגיש חסר?</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">כל-כך רוצה שאבא יישאר איתי עוד קצת בהַשְׁכָּבָה, למה הוא לא נשאר? כל-כך רוצה שאמא תסרק אותי, תלטף את לחיי בלא-משים, מדוע לא היא המסרקת אותי? כל כך רוצה להישאר איתם ללילה ולהתעורר איתם בבוקר, למה הם לא לוקחים אותי אליהם? כל-כך רוצה פשוט לשבת עם אמא, להניח את הראש על ברכיה. לא אפריע. רק אנוח. מדנה, מיותם, מיפתח. מעמליה. מהבֶּיתֶלָדִים. אל תחזירו אותי ברבע לשמונה. למה אי-אפשר?</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">בתוך האינטימיות הכפויה והאינטנסיבית בבית-הילדים, הדינמיקות החברתיות האינסופיות ופעמים רבות אף הבדידות, נזקקנו נואשות למקום כזה, של אהבת הורה ללא תנאי, מקבלת, מגוננת, יותר מארבע שעות ביום. אין ספק, כי העדרם של הורינו כדמויות המרכזיות המגדלות אותנו, גבה מחירים והותיר את חותמו. היום אני יודעת, כי לא-מעטים מאיתנו חוו בצורה כלשהי, מודעת יותר או מודעת פחות, את שפע ה׳יש׳ ואת תהום ה׳אין׳. ובעיקר – את הפער הבלתי-נסבל שביניהם.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">היום אני יודעת – ילדים אמורים לגדול עם הוריהם.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">גרנו, לכאורה, עם הורינו, ראינו אותם יום-יום. ההורים תפסו עצמם כהורים, וכך תפסנו אותם גם אנו, הילדים. עובדת גידולנו בידי ידיים אחרות לא נקראה בשם, לא דוברה. הפער בין מעמדם ה׳רשמי׳ של ההורים, לבין העובדה כי חיינו התקיימו עשרים שעות בנתק כמעט מוחלט מהם; הפער בין דרך-הטבע בה יודע ילד כי הוריו בוחרים בו ובגידולו לבין בחירת והסכמת הורינו להפקיע מידיהם את תפקידיהם ההוריים – כל אלה נשתתקו.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">היום אני יודעת – לגדול עם הורייך זהו סדר-עולם מתוקן. מציאות שאינה כזו משמעה הפרת סדרי-עולם, גם כשנעשה הדבר מתוך אהבה.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">כשברחנו הביתה נחשבנו ׳בעייתיים׳. אלה בינינו שמיאנו להירגע בזרועות המטפלות, שלא פסקו מלבקש את הוריהם, נחשבו ׳בעייתיים׳. להתבונן דרך התריסים ולקוות שאבא יסתובב – נחשב מבייש. הצצנו בסתר, קיווינו בדממה. לבד. לא ניתן היה לטעות או להתבלבל במסר שחי בינינו כאקסיומה נוחה שאין כל צורך לשאול עליה – הדבר הנכון הוא להתאים לקבוצה, לכלל, למציאות שהוגשה לנו ושלא הכרנו מלבדה. ואכן, לא התבלבלנו. וגם לא המבוגרים סביבנו, דרכם הפך דבר שאינו טבעי למציאות חיינו.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">איני יכולה לדמיין עצמי מוותרת על ילדותי הזו בקיבוץ, אך את ילדיי לא אעביר אותה. זכיתי לדברים מפעימים, להווייה קיומית של חיבור למרחבי הטבע, של תחושת בית עת יכולה אני לחוש את האדמה תחת רגליי היחפות, את הצמחים, השמיים, החיים האחרים הרוחשים סביבי. דרכה זכיתי לתחושת שייכות לקולקטיב, שמעיניי ילדה, היה לא פחות מאדיר-עוצמה ומלא הוד.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">ובצד אלה, היתה שם תמיד, עיקשת מאין-כמותה, אינה מוותרת, אינה מתרצה – מחשבה דקיקה, חמקמקה, לא ידועה כמעט, כי משהו חסר. חיפוש אחר דבר חסר-שם. ערגה.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">ילדות מופלאה ואיומה כאחד.</p>
+        <div style="text-align:center; color:#8A9692; letter-spacing:1.1em; font-size:18px; margin:30px 0 30px 1.1em;">✻</div>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">השמש כבר שוקעת. מעל מרחבי השדות רמיזות צבע עדינות של כתום חיוור, שיילך ויגבר לורוד המוכר. זו השעה לחזור. הבגדים אכן מבוצבצים, וכך גם כפות הידיים והרגליים היחפות. מרחוק, לקראתנו בשביל, שתי דמויות קטנות. בני הוא הראשון לזהותן ולפתוח לעברן בריצה מהירה. בנותיי אינן מאחרות אחריו, הקטנה, כתם צבע ורוד-עז של שמלתה המתנופפת, מנסה נואשות להדביק ברגליה הקצרות את אחותה. עוד שניות מעטות, ייקלטו אותם הזרועות הפרושות לקראתם – סבא וסבתא הגיעו.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">עיניי הוריי זורחות לקראת נכדיהם. כשאני קרבה, מתרחב חיוכם, באופן השמור רק לי. הם יודעים את מסלולנו בשדות, יודעים היכן למצוא אותנו. מגיעים כל שבוע באדיקות, במסירות, בהנאה פשוטה. ילדיי כבר בשטף מילים אינסופי, תובעים את מקומם מהסבים. אני זוכה לחיבוק, חיוך, עיניים שמחות וחמות.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">איך לוקחים הורות שאינספור מרגעיה בעבר הם רגעי-זרות, ומאמצים אותה על אהבתה האינסופית? לכל ילד חלקים שאינם ידועים להוריו; כל הורה נותר בהיבטים מסוימים לא-ידוע לילדו. דומני, כי בינינו, ילדי-הקיבוץ, ובין הורינו, נחים ורוחשים חלקים רבים שאינם רק לא-ידועים ותו-לא, אלא מעבר לכך – חלקים זרים. כיצד כיום, בבגרות, מפייסים זרות שכזו, מכירים אלה את אלה, מתקרבים?</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">התיקון, ההתקרבות, תנועתם חמקמקה. יש שהם מצריכים את כניעתן האיטית של האבנים לתנועת-מים שקטה וכמעט בלתי-מורגשת, לעתים מגושמת, של ילד והורים המנסים להתקרב מחדש. התיקון וההתקרבות יודעים רגעי פיוס וסליחה בצד רגעי אבדן ועלבון נושן. ושם אנו נעים.</p>
+        <p style="font-family:'Frank Ruhl Libre',serif; font-size:19px; line-height:2.1; color:#2E3A38; margin:0 0 22px; text-wrap:pretty;">את התיקון וההתקרבות שנפלו בחלקי עוטפת ידיעתי כי הוריי אוהבים אותי אין-קץ. ובתוך כל אלה, בתוך בְּלִיל החיים, נעטפת קריאת הילדה המבקשת את אִמָּהּ כדי להפיג את החושך, ברוך חדש. זהו רוך של הושטת-יד. הזמנה ליחד. תיקון.</p>
+        <div style="text-align:center; margin-top:14px;">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-weight:500; font-size:clamp(21px,2.6vw,28px); line-height:1.5; color:#27383B; margin:0 0 8px;">בּוֹאִי, אִמָּא. בּוֹאִי, אִמָּא.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-weight:500; font-size:clamp(21px,2.6vw,28px); line-height:1.5; color:#27383B; margin:0 0 8px;">בּוֹאִי שְׁבִי אִתִּי מְעַט.</p>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:60px 0; border-top:1px solid rgba(34,48,47,.12);">
+      <div style="max-width:68ch; margin:0 auto;">
+        <div style="font-size:13px; letter-spacing:.08em; color:var(--accent); font-weight:600; text-align:center;">על המחברת</div>
+        
+        <p style="font-size: 18px; line-height: 2.05; color: #414B48; margin: 24px 0 24px; width: 800px; position: relative; left: 150px">רונית בלנרו-אדיב היא פסיכולוגית קלינית עם התמחות בטיפול בילדים וניסיון ייחודי בטיפול בילדים שהוצאו מביתם והושמו במסגרות טיפול-פנימייתי. נולדה בשנות ה-70 בקיבוץ השומר הצעיר והתחנכה בבית ילדים בלינה המשותפת ובמוסד החינוכי עד יציאתה לצבא.</p><p style="font-size: 18px; line-height: 2.05; color: #414B48; margin: 0 0 24px; width: 800px; position: relative; left: 150px">נשואה ואם לארבעה, מזה שתים עשרה שנים מתגוררת בניו זילנד. בשנת 2016 ראה אור בהוצאת רסלינג הספר ״חיבוק חזק ולא כואב – הטיפול ה׳טוב דיו׳ בילדים המוצאים מביתם״, שכתבה עם ורד ביבי ותניה אורן-צייפמן כחלק מעבודה רבת-שנים בטיפול הפנימייתי.</p>
+        <p style="font-size: 18px; line-height: 2.05; color: #414B48; margin: 0; width: 800px; position: relative; left: 150px">״עיניים גדולות זה לא טוב״ הוא הרומן הראשון פרי עטה.</p>
+      </div>
+    </section>
+
+    <section style="padding:64px 0 8px; border-top:1px solid rgba(34,48,47,.12);">
+      <div style="text-align:center; margin-bottom:6px;">
+        <div style="font-size:13px; letter-spacing:.08em; color:var(--accent); font-weight:600;">תודות</div>
+        <h2 style="font-family:var(--head-font); color:var(--head-color); font-weight:900; font-size:clamp(28px,4vw,46px); margin:12px 0 0;">״אנשים טובים באמצע הדרך״</h2>
+      </div>
+
+      <!-- editor -->
+      <div style="max-width:62ch; margin:46px auto 0;">
+        <div style="text-align:center;">
+          <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(21px,2.6vw,27px);">לְוֶרֶד זינגר, עורכת הספר</div>
+          <div style="font-family:'Frank Ruhl Libre',serif; font-style:italic; color:#6E7C78; font-size:14px; margin-top:8px;">מתוך מכתב לעורך הראשי של הוצאת מטר · אפריל 2025</div>
+        </div>
+        <div style="margin-top:30px; background:#F3F5F1; border:1px solid rgba(34,48,47,.12); border-inline-start:3px solid var(--accent); border-radius:3px; padding:clamp(28px,4vw,44px) clamp(24px,4vw,46px);">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">היי בן,</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">אני מקווה ששלומך בטוב! עכשיו, כשכתב היד חוזר אליך אחרי שלושה חודשים וחצי של עבודה עם ורד, רציתי לשתף אותך בעומק התודה שלי.</p>
+          <p style="font-family: Frank Ruhl Libre; font-size: 18px; line-height: 2.05; color: #2E3A38; margin: 0 0 20px; text-wrap: pretty">לא יכולתי לבקש ״דלת״ מיטיבה יותר להיכנס בעדה לתהליך מיוחד וחד-פעמי ככתיבת ספר ראשון. אני מניחה שכל עבודה משותפת על כתב יד היא רגישה ומשמעותית, אבל נדמה לי שהפעם הראשונה עשויה להיות אפילו יותר, ולהשפיע על המשך דרכו של הכותב בעבודה עם עורכים והוצאות בעתיד. יש בי תודה עמוקה על כך שנכנסתי לעולם הזה כש<span style="color: rgb(47, 82, 72); font-family: Frank Ruhl Libre; font-size: 18px; font-weight: 700; text-align: center; background-color: rgb(250, 248, 244)"><span style="font-weight: normal;">וֶרֶד</span></span>&nbsp;היא המכניסה אותי בשעריו.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">ברגישות וברוב מחשבה, בלי להתפשר לרגע על מקצועיות, ורד התמקמה לעיתים לפניי, מתווה דרך; לעיתים מאחוריי, נוכחות שקטה שמאפשרת לי להוביל; מעליי, מסוככת ומאמינה; וכל הזמן לצידי — צוות. בישירות שכולה כבוד — כבוד למקצועהּ, כבוד לעבודתנו המשותפת, כבוד ליצירה — יכולתי לסמוך עליה שהספר מקבל את מה שדרוש לו, ביסודיות ובלי קיצורי דרך.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">וכשאני אומרת ״כבוד״, כוונתי לכבוד במובן העמוק שלו. ורד השכילה, כנראה גם בזכות ניסיונה אבל הרבה בזכות מי שהיא, לרקוד על הקו העדין של עורכת שרואה דברים שהכותבת עדיין לא יכולה לראות. היא ידעה לזרוע את הזרעים, להגיש לי את הרעיונות, להציע לי מהידע השופע שבאמתחתהּ — ומשם לתת לי להבין לבד, בקצב שלי, ולסמוך עליי. בהתמקמות שכזו אפשרה לי ורד לגדול מבפנים, להרגיש שהדברים באים ממני, שהם שלי ומתוכי — על אף שלא יכלו לבוא מתוכי בלעדיה.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">ורד העניקה לי מראה מדויקת, אבל עוד הרבה יותר מכך. היא הייתה מושקעת בספר כל כולה, עד הסוף, בלהט אמיתי ובאכפתיות כנה. בוודאי שהיו לה עוד דברים ומחויבויות אחרות, ואני עדיין הרגשתי תמיד שהספר, ואני, מקבלים את מלוא תשומת ליבה.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">כמי ששלחה כתב יד בלי שמץ של מושג אם הוא טוב וראוי, אני מבינה היום כמה מושקעוּת של עורכת יכולה בקלות גם להגדיל ספקות ולרפות ידיים. ורד הציבה בפניי מראה שהספר ראוי, שהעבודה עליו משמחת, שהוא מביא טוב. איזו דרך מופלאה להתרגש, לא לפחד להתלהב, לחגוג תהליך יצירה!</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">אז התודה שרציתי לשתף אותך בה היא תודה על כך שזו החוויה דרכה זכיתי להיכנס לעשייה הראשונה שלי, בזכות ורד. אני מניחה שלרבים יש חוויה טובה בספר הראשון, ועדיין — אני מסתכלת על כך בהשתאות ובפליאה, ומרגישה בת מזל.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0; text-wrap:pretty;">אני יודעת שכבר אמרתי את זה בעבר, אבל התודה שלי אליך על שהספר קיבל ב״מטר״ הזדמנות — כנראה תוסיף ותגדל בזכות האנשים שמרכיבים את ההזדמנות הזאת.</p>
+          <div style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:20px; color:#27383B; margin-top:24px;">רונית</div>
+        </div>
+      </div>
+
+      <div style="text-align:center; color:#8A9692; letter-spacing:1.1em; font-size:18px; margin:52px 0; padding-inline-start:1.1em;">✻</div>
+
+      <!-- illustrator -->
+      <div style="max-width:64ch; margin:0 auto;">
+        <div style="text-align:center;">
+          <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(21px,2.6vw,27px);">לשרון רשב״ם פרופ, שהעניקה לספר פנים</div>
+          <div style="font-family:'Frank Ruhl Libre',serif; font-style:italic; color:#6E7C78; font-size:14px; margin-top:8px;"><br></div>
+        </div>
+        <div style="margin-top:34px;">
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">הבנתי שהספר הוא ׳ספר׳ כשהגיעה ההזמנה מההוצאה להתחיל לעבוד על הכריכה. רגע לפני שהוא נמלא בהתרגשות, הלב חיסר פעימה… הספר באמת יקבל עכשיו פנים? …אצליח להעניק לו את הפנים שהן באמת שלו?</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">לא ידעתי איך תיראה הכריכה, וידעתי בדיוק איך תיראה הכריכה. אבל בעיקר — לא היה לי מושג איך למצוא את האנשים שיובילו את הדרך בה רעיון ילבש צורה.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">חברה טובה, בית קפה, ואני ששופכת את מצוקתי — זה כל מה שנדרש. ״יש לי!״, היא הכריזה ודהרה קדימה. בַּמִּיָּדִיּוּת של עידן חיינו, דקה לאחר מכן כבר גללתי נרגשת בקבוצת פייסבוק של החברה, בין עושר ציורים שהרגישו כמו בית. מצאתי.</p>
+          <ul style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:1.9; color:#2E3A38; margin:0 0 20px; padding-inline-start:1.2em; list-style:none;">
+            <li style="margin:0 0 8px; text-wrap:pretty;"><span style="color:var(--accent);">—</span>&nbsp; קבוצת הפייסבוק: אפשר להוציא את הבחורה מהקיבוץ (אבל בינינו, אי אפשר להוציא את הקיבוץ מהבחורה).</li>
+            <li style="margin:0 0 8px; text-wrap:pretty;"><span style="color:var(--accent);">—</span>&nbsp; הציירת: שרון רשב״ם פרופ, ילדת קיבוץ בעצמה.</li>
+            <li style="margin:0; text-wrap:pretty;"><span style="color:var(--accent);">—</span>&nbsp; הציורים: בדיוק מה שראיתי בעיני רוחי, פני הספר שלי.</li>
+          </ul>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">אין לי פייסבוק. לא מכירה ולא מבינה את הקונספט. הסתדרתי כך מצוין עד עתה, אבל עכשיו זה נעשה דחוף — איך אני מגיעה אל שרון?</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">אין לי פייסבוק, משמע אין לי שמץ ניסיון בכתיבת תגובות או כל דבר דומה — אבל כאן, כפי שאמרנו, זה נעשה דחוף… בסבל, חירבשתי הסבר מגומגם שנכתב ונמחק שלושים פעם, ושלחתי לחמי על פני המים.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">ללחמים שאני שולחת לארץ נדרשת סבלנות, עד ששעוני — שעון ניו-זילנד — יחפוף במעט עם שעון הארץ. כשזינקתי מהמיטה בבוקר, חיכתה ההודעה. שרון ענתה. כן, היא תשמח לדבר ולשמוע עוד.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">מעט לפני השיחה שקבענו, שלחתי לה את טקסט גב הכריכה, כדי שנהיה שתינו באותו עמוד — תרתי משמע. שרון ענתה: ״תקראי רגע״, ושלחה טקסט שנפתח כך:</p>
+          <blockquote style="margin:0 0 20px; padding:22px clamp(20px,3vw,32px); background:#EEF3EF; border-inline-start:3px solid var(--banner); border-radius:3px;">
+            <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:18px; line-height:1.95; color:#27383B; margin:0; text-wrap:pretty;">״אוכל בקיבוץ. מטפלת אחת קראה לי גרגרנית. אחרת אמרה שיש לי עיניים גדולות, וכשהייתי יושבת לארוחה עם כל ילדי הגן, היא היתה תופסת את מקומה לצידי, כל עולמה מרוכז בצלחת שלי. ׳חזירה׳, היא היתה לוחשת לי. ׳עיניים גדולות׳. ואני הייתי מתבלבלת. חזירה זו מילה לא יפה. אבל עיניים גדולות זה טוב, לא?״…</p>
+          </blockquote>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">הביטוי ״עיני עגל״ קטן ליד מידות העיניים שפתחתי. מה? מי..? יש עוד עיניים גדולות?</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">שרון אמנית. רגעי הילדות בקיבוץ לא נותרו בקווי ציוריה בלבד — הם זכו גם למילים. לדפים. לספרים. לא יכולתי לבקש מובילת דרך טובה יותר עבור פני הספר שלי.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">השיחות עם שרון גילו שֻׁתָּפָה אינטליגנטית, חריפה, נושאת נאמנות עמוקה לזהותה-היא ולזהות אמנותה, ועם הבנה שעל הספר להיות נאמן לזהותו-הוא. שרון הפשילה שרוולים והתחילה לייצר את הקסם.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">אני יכולה לומר, וגם אומרת, שהציורים של שרון לוכדים אותי בכל אספקט אמנותי — הקווים, החומרים, הצבעים, התוכן, ובטח עוד מלא היבטים שאין לי מושג בהם. אבל לא זה הדבר שבעטיו אני מלאת תודה על שנפגשו דרכינו לצורך הכריכה.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0 0 20px; text-wrap:pretty;">שרון מציירת כמו מי שהיה שם. לא אפרק את מה ש׳עושה את זה׳. זה פשוט זה. שרון לא מציירת בֶּיתֶלָדִים — הבֶּיתֶלָדִים מצייר את עצמו דרכה. את הציורים שלה על הקיבוץ לא יוכל לצייר מי שלא היה שם, גם אם יהיה המוכשר בציירים ויקבל הנחיות מדוקדקות של עובי הפס והזווית.</p>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:2.05; color:#2E3A38; margin:0; text-wrap:pretty;">ידעתי שלא אכזבתי את הספר שלי. שעכשיו הוא באמת יכול לקבל פנים. שהצלחנו לתת לו את הפנים הנכונות לו.</p>
+          <div style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:20px; color:#27383B; margin-top:24px;">בתודה עמוקה לך, שרון.</div>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:#E6EEEA; border-radius:3px; padding:50px clamp(28px,5vw,60px); margin-bottom:34px; text-align:center;">
+      <h2 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(24px,3vw,34px); margin:0;">מילה אישית</h2>
+      <p style="max-width:56ch; margin:18px auto 0; font-size:17px; line-height:1.95; color:#414B48;">אם הספר נגע בכם, אם הוא עורר זיכרון או שאלה — אשמח לשמוע. הדלת פתוחה, וכל סיפור שמגיע אליי הופך לחלק מהמסע המשותף הזה.</p>
+      <a href="/contact" style="display:inline-block; margin-top:26px; background:var(--accent); color:#F4F8F4; padding:14px 32px; border-radius:2px; font-size:16px; font-weight:600; text-decoration:none;">כתבו לי</a>
+    </section>
+
+  </main>
+
+  <footer style="max-width:980px; margin:0 auto; padding:34px clamp(20px,5vw,40px); display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between; border-top:1px solid rgba(34,48,47,.12);">
+    <div>
+      <div style="font-family:'Frank Ruhl Libre',serif; font-weight:700; font-size:18px;">עיניים גדולות זה לא טוב</div>
+      <div style="font-size:14px; color:#6E7C78; margin-top:4px;">הבית הדיגיטלי של הספר ושל הקהילה סביבו.</div>
+    </div>
+    <div style="display:flex; gap:20px; align-items:center;">
+      <a href="https://www.facebook.com/profile.php?id=61585440045934" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none; font-weight:600; font-size:15px;">עקבו אחרינו בפייסבוק</a>
+      <a href="/visual-identity" style="font-size:13px; color:#8A9692; text-decoration:none; border-bottom:1px solid rgba(34,48,47,.18); padding-bottom:1px;">שפה חזותית</a>
+      <span style="font-size:13px; color:#8A9692;">© 2026 רונית בלנרו-אדיב · בהוצאת מטר</span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;showGrain&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;מראה&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      grain: this.props.showGrain !== false,
+    };
+  }
+}
+</script>
+</body>
+</html>
