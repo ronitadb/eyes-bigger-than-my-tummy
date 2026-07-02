@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&amp;family=Assistant:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    img{max-width:100%;display:block;}
+  </style>
+</helmet>
+
+<div lang="he" dir="rtl" style="--accent:#3D7468; --paper:#FAF8F4; --head-font:'Assistant',sans-serif; --head-color:#2F5248; background:#FAF8F4; min-height:100vh; font-family:'Assistant',-apple-system,sans-serif; color:#22302F; -webkit-font-smoothing:antialiased;">
+
+  <header style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:24px clamp(20px,5vw,72px); border-bottom:1px solid rgba(34,48,47,.12);">
+    <a href="/" style="font-family:'Assistant',sans-serif; font-size:22px; font-weight:700; color:var(--accent); letter-spacing:.005em; text-decoration:none;">עיניים גדולות זה לא טוב</a>
+    <a href="/" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">חזרה לדף הבית</a>
+  </header>
+
+  <main style="max-width:640px; margin:0 auto; padding:clamp(70px,12vw,140px) clamp(20px,5vw,40px); text-align:center;">
+    <img src="assets/yael.jpg" alt="" style="width:150px; height:auto; border-radius:6px; margin:0 auto;">
+    <h1 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(28px,4vw,38px); margin:28px 0 0;">יעל</h1>
+    <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:18px; line-height:1.9; color:#6E7C78; margin:22px auto 0; max-width:40ch;">אהבה זה כל הסיפור</p>
+  </main>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

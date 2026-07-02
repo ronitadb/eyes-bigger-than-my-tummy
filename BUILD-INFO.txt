@@ -1,3 +1,10 @@
-BUILD 2026-07-02T00:00:00.000Z
-pages: index.html, book.html, ronit.html, zoom.html, materials.html, media.html, contact.html, visual-identity.html
-assets (24): beityeladim-children.png, beityeladim-diningroom.png, beityeladim-nosheochel.png, beityeladim-room.png, beityeladim-shelf.png, beityeladim-showers.png, beityeladim-silkworms.png, book-cover.jpg, chalk-green.png, cover-art.jpg, image-slot.js, nature-corner.png, reading-corner.png, ronit.jpg, sharon-ink.png, sharon-mother.png, sharon-sewage.png, sharon-swing.png, sharon-tricycle.png, title-handwriting.png, vered-1.png, vered-2.png, vered-3.png, vered-4.png, vered-5.png
+BUILD 2026-07-03T00:00:00.000Z
+pages: index.html, book.html, ronit.html, zoom.html, materials.html, media.html, contact.html, visual-identity.html, yael.html
+assets (26): beityeladim-children.png, beityeladim-diningroom.png, beityeladim-nosheochel.png, beityeladim-room.png, beityeladim-shelf.png, beityeladim-showers.png, beityeladim-silkworms.png, book-cover.jpg, chalk-green.png, cover-art.jpg, image-slot.js, nature-corner.png, reading-corner.png, ronit.jpg, sharon-ink.png, sharon-mother.png, sharon-sewage.png, sharon-swing.png, sharon-tricycle.png, title-handwriting.png, vered-1.png, vered-2.png, vered-3.png, vered-4.png, vered-5.png, yael.jpg
+
+Changes since last build (2026-07-02):
+- Fixed duplicate "מיכל" name label in the bathroom-shelf illustration (beityeladim-shelf.png)
+- Color-matched all beityeladim-*.png illustrations to the tone of beityeladim-room.png (color transfer: mean/std match per channel)
+- Added new "Yael" personal-note component: small photo + caption ("אהבה זה כל הסיפור") in the header, linking to new /yael page
+- Reworked top nav: site title + links grouped together, Yael note pushed to the far end with a divider and extra spacing
+- New page: yael.html (quiet placeholder page)
