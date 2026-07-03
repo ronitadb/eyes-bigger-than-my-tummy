@@ -13,3 +13,4 @@ Changes since last build (2026-07-03, later same day):
 - ronit.html: replaced the illustration below the banner with a new one, beityeladim-doorstep.png (children on the doorstep)
 - ronit.html: color-matched beityeladim-doorstep.png's tone to the rest of the beityeladim-*.png illustrations (mean/std match per channel against beityeladim-room.png) — page's own color tokens (accent, banner, text, borders) reverted to the site's original green/teal, unchanged from before
 - index.html: small manual edits made directly in the design tool
+- yael.html: removed site title from header, added a personal letter as the page's main text, moved "back to home" link to the bottom (plain text link, no button), replaced the placeholder photo with two new photos (yael-kiss-1.jpg, yael-kiss-2.jpg) shown side by side below the letter, cropped/positioned to match framing, with a slight saturation/contrast boost on yael-kiss-2.jpg to balance the two photos' color
