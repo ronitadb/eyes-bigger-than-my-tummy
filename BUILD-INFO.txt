@@ -1,5 +1,6 @@
-BUILD 2026-07-03T01:00:00.000Z
-pages: index.html, book.html, ronit.html, zoom.html, materials.html, media.html, contact.html, visual-identity.html, yael.html
+BUILD 2026-07-03T02:00:00.000Z
+pages: index.html, book.html, ronit.html, zoom.html, materials.html, media.html, contact.html, yael.html
+(visual-identity.html removed from dist — internal reference doc only, no longer linked or published)
 assets (27): beityeladim-children.png, beityeladim-diningroom.png, beityeladim-doorstep.png, beityeladim-nosheochel.png, beityeladim-room.png, beityeladim-shelf.png, beityeladim-showers.png, beityeladim-silkworms.png, book-cover.jpg, chalk-green.png, cover-art.jpg, image-slot.js, nature-corner.png, reading-corner.png, ronit.jpg, sharon-ink.png, sharon-mother.png, sharon-sewage.png, sharon-swing.png, sharon-tricycle.png, title-handwriting.png, vered-1.png, vered-2.png, vered-3.png, vered-4.png, vered-5.png, yael.jpg
 
 Changes since last build (2026-07-02):
@@ -18,3 +19,5 @@ Changes since last build (2026-07-03, later same day):
 - zoom.html: split the old bottom card (which mixed meeting details with placeholder Facebook/website links copied from flyer text) into two cards — "פרטי המפגשים" (unchanged meeting details) and a new "הצטרפות למפגש הבא" card with a working name+email signup form
 - New API route: dist/api/zoom-join.js — Vercel serverless function, POSTs to Brevo (same account as /api/subscribe), adds the contact to a dedicated Zoom-meetings list (BREVO_ZOOM_LIST_ID or BREVO_ZOOM_LIST_NAME env var, defaults to list named "מפגשי זום"); requires BREVO_API_KEY (already set for subscribe.js)
 - Decision (per user request): did NOT add a list of upcoming meeting topics to the website — Facebook stays the single source for the topics list; the website only offers email signup for the next meeting, to avoid maintaining the same info in two places
+- Removed "שפה חזותית" (visual identity reference doc) from public access: dropped the footer link from every page and removed visual-identity.html from dist entirely. `Visual Identity.dc.html` stays in the project root as an internal build reference only — not part of the deployed site.
+- index.html footer: font of the site-title line unified to match "עקבו אחרינו בפייסבוק" (now Assistant instead of Frank Ruhl Libre); small direct copy edit to the tagline beneath it
