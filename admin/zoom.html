@@ -176,10 +176,10 @@
     <h2 id="tplTitle">עריכת תבנית</h2>
     <input type="hidden" id="tplId">
     <div class="field"><label>נושא</label><input type="text" id="tplSubject"></div>
-    <div class="field"><label>תוכן (HTML)</label><textarea id="tplBody" style="min-height:300px;font-family:monospace;font-size:13px;direction:ltr;text-align:left"></textarea></div>
+    <div class="field"><label>תוכן ההודעה</label><textarea id="tplBody" style="min-height:300px;font-size:16px;line-height:1.7;direction:rtl;text-align:right"></textarea></div>
     <p style="font-size:12px;color:#8A9692;margin-top:4px">
-      משתנים זמינים: <code>{{name}}</code> <code>{{title}}</code> <code>{{date}}</code> <code>{{time}}</code> <code>{{zoom_link}}</code> <code>{{unsubscribe_url}}</code> <code>{{materials}}</code>
-      <br>בלוקים: <code>{{zoom_link_html}}</code> <code>{{description_html}}</code> <code>{{materials_html}}</code>
+      משתנים זמינים: <code>{{name}}</code> שם המשתתף/ת · <code>{{title}}</code> שם המפגש · <code>{{date}}</code> תאריך · <code>{{time}}</code> שעה · <code>{{zoom_link}}</code> קישור · <code>{{materials}}</code> חומרים
+      <br>פרטי המפגש (תאריך, שעה, קישור) וקישור ההסרה מתווספים אוטומטית — אין צורך לכלול אותם בגוף ההודעה.
     </p>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeTemplateModal()">ביטול</button>

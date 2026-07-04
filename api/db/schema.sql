@@ -46,79 +46,43 @@ CREATE TABLE IF NOT EXISTS email_logs (
   error           TEXT
 );
 
--- Seed default email templates (skip if already exist)
+-- Seed default email templates with plain text bodies (skip if already exist)
+-- The system wraps these in styled HTML automatically when sending.
 
 INSERT INTO email_templates (template_type, subject, body)
 VALUES (
   'join_confirmation',
   'ברוכים הבאים למפגשי הזום — עיניים גדולות זה לא טוב',
-  '<!DOCTYPE html>
-<html dir="rtl" lang="he">
-<head><meta charset="utf-8"></head>
-<body style="font-family: -apple-system, sans-serif; color: #22302F; background: #FAF8F4; margin: 0; padding: 40px 20px;">
-  <div style="max-width: 520px; margin: 0 auto;">
-    <div style="font-size: 20px; font-weight: 700; color: #3D7468; margin-bottom: 24px;">עיניים גדולות זה לא טוב</div>
-    <p style="font-size: 17px; line-height: 1.8; margin: 0 0 16px;">שלום {{name}},</p>
-    <p style="font-size: 17px; line-height: 1.8; margin: 0 0 24px;">תודה שהצטרפת לרשימת מפגשי הזום. שמחה שאת/ה איתנו.</p>
-    <p style="font-size: 17px; line-height: 1.8; margin: 0 0 24px;">נעדכן אותך לקראת כל מפגש עם פרטים, נושא וקישור.</p>
-    <p style="font-size: 15px; line-height: 1.7; color: #6E7C78; margin: 0;">בחום,<br>רונית</p>
-    <div style="margin-top: 40px; padding-top: 16px; border-top: 1px solid rgba(34,48,47,.12); font-size: 13px; color: #8A9692;">
-      <a href="{{unsubscribe_url}}" style="color: #8A9692;">להסרה מרשימת התפוצה</a>
-    </div>
-  </div>
-</body>
-</html>'
+  'שלום {{name}},
+
+תודה שהצטרפת לרשימת מפגשי הזום. שמחה שאת/ה איתנו.
+
+נעדכן אותך לקראת כל מפגש עם פרטים, נושא וקישור.
+
+בחום,
+רונית'
 ) ON CONFLICT (template_type) DO NOTHING;
 
 INSERT INTO email_templates (template_type, subject, body)
 VALUES (
   'meeting_reminder',
   'מפגש זום בקרוב — {{title}}',
-  '<!DOCTYPE html>
-<html dir="rtl" lang="he">
-<head><meta charset="utf-8"></head>
-<body style="font-family: -apple-system, sans-serif; color: #22302F; background: #FAF8F4; margin: 0; padding: 40px 20px;">
-  <div style="max-width: 520px; margin: 0 auto;">
-    <div style="font-size: 20px; font-weight: 700; color: #3D7468; margin-bottom: 24px;">עיניים גדולות זה לא טוב</div>
-    <p style="font-size: 17px; line-height: 1.8; margin: 0 0 16px;">שלום {{name}},</p>
-    <p style="font-size: 17px; line-height: 1.8; margin: 0 0 24px;">תזכורת קטנה — המפגש הבא שלנו מתקרב.</p>
-    <div style="background: #EEF3EF; border: 1px solid rgba(34,48,47,.12); border-radius: 4px; padding: 24px; margin-bottom: 24px;">
-      <div style="font-weight: 700; font-size: 18px; color: #2F5248; margin-bottom: 14px;">{{title}}</div>
-      <div style="font-size: 16px; line-height: 1.7; color: #3A4744;">
-        <div>📅 {{date}}</div>
-        <div>🕐 {{time}}</div>
-        {{zoom_link_html}}
-      </div>
-      {{description_html}}
-      {{materials_html}}
-    </div>
-    <p style="font-size: 15px; line-height: 1.7; color: #6E7C78; margin: 0;">נתראה,<br>רונית</p>
-    <div style="margin-top: 40px; padding-top: 16px; border-top: 1px solid rgba(34,48,47,.12); font-size: 13px; color: #8A9692;">
-      <a href="{{unsubscribe_url}}" style="color: #8A9692;">להסרה מרשימת התפוצה</a>
-    </div>
-  </div>
-</body>
-</html>'
+  'שלום {{name}},
+
+תזכורת קטנה — המפגש הבא שלנו מתקרב.
+
+נתראה,
+רונית'
 ) ON CONFLICT (template_type) DO NOTHING;
 
 INSERT INTO email_templates (template_type, subject, body)
 VALUES (
   'meeting_followup',
   'אחרי המפגש — {{title}}',
-  '<!DOCTYPE html>
-<html dir="rtl" lang="he">
-<head><meta charset="utf-8"></head>
-<body style="font-family: -apple-system, sans-serif; color: #22302F; background: #FAF8F4; margin: 0; padding: 40px 20px;">
-  <div style="max-width: 520px; margin: 0 auto;">
-    <div style="font-size: 20px; font-weight: 700; color: #3D7468; margin-bottom: 24px;">עיניים גדולות זה לא טוב</div>
-    <p style="font-size: 17px; line-height: 1.8; margin: 0 0 16px;">שלום {{name}},</p>
-    <p style="font-size: 17px; line-height: 1.8; margin: 0 0 24px;">תודה למי שהיה איתנו במפגש ״{{title}}״.</p>
-    {{materials_html}}
-    <p style="font-size: 15px; line-height: 1.7; color: #6E7C78; margin: 0;">בחום,<br>רונית</p>
-    <div style="margin-top: 40px; padding-top: 16px; border-top: 1px solid rgba(34,48,47,.12); font-size: 13px; color: #8A9692;">
-      <a href="{{unsubscribe_url}}" style="color: #8A9692;">להסרה מרשימת התפוצה</a>
-    </div>
-  </div>
-</body>
-</html>'
+  'שלום {{name}},
+
+תודה למי שהיה איתנו במפגש ״{{title}}״.
+
+בחום,
+רונית'
 ) ON CONFLICT (template_type) DO NOTHING;
