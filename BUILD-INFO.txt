@@ -1,11 +1,12 @@
-BUILD 2026-07-04 (dist rebuilt from the .dc.html sources — all pages were stale)
-pages: index.html, book.html, ronit.html, zoom.html, materials.html, media.html, contact.html, visual-identity.html, yael.html
+BUILD 2026-07-03T02:00:00.000Z
+pages: index.html, book.html, ronit.html, zoom.html, materials.html, media.html, contact.html, yael.html
+(visual-identity.html removed from dist — internal reference doc only, no longer linked or published)
+assets (27): beityeladim-children.png, beityeladim-diningroom.png, beityeladim-doorstep.png, beityeladim-nosheochel.png, beityeladim-room.png, beityeladim-shelf.png, beityeladim-showers.png, beityeladim-silkworms.png, book-cover.jpg, chalk-green.png, cover-art.jpg, image-slot.js, nature-corner.png, reading-corner.png, ronit.jpg, sharon-ink.png, sharon-mother.png, sharon-sewage.png, sharon-swing.png, sharon-tricycle.png, title-handwriting.png, vered-1.png, vered-2.png, vered-3.png, vered-4.png, vered-5.png, yael.jpg
 
-Changes since last build (2026-07-04):
-- dist/ was fully regenerated from the root *.dc.html source files. Every dist page had drifted out of sync with its source (design-tool edits go to the .dc.html files, and dist/ had not been rebuilt), so live text edits — e.g. the rewritten body copy on the חומרי קריאה (materials) page — were not appearing on the live site. All pages now match their sources, with nav/cross-links rewritten to clean URLs (/, /book, /ronit, /zoom, /materials, /media, /contact, /yael).
-- Also reflected here: newsletter signup + Brevo integration fully removed (see README); "מפגשי זום" naming; footer tagline period removed; footer site-title in Assistant/green; form label tweaks.
-- To keep this from recurring: whenever the .dc.html sources change, rebuild dist/ from them before deploying.
-assets (26): beityeladim-children.png, beityeladim-diningroom.png, beityeladim-nosheochel.png, beityeladim-room.png, beityeladim-shelf.png, beityeladim-showers.png, beityeladim-silkworms.png, book-cover.jpg, chalk-green.png, cover-art.jpg, image-slot.js, nature-corner.png, reading-corner.png, ronit.jpg, sharon-ink.png, sharon-mother.png, sharon-sewage.png, sharon-swing.png, sharon-tricycle.png, title-handwriting.png, vered-1.png, vered-2.png, vered-3.png, vered-4.png, vered-5.png, yael.jpg
+Changes since last build (2026-07-04, later) — showers illustration replaced:
+- Replaced beityeladim-showers.png with a new version of the same scene (fresh AI illustration: crumpled towels on the floor, floral floor-mat, laundry net-bag on the rack). Same filename, so index.html needs no code change — just redeploy dist/assets/beityeladim-showers.png
+- The new image was color-corrected (partial desaturation toward luminance + per-channel mean match) to the neutral cool-grey pencil tone of the rest of the beityeladim-*.png set, so it still reads as one consistent series
+- Only the image bytes changed; no HTML/markup changes on any page
 
 Changes since last build (2026-07-02):
 - Fixed duplicate "מיכל" name label in the bathroom-shelf illustration (beityeladim-shelf.png)
@@ -13,3 +14,23 @@ Changes since last build (2026-07-02):
 - Added new "Yael" personal-note component: small photo + caption ("אהבה זה כל הסיפור") in the header, linking to new /yael page
 - Reworked top nav: site title + links grouped together, Yael note pushed to the far end with a divider and extra spacing
 - New page: yael.html (quiet placeholder page)
+
+Changes since last build (2026-07-04) — newsletter & Brevo removed:
+- Removed the newsletter signup section ("מכתב מדי פעם, בלי רעש": heading, name+email form, thank-you state, error text) from index.html, materials.html, contact.html; deleted the nlSubscribe handler, nl* state, and the now-unused noSubmit helper on Home/Materials (Contact's "כתבו לנו" mailto form kept)
+- Removed the Brevo integration entirely: deleted dist/api/subscribe.js and dist/api/zoom-join.js; the dist/api/ folder no longer exists
+- zoom.html "הצטרפות למפגש הבא" card no longer posts to Brevo — replaced with a static card linking to Facebook + email (mailto); Zoom registration to be rebuilt on an internal admin system later
+- Unused env vars (can be deleted from Vercel): BREVO_API_KEY, BREVO_LIST_ID, BREVO_LIST_NAME, BREVO_ZOOM_LIST_ID, BREVO_ZOOM_LIST_NAME
+- Copy/style fixes: removed trailing period on footer tagline; removed "בהוצאת מטר" everywhere; footer site-title unified to Assistant font and recolored green (accent) to match "עקבו אחרינו בפייסבוק"; field labels "שם פרטי (לא חובה)" → "שם פרטי" and "כתובת האימייל שלכם" → "כתובת אימייל"
+- NOTE: the 2026-07-03 zoom-join.js / Brevo entries below are superseded by the above
+
+Changes since last build (2026-07-03, later same day):
+- ronit.html: replaced the illustration below the banner with a new one, beityeladim-doorstep.png (children on the doorstep)
+- ronit.html: color-matched beityeladim-doorstep.png's tone to the rest of the beityeladim-*.png illustrations (mean/std match per channel against beityeladim-room.png) — page's own color tokens (accent, banner, text, borders) reverted to the site's original green/teal, unchanged from before
+- index.html: small manual edits made directly in the design tool
+- yael.html: removed site title from header, added a personal letter as the page's main text, moved "back to home" link to the bottom (plain text link, no button), replaced the placeholder photo with two new photos (yael-kiss-1.jpg, yael-kiss-2.jpg) shown side by side below the letter, cropped/positioned to match framing, with a slight saturation/contrast boost on yael-kiss-2.jpg to balance the two photos' color
+- Site-wide naming: unified "קבוצות זום" → "מפגשי זום" everywhere (nav label + all cross-links), matching the term already used elsewhere on the site
+- zoom.html: split the old bottom card (which mixed meeting details with placeholder Facebook/website links copied from flyer text) into two cards — "פרטי המפגשים" (unchanged meeting details) and a new "הצטרפות למפגש הבא" card with a working name+email signup form
+- New API route: dist/api/zoom-join.js — Vercel serverless function, POSTs to Brevo (same account as /api/subscribe), adds the contact to a dedicated Zoom-meetings list (BREVO_ZOOM_LIST_ID or BREVO_ZOOM_LIST_NAME env var, defaults to list named "מפגשי זום"); requires BREVO_API_KEY (already set for subscribe.js)
+- Decision (per user request): did NOT add a list of upcoming meeting topics to the website — Facebook stays the single source for the topics list; the website only offers email signup for the next meeting, to avoid maintaining the same info in two places
+- Removed "שפה חזותית" (visual identity reference doc) from public access: dropped the footer link from every page and removed visual-identity.html from dist entirely. `Visual Identity.dc.html` stays in the project root as an internal build reference only — not part of the deployed site.
+- index.html footer: font of the site-title line unified to match "עקבו אחרינו בפייסבוק" (now Assistant instead of Frank Ruhl Libre); small direct copy edit to the tagline beneath it
