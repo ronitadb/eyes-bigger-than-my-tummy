@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 async function sendEmail({ to, subject, html }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) throw new Error('RESEND_API_KEY not configured');
@@ -21,77 +23,61 @@ async function sendEmail({ to, subject, html }) {
   return res.json();
 }
 
+function unsubscribeToken(email) {
+  const secret = process.env.UNSUBSCRIBE_SECRET || 'fallback-secret';
+  return crypto.createHmac('sha256', secret).update(email.toLowerCase()).digest('hex').slice(0, 32);
+}
+
+function unsubscribeUrl(email) {
+  const base = process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'https://eyes-bigger-than-my-tummy.vercel.app';
+  const token = unsubscribeToken(email);
+  return `${base}/api/unsubscribe?email=${encodeURIComponent(email)}&token=${token}`;
+}
+
+const MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+
 function formatDate(dateStr) {
+  if (!dateStr) return '';
   const d = new Date(dateStr + 'T00:00:00');
-  const day = d.getDate();
-  const months = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-  const month = months[d.getMonth()];
-  const year = d.getFullYear();
-  return `${day} ${month} ${year}`;
+  return `${d.getDate()} ב${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 function formatTime(timeStr) {
+  if (!timeStr) return '';
   return timeStr.slice(0, 5);
 }
 
-function confirmationEmail(meeting, name) {
-  const date = formatDate(meeting.meeting_date);
-  const time = formatTime(meeting.meeting_time);
-
-  return {
-    subject: `אישור הרשמה — ${meeting.title}`,
-    html: `
-<!DOCTYPE html>
-<html dir="rtl" lang="he">
-<head><meta charset="utf-8"></head>
-<body style="font-family: -apple-system, sans-serif; color: #22302F; background: #FAF8F4; margin: 0; padding: 40px 20px;">
-  <div style="max-width: 520px; margin: 0 auto;">
-    <div style="font-size: 20px; font-weight: 700; color: #3D7468; margin-bottom: 24px;">עיניים גדולות זה לא טוב</div>
-    <p style="font-size: 17px; line-height: 1.8; margin: 0 0 16px;">שלום ${name},</p>
-    <p style="font-size: 17px; line-height: 1.8; margin: 0 0 24px;">תודה שנרשמת למפגש. שמחה שתהיי/תהיה איתנו.</p>
-    <div style="background: #EEF3EF; border: 1px solid rgba(34,48,47,.12); border-radius: 4px; padding: 24px; margin-bottom: 24px;">
-      <div style="font-weight: 700; font-size: 18px; color: #2F5248; margin-bottom: 14px;">${meeting.title}</div>
-      <div style="font-size: 16px; line-height: 1.7; color: #3A4744;">
-        <div>📅 ${date}</div>
-        <div>🕐 ${time}</div>
-        ${meeting.zoom_link ? `<div style="margin-top: 10px;"><a href="${meeting.zoom_link}" style="color: #3D7468; font-weight: 600;">קישור לזום ←</a></div>` : ''}
-      </div>
-    </div>
-    <p style="font-size: 15px; line-height: 1.7; color: #6E7C78; margin: 0;">נתראה במפגש,<br>רונית</p>
-  </div>
-</body>
-</html>`,
+function renderTemplate(templateBody, templateSubject, vars) {
+  const replacements = {
+    '{{name}}': vars.name || '',
+    '{{title}}': vars.title || '',
+    '{{date}}': vars.date || '',
+    '{{time}}': vars.time || '',
+    '{{zoom_link}}': vars.zoom_link || '',
+    '{{unsubscribe_url}}': vars.unsubscribe_url || '',
+    '{{materials}}': vars.materials || '',
+    '{{zoom_link_html}}': vars.zoom_link
+      ? `<div style="margin-top: 10px;"><a href="${vars.zoom_link}" style="color: #3D7468; font-weight: 600;">קישור לזום ←</a></div>`
+      : '',
+    '{{description_html}}': vars.description
+      ? `<p style="font-size: 16px; line-height: 1.7; color: #3A4744; margin: 14px 0 0;">${vars.description}</p>`
+      : '',
+    '{{materials_html}}': vars.materials
+      ? `<div style="margin: 16px 0; padding: 16px; background: #f5f5f0; border-radius: 4px; font-size: 15px; line-height: 1.7; color: #3A4744;">${vars.materials}</div>`
+      : '',
   };
+
+  let html = templateBody;
+  let subject = templateSubject;
+  for (const [key, val] of Object.entries(replacements)) {
+    html = html.split(key).join(val);
+    subject = subject.split(key).join(val);
+  }
+  return { subject, html };
 }
 
-function reminderEmail(meeting, name) {
-  const date = formatDate(meeting.meeting_date);
-  const time = formatTime(meeting.meeting_time);
-
-  return {
-    subject: `תזכורת — ${meeting.title}`,
-    html: `
-<!DOCTYPE html>
-<html dir="rtl" lang="he">
-<head><meta charset="utf-8"></head>
-<body style="font-family: -apple-system, sans-serif; color: #22302F; background: #FAF8F4; margin: 0; padding: 40px 20px;">
-  <div style="max-width: 520px; margin: 0 auto;">
-    <div style="font-size: 20px; font-weight: 700; color: #3D7468; margin-bottom: 24px;">עיניים גדולות זה לא טוב</div>
-    <p style="font-size: 17px; line-height: 1.8; margin: 0 0 16px;">שלום ${name},</p>
-    <p style="font-size: 17px; line-height: 1.8; margin: 0 0 24px;">תזכורת קטנה — המפגש שלנו מתקרב.</p>
-    <div style="background: #EEF3EF; border: 1px solid rgba(34,48,47,.12); border-radius: 4px; padding: 24px; margin-bottom: 24px;">
-      <div style="font-weight: 700; font-size: 18px; color: #2F5248; margin-bottom: 14px;">${meeting.title}</div>
-      <div style="font-size: 16px; line-height: 1.7; color: #3A4744;">
-        <div>📅 ${date}</div>
-        <div>🕐 ${time}</div>
-        ${meeting.zoom_link ? `<div style="margin-top: 10px;"><a href="${meeting.zoom_link}" style="color: #3D7468; font-weight: 600;">קישור לזום ←</a></div>` : ''}
-      </div>
-    </div>
-    <p style="font-size: 15px; line-height: 1.7; color: #6E7C78; margin: 0;">נתראה,<br>רונית</p>
-  </div>
-</body>
-</html>`,
-  };
-}
-
-module.exports = { sendEmail, confirmationEmail, reminderEmail };
+module.exports = { sendEmail, unsubscribeToken, unsubscribeUrl, formatDate, formatTime, renderTemplate };

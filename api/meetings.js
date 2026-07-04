@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
   try {
     const { rows } = await sql`
       SELECT id, title, description, meeting_date, meeting_time, timezone, status
-      FROM meetings
+      FROM zoom_meetings
       WHERE status = 'open'
       ORDER BY meeting_date ASC, meeting_time ASC
     `;

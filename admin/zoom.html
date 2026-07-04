@@ -7,54 +7,57 @@
 <title>ניהול מפגשי זום</title>
 <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Assistant', sans-serif; background: #f5f5f0; color: #22302F; min-height: 100vh; }
-  .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-  .login-box { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 40px; max-width: 360px; width: 100%; text-align: center; }
-  .login-box h1 { font-size: 22px; color: #3D7468; margin-bottom: 24px; }
-  .login-box input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; font-family: inherit; margin-bottom: 14px; }
-  .login-box button { width: 100%; padding: 12px; background: #3D7468; color: #fff; border: none; border-radius: 4px; font-size: 16px; font-family: inherit; font-weight: 600; cursor: pointer; }
-  .login-box .err { color: #c44; font-size: 14px; margin-top: 10px; }
-
-  .app { display: none; max-width: 960px; margin: 0 auto; padding: 20px; }
-  .header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #ddd; margin-bottom: 24px; }
-  .header h1 { font-size: 22px; color: #3D7468; }
-  .header button { background: none; border: 1px solid #ccc; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 14px; }
-
-  .btn { display: inline-block; padding: 10px 20px; background: #3D7468; color: #fff; border: none; border-radius: 4px; font-size: 15px; font-family: inherit; font-weight: 600; cursor: pointer; }
-  .btn-secondary { background: #6E7C78; }
-  .btn-small { padding: 6px 14px; font-size: 13px; }
-  .btn:disabled { opacity: .5; cursor: default; }
-
-  .card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-bottom: 16px; }
-  .card h3 { font-size: 18px; color: #2F5248; margin-bottom: 8px; }
-  .card .meta { font-size: 14px; color: #6E7C78; margin-bottom: 12px; }
-  .card .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
-  .status { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
-  .status-draft { background: #eee; color: #666; }
-  .status-open { background: #d4edda; color: #155724; }
-  .status-closed { background: #fff3cd; color: #856404; }
-  .status-completed { background: #d1ecf1; color: #0c5460; }
-
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-  .modal-overlay.active { display: flex; }
-  .modal { background: #fff; border-radius: 8px; padding: 28px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; }
-  .modal h2 { font-size: 20px; color: #2F5248; margin-bottom: 20px; }
-  .field { margin-bottom: 16px; }
-  .field label { display: block; font-size: 14px; font-weight: 600; color: #3A4744; margin-bottom: 6px; }
-  .field input, .field select, .field textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; font-family: inherit; }
-  .field textarea { min-height: 80px; resize: vertical; }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-
-  .reg-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; }
-  .reg-table th, .reg-table td { padding: 8px 10px; text-align: right; border-bottom: 1px solid #eee; }
-  .reg-table th { font-weight: 600; color: #3A4744; background: #f9f9f7; }
-  .check { color: #3D7468; }
-  .cross { color: #c44; }
-  .msg { padding: 12px 16px; border-radius: 4px; margin-bottom: 16px; font-size: 14px; }
-  .msg-ok { background: #d4edda; color: #155724; }
-  .msg-err { background: #f8d7da; color: #721c24; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Assistant',sans-serif;background:#f5f5f0;color:#22302F;min-height:100vh}
+  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+  .login-box{background:#fff;border:1px solid #ddd;border-radius:6px;padding:40px;max-width:360px;width:100%;text-align:center}
+  .login-box h1{font-size:22px;color:#3D7468;margin-bottom:24px}
+  .login-box input{width:100%;padding:12px;border:1px solid #ccc;border-radius:4px;font-size:16px;font-family:inherit;margin-bottom:14px}
+  .login-box button{width:100%;padding:12px;background:#3D7468;color:#fff;border:none;border-radius:4px;font-size:16px;font-family:inherit;font-weight:600;cursor:pointer}
+  .login-box .err{color:#c44;font-size:14px;margin-top:10px}
+  .app{display:none;max-width:960px;margin:0 auto;padding:20px}
+  .header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #ddd;margin-bottom:0}
+  .header h1{font-size:22px;color:#3D7468}
+  .tabs{display:flex;gap:0;border-bottom:2px solid #ddd;margin-bottom:24px}
+  .tab{padding:12px 20px;cursor:pointer;font-size:15px;font-weight:600;color:#6E7C78;border-bottom:2px solid transparent;margin-bottom:-2px;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit}
+  .tab.active{color:#3D7468;border-bottom-color:#3D7468}
+  .panel{display:none}.panel.active{display:block}
+  .btn{display:inline-block;padding:10px 20px;background:#3D7468;color:#fff;border:none;border-radius:4px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer}
+  .btn-secondary{background:#6E7C78}
+  .btn-small{padding:6px 14px;font-size:13px}
+  .btn-danger{background:#c44}
+  .btn:disabled{opacity:.5;cursor:default}
+  .card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:20px;margin-bottom:16px}
+  .card h3{font-size:18px;color:#2F5248;margin-bottom:8px}
+  .card .meta{font-size:14px;color:#6E7C78;margin-bottom:12px}
+  .card .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .status{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600}
+  .status-draft{background:#eee;color:#666}
+  .status-open{background:#d4edda;color:#155724}
+  .status-closed{background:#fff3cd;color:#856404}
+  .status-completed{background:#d1ecf1;color:#0c5460}
+  .status-active{background:#d4edda;color:#155724}
+  .status-unsubscribed{background:#eee;color:#999}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center;padding:20px}
+  .modal-overlay.active{display:flex}
+  .modal{background:#fff;border-radius:8px;padding:28px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto}
+  .modal h2{font-size:20px;color:#2F5248;margin-bottom:20px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:14px;font-weight:600;color:#3A4744;margin-bottom:6px}
+  .field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:4px;font-size:15px;font-family:inherit}
+  .field textarea{min-height:80px;resize:vertical}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:8px 10px;text-align:right;border-bottom:1px solid #eee}
+  th{font-weight:600;color:#3A4744;background:#f9f9f7}
+  .check{color:#3D7468}.cross{color:#c44}
+  .msg{padding:12px 16px;border-radius:4px;margin-bottom:16px;font-size:14px}
+  .msg-ok{background:#d4edda;color:#155724}
+  .msg-err{background:#f8d7da;color:#721c24}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+  .stat-card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:20px;text-align:center}
+  .stat-card .num{font-size:32px;font-weight:700;color:#3D7468}
+  .stat-card .label{font-size:14px;color:#6E7C78;margin-top:4px}
 </style>
 </head>
 <body>
@@ -70,20 +73,60 @@
 
 <div id="app" class="app">
   <div class="header">
-    <h1>מפגשי זום</h1>
-    <div style="display:flex;gap:10px;">
-      <button class="btn" onclick="openForm()">+ מפגש חדש</button>
-      <button class="header button" onclick="doLogout()">יציאה</button>
-    </div>
+    <h1>ניהול מפגשי זום</h1>
+    <button class="btn-small btn-secondary" style="border:1px solid #ccc;background:none;color:#666" onclick="doLogout()">יציאה</button>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('dashboard')">סקירה</button>
+    <button class="tab" onclick="showTab('meetings')">מפגשים</button>
+    <button class="tab" onclick="showTab('participants')">משתתפים</button>
+    <button class="tab" onclick="showTab('templates')">תבניות אימייל</button>
   </div>
   <div id="msg"></div>
-  <div id="meetingsList"></div>
+
+  <!-- Dashboard -->
+  <div id="panel-dashboard" class="panel active">
+    <div class="stat-grid" id="statsGrid"></div>
+    <h3 style="margin-bottom:12px;color:#2F5248;">מפגשים קרובים</h3>
+    <div id="upcomingList"></div>
+  </div>
+
+  <!-- Meetings -->
+  <div id="panel-meetings" class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="color:#2F5248">כל המפגשים</h3>
+      <button class="btn" onclick="openMeetingForm()">+ מפגש חדש</button>
+    </div>
+    <div id="meetingsList"></div>
+  </div>
+
+  <!-- Participants -->
+  <div id="panel-participants" class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <h3 style="color:#2F5248">משתתפים</h3>
+      <div style="display:flex;gap:8px">
+        <select id="partFilter" onchange="loadParticipants()" style="padding:6px 12px;border:1px solid #ccc;border-radius:4px;font-family:inherit;font-size:14px">
+          <option value="all">הכל</option>
+          <option value="active" selected>פעילים</option>
+          <option value="unsubscribed">הוסרו</option>
+        </select>
+        <button class="btn btn-small btn-secondary" onclick="exportCSV()">ייצוא CSV</button>
+      </div>
+    </div>
+    <div id="participantsList"></div>
+  </div>
+
+  <!-- Templates -->
+  <div id="panel-templates" class="panel">
+    <h3 style="color:#2F5248;margin-bottom:16px">תבניות אימייל</h3>
+    <div id="templatesList"></div>
+  </div>
 </div>
 
 <!-- Meeting form modal -->
-<div id="formModal" class="modal-overlay">
+<div id="meetingModal" class="modal-overlay">
   <div class="modal">
-    <h2 id="formTitle">מפגש חדש</h2>
+    <h2 id="meetingFormTitle">מפגש חדש</h2>
     <input type="hidden" id="fId">
     <div class="field"><label>כותרת</label><input type="text" id="fTitle"></div>
     <div class="field"><label>תיאור קצר</label><textarea id="fDesc"></textarea></div>
@@ -91,260 +134,261 @@
     <div class="field"><label>שעה</label><input type="time" id="fTime"></div>
     <div class="field"><label>אזור זמן</label><input type="text" id="fTz" value="Asia/Jerusalem"></div>
     <div class="field"><label>קישור זום</label><input type="url" id="fZoom" placeholder="https://zoom.us/j/..."></div>
+    <div class="field"><label>חומרים נלווים</label><textarea id="fMaterials" placeholder="קישורים, מאמרים, הערות..."></textarea></div>
     <div class="field">
       <label>סטטוס</label>
       <select id="fStatus">
         <option value="draft">טיוטה</option>
-        <option value="open">פתוח להרשמה</option>
+        <option value="open">פתוח</option>
         <option value="closed">סגור</option>
         <option value="completed">הסתיים</option>
       </select>
     </div>
     <div class="modal-actions">
-      <button class="btn-secondary btn" onclick="closeForm()">ביטול</button>
-      <button class="btn" onclick="saveForm()">שמירה</button>
+      <button class="btn btn-secondary" onclick="closeMeetingForm()">ביטול</button>
+      <button class="btn" onclick="saveMeeting()">שמירה</button>
     </div>
   </div>
 </div>
 
-<!-- Registrations modal -->
-<div id="regsModal" class="modal-overlay">
-  <div class="modal" style="max-width:700px;">
-    <h2 id="regsTitle">נרשמים</h2>
-    <div id="regsActions" style="display:flex;gap:10px;margin-bottom:16px;"></div>
-    <div id="regsContent"></div>
+<!-- Send email modal -->
+<div id="sendModal" class="modal-overlay">
+  <div class="modal">
+    <h2 id="sendTitle">שליחת אימייל</h2>
+    <p id="sendInfo" style="font-size:14px;color:#6E7C78;margin-bottom:16px"></p>
+    <div class="field">
+      <label>סוג הודעה</label>
+      <select id="sendType">
+        <option value="meeting_reminder">תזכורת לפני מפגש</option>
+        <option value="meeting_followup">הודעה לאחר מפגש</option>
+      </select>
+    </div>
     <div class="modal-actions">
-      <button class="btn-secondary btn" onclick="closeRegs()">סגירה</button>
+      <button class="btn btn-secondary" onclick="closeSendModal()">ביטול</button>
+      <button class="btn" id="sendBtn" onclick="doSendEmail()">שלח לכל המשתתפים הפעילים</button>
+    </div>
+  </div>
+</div>
+
+<!-- Template edit modal -->
+<div id="templateModal" class="modal-overlay">
+  <div class="modal" style="max-width:640px">
+    <h2 id="tplTitle">עריכת תבנית</h2>
+    <input type="hidden" id="tplId">
+    <div class="field"><label>נושא</label><input type="text" id="tplSubject"></div>
+    <div class="field"><label>תוכן (HTML)</label><textarea id="tplBody" style="min-height:300px;font-family:monospace;font-size:13px;direction:ltr;text-align:left"></textarea></div>
+    <p style="font-size:12px;color:#8A9692;margin-top:4px">
+      משתנים זמינים: <code>{{name}}</code> <code>{{title}}</code> <code>{{date}}</code> <code>{{time}}</code> <code>{{zoom_link}}</code> <code>{{unsubscribe_url}}</code> <code>{{materials}}</code>
+      <br>בלוקים: <code>{{zoom_link_html}}</code> <code>{{description_html}}</code> <code>{{materials_html}}</code>
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeTemplateModal()">ביטול</button>
+      <button class="btn" onclick="saveTemplate()">שמירה</button>
     </div>
   </div>
 </div>
 
 <script>
-let PW = '';
-const API = '/api';
+var PW='', API='/api';
+var allMeetings=[], allParticipants=[], allTemplates=[];
+var sendMeetingId=null;
 
-function headers() {
-  return { 'Content-Type': 'application/json', 'x-admin-password': PW };
+function headers(){return{'Content-Type':'application/json','x-admin-password':PW}}
+
+// Auth
+function doLogin(){
+  PW=document.getElementById('pw').value;
+  fetch(API+'/admin/meetings',{headers:{'x-admin-password':PW}})
+    .then(function(r){
+      if(r.status===401){document.getElementById('loginErr').textContent='סיסמה שגויה';PW='';return}
+      document.getElementById('login').style.display='none';
+      document.getElementById('app').style.display='block';
+      loadAll();
+    })
+    .catch(function(){document.getElementById('loginErr').textContent='שגיאת חיבור'});
+}
+function doLogout(){PW='';document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex';document.getElementById('pw').value=''}
+document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
+
+function showMsg(t,ok){var el=document.getElementById('msg');el.className='msg '+(ok?'msg-ok':'msg-err');el.textContent=t;setTimeout(function(){el.className='';el.textContent=''},5000)}
+
+// Tabs
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',['dashboard','meetings','participants','templates'][i]===name)});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('panel-'+name).classList.add('active');
+  if(name==='participants')loadParticipants();
+  if(name==='templates')loadTemplates();
 }
 
-async function doLogin() {
-  PW = document.getElementById('pw').value;
-  try {
-    const r = await fetch(API + '/admin/meetings', { headers: { 'x-admin-password': PW } });
-    if (r.status === 401) {
-      document.getElementById('loginErr').textContent = 'סיסמה שגויה';
-      PW = '';
-      return;
-    }
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    loadMeetings();
-  } catch (e) {
-    document.getElementById('loginErr').textContent = 'שגיאת חיבור';
-  }
-}
+var STATUS_HE={draft:'טיוטה',open:'פתוח',closed:'סגור',completed:'הסתיים'};
 
-function doLogout() {
-  PW = '';
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login').style.display = 'flex';
-  document.getElementById('pw').value = '';
-  document.getElementById('loginErr').textContent = '';
-}
+function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})}
+function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
 
-document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-
-function showMsg(text, ok) {
-  const el = document.getElementById('msg');
-  el.className = 'msg ' + (ok ? 'msg-ok' : 'msg-err');
-  el.textContent = text;
-  setTimeout(() => { el.className = ''; el.textContent = ''; }, 5000);
-}
-
-const STATUS_HE = { draft: 'טיוטה', open: 'פתוח', closed: 'סגור', completed: 'הסתיים' };
-
-function fmtDate(d) {
-  if (!d) return '—';
-  const dt = new Date(d);
-  return dt.toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' });
-}
-
-async function loadMeetings() {
-  try {
-    const r = await fetch(API + '/admin/meetings', { headers: { 'x-admin-password': PW } });
-    const data = await r.json();
-    if (!data.ok) { showMsg('שגיאה בטעינת מפגשים', false); return; }
-    renderMeetings(data.meetings);
-  } catch (e) {
-    showMsg('שגיאת חיבור', false);
-  }
-}
-
-function renderMeetings(meetings) {
-  const el = document.getElementById('meetingsList');
-  if (!meetings.length) {
-    el.innerHTML = '<div class="card" style="text-align:center;color:#6E7C78;">אין מפגשים עדיין. לחצו "מפגש חדש" כדי להתחיל.</div>';
-    return;
-  }
-  el.innerHTML = meetings.map(m => `
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:start;">
-        <h3>${esc(m.title)}</h3>
-        <span class="status status-${m.status}">${STATUS_HE[m.status] || m.status}</span>
-      </div>
-      <div class="meta">
-        ${fmtDate(m.meeting_date)} | ${(m.meeting_time||'').slice(0,5)} | ${m.registration_count || 0} נרשמים
-      </div>
-      ${m.description ? `<p style="font-size:14px;color:#3A4744;margin-bottom:12px;">${esc(m.description)}</p>` : ''}
-      <div class="actions">
-        <button class="btn btn-small" onclick="editMeeting(${m.id})">עריכה</button>
-        <button class="btn btn-small btn-secondary" onclick="showRegs(${m.id}, '${esc(m.title)}')">נרשמים (${m.registration_count || 0})</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-let allMeetings = [];
-async function loadMeetings() {
-  try {
-    const r = await fetch(API + '/admin/meetings', { headers: { 'x-admin-password': PW } });
-    const data = await r.json();
-    if (!data.ok) { showMsg('שגיאה בטעינת מפגשים', false); return; }
-    allMeetings = data.meetings;
-    renderMeetings(allMeetings);
-  } catch (e) {
-    showMsg('שגיאת חיבור', false);
-  }
-}
-
-function openForm(meeting) {
-  document.getElementById('formTitle').textContent = meeting ? 'עריכת מפגש' : 'מפגש חדש';
-  document.getElementById('fId').value = meeting ? meeting.id : '';
-  document.getElementById('fTitle').value = meeting ? meeting.title : '';
-  document.getElementById('fDesc').value = meeting ? (meeting.description || '') : '';
-  document.getElementById('fDate').value = meeting ? (meeting.meeting_date || '').slice(0, 10) : '';
-  document.getElementById('fTime').value = meeting ? (meeting.meeting_time || '').slice(0, 5) : '';
-  document.getElementById('fTz').value = meeting ? (meeting.timezone || 'Asia/Jerusalem') : 'Asia/Jerusalem';
-  document.getElementById('fZoom').value = meeting ? (meeting.zoom_link || '') : '';
-  document.getElementById('fStatus').value = meeting ? meeting.status : 'draft';
-  document.getElementById('formModal').classList.add('active');
-}
-
-function closeForm() {
-  document.getElementById('formModal').classList.remove('active');
-}
-
-function editMeeting(id) {
-  const m = allMeetings.find(x => x.id === id);
-  if (m) openForm(m);
-}
-
-async function saveForm() {
-  const id = document.getElementById('fId').value;
-  const body = {
-    title: document.getElementById('fTitle').value,
-    description: document.getElementById('fDesc').value,
-    meeting_date: document.getElementById('fDate').value,
-    meeting_time: document.getElementById('fTime').value,
-    timezone: document.getElementById('fTz').value,
-    zoom_link: document.getElementById('fZoom').value,
-    status: document.getElementById('fStatus').value,
-  };
-
-  if (!body.title || !body.meeting_date || !body.meeting_time) {
-    showMsg('נא למלא כותרת, תאריך ושעה', false);
-    return;
-  }
-
-  const method = id ? 'PUT' : 'POST';
-  if (id) body.id = parseInt(id, 10);
-
-  try {
-    const r = await fetch(API + '/admin/meetings', { method, headers: headers(), body: JSON.stringify(body) });
-    const data = await r.json();
-    if (!data.ok) { showMsg('שגיאה בשמירה', false); return; }
-    closeForm();
-    showMsg(id ? 'המפגש עודכן' : 'המפגש נוצר', true);
-    loadMeetings();
-  } catch (e) {
-    showMsg('שגיאת חיבור', false);
-  }
-}
-
-async function showRegs(meetingId, title) {
-  document.getElementById('regsTitle').textContent = 'נרשמים — ' + title;
-  document.getElementById('regsContent').innerHTML = 'טוען...';
-  document.getElementById('regsActions').innerHTML = `
-    <button class="btn btn-small" onclick="sendReminders(${meetingId})">שלח תזכורות</button>
-    <a class="btn btn-small btn-secondary" href="${API}/admin/registrations?meeting_id=${meetingId}&format=csv" style="text-decoration:none;color:#fff;" id="csvLink">ייצוא CSV</a>
-  `;
-  const csvLink = document.getElementById('csvLink');
-  csvLink.addEventListener('click', e => {
-    e.preventDefault();
-    const url = API + '/admin/registrations?meeting_id=' + meetingId + '&format=csv';
-    fetch(url, { headers: { 'x-admin-password': PW } })
-      .then(r => r.blob())
-      .then(blob => {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'registrations-' + meetingId + '.csv';
-        a.click();
-      });
+// Load all data
+function loadAll(){
+  fetch(API+'/admin/meetings',{headers:{'x-admin-password':PW}}).then(function(r){return r.json()}).then(function(data){
+    if(!data.ok)return;
+    allMeetings=data.meetings;
+    renderDashboard();
+    renderMeetings();
   });
-  document.getElementById('regsModal').classList.add('active');
-
-  try {
-    const r = await fetch(API + '/admin/registrations?meeting_id=' + meetingId, { headers: { 'x-admin-password': PW } });
-    const data = await r.json();
-    if (!data.ok) { document.getElementById('regsContent').innerHTML = 'שגיאה בטעינה'; return; }
-    if (!data.registrations.length) {
-      document.getElementById('regsContent').innerHTML = '<p style="color:#6E7C78;">אין נרשמים עדיין.</p>';
-      return;
-    }
-    document.getElementById('regsContent').innerHTML = `
-      <table class="reg-table">
-        <thead><tr><th>שם</th><th>אימייל</th><th>תאריך</th><th>אישור</th><th>תזכורת</th></tr></thead>
-        <tbody>${data.registrations.map(r => `
-          <tr>
-            <td>${esc(r.name)}</td>
-            <td>${esc(r.email)}</td>
-            <td>${fmtDate(r.registered_at)}</td>
-            <td>${r.confirmation_sent_at ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
-            <td>${r.reminder_sent_at ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
-          </tr>
-        `).join('')}</tbody>
-      </table>
-    `;
-  } catch (e) {
-    document.getElementById('regsContent').innerHTML = 'שגיאת חיבור';
-  }
+  fetch(API+'/admin/participants?status=active',{headers:{'x-admin-password':PW}}).then(function(r){return r.json()}).then(function(data){
+    if(data.ok)renderDashboardParticipants(data.participants.length);
+  });
 }
 
-function closeRegs() {
-  document.getElementById('regsModal').classList.remove('active');
+function renderDashboard(){
+  var upcoming=allMeetings.filter(function(m){return m.status==='open'||m.status==='draft'});
+  document.getElementById('upcomingList').innerHTML=upcoming.length?upcoming.slice(0,5).map(function(m){
+    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:start"><h3>'+esc(m.title)+'</h3><span class="status status-'+m.status+'">'+STATUS_HE[m.status]+'</span></div><div class="meta">'+fmtDate(m.meeting_date)+' | '+(m.meeting_time||'').slice(0,5)+'</div></div>'
+  }).join(''):'<p style="color:#6E7C78">אין מפגשים קרובים.</p>';
+
+  var totalMeetings=allMeetings.length;
+  var openMeetings=allMeetings.filter(function(m){return m.status==='open'}).length;
+  updateStats({meetings:totalMeetings,open:openMeetings});
 }
 
-async function sendReminders(meetingId) {
-  if (!confirm('לשלוח תזכורת לכל הנרשמים שטרם קיבלו?')) return;
-  try {
-    const r = await fetch(API + '/admin/send-reminders', {
-      method: 'POST',
-      headers: headers(),
-      body: JSON.stringify({ meeting_id: meetingId }),
+function updateStats(s){
+  var grid=document.getElementById('statsGrid');
+  grid.innerHTML='<div class="stat-card"><div class="num" id="statPart">—</div><div class="label">משתתפים פעילים</div></div>'+
+    '<div class="stat-card"><div class="num">'+s.meetings+'</div><div class="label">סה״כ מפגשים</div></div>'+
+    '<div class="stat-card"><div class="num">'+s.open+'</div><div class="label">מפגשים פתוחים</div></div>';
+}
+function renderDashboardParticipants(n){var el=document.getElementById('statPart');if(el)el.textContent=n}
+
+// Meetings
+function renderMeetings(){
+  var el=document.getElementById('meetingsList');
+  if(!allMeetings.length){el.innerHTML='<div class="card" style="text-align:center;color:#6E7C78">אין מפגשים. לחצו "מפגש חדש".</div>';return}
+  el.innerHTML=allMeetings.map(function(m){
+    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:start"><h3>'+esc(m.title)+'</h3><span class="status status-'+m.status+'">'+STATUS_HE[m.status]+'</span></div>'+
+      '<div class="meta">'+fmtDate(m.meeting_date)+' | '+(m.meeting_time||'').slice(0,5)+
+      (m.reminders_sent?' | '+m.reminders_sent+' תזכורות נשלחו':'')+
+      (m.followups_sent?' | '+m.followups_sent+' הודעות מעקב':'')+'</div>'+
+      (m.description?'<p style="font-size:14px;color:#3A4744;margin-bottom:12px">'+esc(m.description)+'</p>':'')+
+      '<div class="actions"><button class="btn btn-small" onclick="editMeeting('+m.id+')">עריכה</button>'+
+      '<button class="btn btn-small btn-secondary" onclick="openSendModal('+m.id+',\''+esc(m.title)+'\')">שליחת אימייל</button></div></div>'
+  }).join('');
+}
+
+function openMeetingForm(m){
+  document.getElementById('meetingFormTitle').textContent=m?'עריכת מפגש':'מפגש חדש';
+  document.getElementById('fId').value=m?m.id:'';
+  document.getElementById('fTitle').value=m?m.title:'';
+  document.getElementById('fDesc').value=m?(m.description||''):'';
+  document.getElementById('fDate').value=m?(m.meeting_date||'').slice(0,10):'';
+  document.getElementById('fTime').value=m?(m.meeting_time||'').slice(0,5):'';
+  document.getElementById('fTz').value=m?(m.timezone||'Asia/Jerusalem'):'Asia/Jerusalem';
+  document.getElementById('fZoom').value=m?(m.zoom_link||''):'';
+  document.getElementById('fMaterials').value=m?(m.related_materials||''):'';
+  document.getElementById('fStatus').value=m?m.status:'draft';
+  document.getElementById('meetingModal').classList.add('active');
+}
+function closeMeetingForm(){document.getElementById('meetingModal').classList.remove('active')}
+function editMeeting(id){var m=allMeetings.find(function(x){return x.id===id});if(m)openMeetingForm(m)}
+
+function saveMeeting(){
+  var id=document.getElementById('fId').value;
+  var body={title:document.getElementById('fTitle').value,description:document.getElementById('fDesc').value,
+    meeting_date:document.getElementById('fDate').value,meeting_time:document.getElementById('fTime').value,
+    timezone:document.getElementById('fTz').value,zoom_link:document.getElementById('fZoom').value,
+    related_materials:document.getElementById('fMaterials').value,status:document.getElementById('fStatus').value};
+  if(!body.title||!body.meeting_date||!body.meeting_time){showMsg('נא למלא כותרת, תאריך ושעה',false);return}
+  if(id)body.id=parseInt(id,10);
+  fetch(API+'/admin/meetings',{method:id?'PUT':'POST',headers:headers(),body:JSON.stringify(body)})
+    .then(function(r){return r.json()}).then(function(data){
+      if(!data.ok){showMsg('שגיאה בשמירה',false);return}
+      closeMeetingForm();showMsg(id?'המפגש עודכן':'המפגש נוצר',true);loadAll();
+    }).catch(function(){showMsg('שגיאת חיבור',false)});
+}
+
+// Send email
+function openSendModal(meetingId,title){
+  sendMeetingId=meetingId;
+  document.getElementById('sendTitle').textContent='שליחת אימייל — '+title;
+  document.getElementById('sendInfo').textContent='ההודעה תישלח לכל המשתתפים הפעילים ברשימה.';
+  document.getElementById('sendBtn').disabled=false;
+  document.getElementById('sendModal').classList.add('active');
+}
+function closeSendModal(){document.getElementById('sendModal').classList.remove('active');sendMeetingId=null}
+
+function doSendEmail(){
+  if(!sendMeetingId)return;
+  var type=document.getElementById('sendType').value;
+  var typeHe=type==='meeting_reminder'?'תזכורת':'הודעת מעקב';
+  if(!confirm('לשלוח '+typeHe+' לכל המשתתפים הפעילים?'))return;
+  document.getElementById('sendBtn').disabled=true;
+  fetch(API+'/admin/send-email',{method:'POST',headers:headers(),body:JSON.stringify({meeting_id:sendMeetingId,template_type:type})})
+    .then(function(r){return r.json()}).then(function(data){
+      if(!data.ok){showMsg('שגיאה בשליחה',false);return}
+      showMsg('נשלחו '+data.sent+' הודעות'+(data.failed?' ('+data.failed+' נכשלו)':''),data.failed===0);
+      closeSendModal();loadAll();
+    }).catch(function(){showMsg('שגיאת חיבור',false)});
+}
+
+// Participants
+function loadParticipants(){
+  var filter=document.getElementById('partFilter').value;
+  fetch(API+'/admin/participants?status='+filter,{headers:{'x-admin-password':PW}})
+    .then(function(r){return r.json()}).then(function(data){
+      if(!data.ok)return;
+      allParticipants=data.participants;
+      renderParticipants();
     });
-    const data = await r.json();
-    if (!data.ok) { showMsg('שגיאה בשליחה', false); return; }
-    showMsg(`נשלחו ${data.sent} תזכורות` + (data.failed ? ` (${data.failed} נכשלו)` : ''), data.failed === 0);
-    showRegs(meetingId, document.getElementById('regsTitle').textContent.replace('נרשמים — ', ''));
-  } catch (e) {
-    showMsg('שגיאת חיבור', false);
-  }
+}
+function renderParticipants(){
+  var el=document.getElementById('participantsList');
+  if(!allParticipants.length){el.innerHTML='<p style="color:#6E7C78">אין משתתפים.</p>';return}
+  el.innerHTML='<table><thead><tr><th>שם</th><th>אימייל</th><th>סטטוס</th><th>הצטרפות</th></tr></thead><tbody>'+
+    allParticipants.map(function(p){
+      return '<tr><td>'+esc(p.name)+'</td><td>'+esc(p.email)+'</td><td><span class="status status-'+p.status+'">'+(p.status==='active'?'פעיל':'הוסר')+'</span></td><td>'+fmtDate(p.joined_at)+'</td></tr>'
+    }).join('')+'</tbody></table>';
+}
+function exportCSV(){
+  var filter=document.getElementById('partFilter').value;
+  fetch(API+'/admin/participants?status='+filter+'&format=csv',{headers:{'x-admin-password':PW}})
+    .then(function(r){return r.blob()}).then(function(blob){
+      var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='zoom-participants.csv';a.click();
+    });
 }
 
-function esc(s) {
-  const d = document.createElement('div');
-  d.textContent = s || '';
-  return d.innerHTML;
+// Templates
+function loadTemplates(){
+  fetch(API+'/admin/templates',{headers:{'x-admin-password':PW}})
+    .then(function(r){return r.json()}).then(function(data){
+      if(!data.ok)return;
+      allTemplates=data.templates;
+      renderTemplates();
+    });
+}
+var TPL_NAMES={join_confirmation:'אישור הצטרפות',meeting_reminder:'תזכורת לפני מפגש',meeting_followup:'הודעה לאחר מפגש'};
+function renderTemplates(){
+  var el=document.getElementById('templatesList');
+  el.innerHTML=allTemplates.map(function(t){
+    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h3>'+(TPL_NAMES[t.template_type]||t.template_type)+'</h3><button class="btn btn-small" onclick="editTemplate('+t.id+')">עריכה</button></div>'+
+      '<div class="meta">נושא: '+esc(t.subject)+'</div>'+
+      '<div class="meta">עודכן: '+fmtDate(t.updated_at)+'</div></div>'
+  }).join('');
+}
+function editTemplate(id){
+  var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
+  document.getElementById('tplTitle').textContent='עריכת תבנית — '+(TPL_NAMES[t.template_type]||t.template_type);
+  document.getElementById('tplId').value=t.id;
+  document.getElementById('tplSubject').value=t.subject;
+  document.getElementById('tplBody').value=t.body;
+  document.getElementById('templateModal').classList.add('active');
+}
+function closeTemplateModal(){document.getElementById('templateModal').classList.remove('active')}
+function saveTemplate(){
+  var id=document.getElementById('tplId').value;
+  var body={id:parseInt(id,10),subject:document.getElementById('tplSubject').value,body:document.getElementById('tplBody').value};
+  fetch(API+'/admin/templates',{method:'PUT',headers:headers(),body:JSON.stringify(body)})
+    .then(function(r){return r.json()}).then(function(data){
+      if(!data.ok){showMsg('שגיאה בשמירה',false);return}
+      closeTemplateModal();showMsg('התבנית עודכנה',true);loadTemplates();
+    }).catch(function(){showMsg('שגיאת חיבור',false)});
 }
 </script>
 </body>
