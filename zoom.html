@@ -80,26 +80,109 @@
       <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,26px); line-height:1.55; color:#2F5248; text-align:center; margin:26px auto 0; max-width:52ch;">ואם דרך אלה, תמצא, ולו נפש אחת, מעט יותר שלום עם העבר החי שלנו - דייני.</p>
     </section>
 
-    <section style="padding:8px 0 76px;">
-      <div style="max-width:600px; margin:0 auto; background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(30px,4vw,44px) clamp(26px,4vw,46px);">
-        <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0 0 20px;">פרטי המפגשים</div>
-        <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:13px;">
-          <li style="display:flex; gap:12px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;"><span style="color:var(--accent);">•</span><span>מפגש זום פתוח</span></li>
-          <li style="display:flex; gap:12px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;"><span style="color:var(--accent);">•</span><span>משך המפגש: שעה וחצי</span></li>
-          <li style="display:flex; gap:12px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;"><span style="color:var(--accent);">•</span><span>ימי שלישי | 19:00</span></li>
-          <li style="display:flex; gap:12px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;"><span style="color:var(--accent);">•</span><span>אחת לשלושה שבועות</span></li>
-          <li style="display:flex; gap:12px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;"><span style="color:var(--accent);">•</span><span>נושא כל מפגש יתפרסם מראש באתר ובדף הפייסבוק של הספר</span></li>
-          <li style="display:flex; gap:12px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;"><span style="color:var(--accent);">•</span><span>המפגש הראשון: __________</span></li>
-        </ul>
-        <div style="border-top:1px solid rgba(34,48,47,.14); margin-top:28px; padding-top:26px;">
-          <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0 0 16px;">להרשמה ולעדכונים</div>
-          <div style="display:flex; flex-direction:column; gap:10px; font-family:var(--head-font); font-size:17px; line-height:1.55; color:#3A4744;">
-            <div>אתר: __________</div>
-            <div>דף הפייסבוק: __________</div>
-          </div>
-        </div>
+    <section id="meetings-section" style="padding:8px 0 76px;">
+      <div id="meetings-list" style="max-width:600px; margin:0 auto;">
+        <p style="text-align:center; color:#6E7C78; font-family:var(--head-font); font-size:16px;">טוען מפגשים...</p>
       </div>
     </section>
+
+    <script>
+    (function() {
+      var MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+      var DAYS = ['יום ראשון','יום שני','יום שלישי','יום רביעי','יום חמישי','יום שישי','שבת'];
+
+      function fmtDate(d) {
+        var dt = new Date(d + 'T00:00:00');
+        return DAYS[dt.getDay()] + ', ' + dt.getDate() + ' ב' + MONTHS[dt.getMonth()] + ' ' + dt.getFullYear();
+      }
+
+      function esc(s) {
+        var d = document.createElement('div');
+        d.textContent = s || '';
+        return d.innerHTML;
+      }
+
+      fetch('/api/meetings')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var el = document.getElementById('meetings-list');
+          if (!data.ok || !data.meetings.length) {
+            el.innerHTML = '<div style="text-align:center; background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(30px,4vw,44px) clamp(26px,4vw,46px);">' +
+              '<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0 0 14px;">המפגשים</div>' +
+              '<p style="font-family:\'Frank Ruhl Libre\',serif; font-size:17px; line-height:1.8; color:#6E7C78;">אין כרגע מפגשים פתוחים להרשמה.<br>מפגשים חדשים יתפרסמו כאן.</p>' +
+              '</div>';
+            return;
+          }
+
+          el.innerHTML = data.meetings.map(function(m) {
+            return '<div style="background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(30px,4vw,44px) clamp(26px,4vw,46px); margin-bottom:20px;">' +
+              '<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0 0 14px;">' + esc(m.title) + '</div>' +
+              (m.description ? '<p style="font-family:\'Frank Ruhl Libre\',serif; font-size:17px; line-height:1.8; color:#3A4744; margin:0 0 18px;">' + esc(m.description) + '</p>' : '') +
+              '<div style="display:flex; flex-direction:column; gap:8px; font-family:var(--head-font); font-size:16px; color:#3A4744; margin-bottom:24px;">' +
+                '<div style="display:flex; gap:10px; align-items:center;">' +
+                  '<span style="color:var(--accent);">📅</span> ' + fmtDate(m.meeting_date) +
+                '</div>' +
+                '<div style="display:flex; gap:10px; align-items:center;">' +
+                  '<span style="color:var(--accent);">🕐</span> ' + (m.meeting_time || '').slice(0,5) +
+                '</div>' +
+              '</div>' +
+              '<div style="border-top:1px solid rgba(34,48,47,.14); padding-top:22px;">' +
+                '<div id="form-' + m.id + '">' +
+                  '<div style="font-family:var(--head-font); font-weight:600; font-size:17px; color:var(--head-color); margin-bottom:14px;">הרשמה למפגש</div>' +
+                  '<div style="display:flex; flex-direction:column; gap:10px;">' +
+                    '<input type="text" id="name-' + m.id + '" placeholder="שם" style="padding:10px 14px; border:1px solid rgba(34,48,47,.2); border-radius:3px; font-size:16px; font-family:inherit; background:#fff;">' +
+                    '<input type="email" id="email-' + m.id + '" placeholder="אימייל" style="padding:10px 14px; border:1px solid rgba(34,48,47,.2); border-radius:3px; font-size:16px; font-family:inherit; background:#fff;">' +
+                    '<button onclick="registerFor(' + m.id + ')" style="padding:12px 20px; background:var(--accent); color:#F4F8F4; border:none; border-radius:3px; font-size:16px; font-family:inherit; font-weight:600; cursor:pointer;">הרשמה</button>' +
+                  '</div>' +
+                  '<div id="msg-' + m.id + '" style="margin-top:12px; font-size:15px;"></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        })
+        .catch(function() {
+          document.getElementById('meetings-list').innerHTML =
+            '<p style="text-align:center; color:#6E7C78; font-family:var(--head-font); font-size:16px;">לא ניתן לטעון מפגשים כרגע.</p>';
+        });
+
+      window.registerFor = function(id) {
+        var name = document.getElementById('name-' + id).value.trim();
+        var email = document.getElementById('email-' + id).value.trim();
+        var msgEl = document.getElementById('msg-' + id);
+
+        if (!name) { msgEl.style.color = '#8b4513'; msgEl.textContent = 'נא להזין שם'; return; }
+        if (!email || email.indexOf('@') < 1) { msgEl.style.color = '#8b4513'; msgEl.textContent = 'נא להזין כתובת אימייל תקינה'; return; }
+
+        msgEl.style.color = '#6E7C78';
+        msgEl.textContent = 'שולח...';
+
+        fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ meeting_id: id, name: name, email: email })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.ok) {
+            document.getElementById('form-' + id).innerHTML =
+              '<div style="text-align:center; padding:16px 0;">' +
+                '<div style="font-family:\'Frank Ruhl Libre\',serif; font-size:20px; color:var(--head-color); margin-bottom:10px;">תודה על ההרשמה ✦</div>' +
+                '<p style="font-family:var(--head-font); font-size:15px; color:#6E7C78; line-height:1.7;">' +
+                  (data.already_registered ? 'כבר נרשמת למפגש זה. נתראה!' : 'אישור נשלח לאימייל שלך. נתראה במפגש.') +
+                '</p>' +
+              '</div>';
+          } else {
+            msgEl.style.color = '#8b4513';
+            msgEl.textContent = data.message || 'שגיאה, נא לנסות שוב';
+          }
+        })
+        .catch(function() {
+          msgEl.style.color = '#8b4513';
+          msgEl.textContent = 'שגיאת חיבור, נא לנסות שוב';
+        });
+      };
+    })();
+    </script>
 
   </main>
 

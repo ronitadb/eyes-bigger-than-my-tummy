@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ניהול מפגשי זום</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Assistant', sans-serif; background: #f5f5f0; color: #22302F; min-height: 100vh; }
+  .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+  .login-box { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 40px; max-width: 360px; width: 100%; text-align: center; }
+  .login-box h1 { font-size: 22px; color: #3D7468; margin-bottom: 24px; }
+  .login-box input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; font-family: inherit; margin-bottom: 14px; }
+  .login-box button { width: 100%; padding: 12px; background: #3D7468; color: #fff; border: none; border-radius: 4px; font-size: 16px; font-family: inherit; font-weight: 600; cursor: pointer; }
+  .login-box .err { color: #c44; font-size: 14px; margin-top: 10px; }
+
+  .app { display: none; max-width: 960px; margin: 0 auto; padding: 20px; }
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #ddd; margin-bottom: 24px; }
+  .header h1 { font-size: 22px; color: #3D7468; }
+  .header button { background: none; border: 1px solid #ccc; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 14px; }
+
+  .btn { display: inline-block; padding: 10px 20px; background: #3D7468; color: #fff; border: none; border-radius: 4px; font-size: 15px; font-family: inherit; font-weight: 600; cursor: pointer; }
+  .btn-secondary { background: #6E7C78; }
+  .btn-small { padding: 6px 14px; font-size: 13px; }
+  .btn:disabled { opacity: .5; cursor: default; }
+
+  .card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-bottom: 16px; }
+  .card h3 { font-size: 18px; color: #2F5248; margin-bottom: 8px; }
+  .card .meta { font-size: 14px; color: #6E7C78; margin-bottom: 12px; }
+  .card .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .status { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  .status-draft { background: #eee; color: #666; }
+  .status-open { background: #d4edda; color: #155724; }
+  .status-closed { background: #fff3cd; color: #856404; }
+  .status-completed { background: #d1ecf1; color: #0c5460; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: #fff; border-radius: 8px; padding: 28px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; }
+  .modal h2 { font-size: 20px; color: #2F5248; margin-bottom: 20px; }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 14px; font-weight: 600; color: #3A4744; margin-bottom: 6px; }
+  .field input, .field select, .field textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; font-family: inherit; }
+  .field textarea { min-height: 80px; resize: vertical; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+  .reg-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; }
+  .reg-table th, .reg-table td { padding: 8px 10px; text-align: right; border-bottom: 1px solid #eee; }
+  .reg-table th { font-weight: 600; color: #3A4744; background: #f9f9f7; }
+  .check { color: #3D7468; }
+  .cross { color: #c44; }
+  .msg { padding: 12px 16px; border-radius: 4px; margin-bottom: 16px; font-size: 14px; }
+  .msg-ok { background: #d4edda; color: #155724; }
+  .msg-err { background: #f8d7da; color: #721c24; }
+</style>
+</head>
+<body>
+
+<div id="login" class="login-wrap">
+  <div class="login-box">
+    <h1>ניהול מפגשי זום</h1>
+    <input type="password" id="pw" placeholder="סיסמת ניהול" autocomplete="current-password">
+    <button onclick="doLogin()">כניסה</button>
+    <div id="loginErr" class="err"></div>
+  </div>
+</div>
+
+<div id="app" class="app">
+  <div class="header">
+    <h1>מפגשי זום</h1>
+    <div style="display:flex;gap:10px;">
+      <button class="btn" onclick="openForm()">+ מפגש חדש</button>
+      <button class="header button" onclick="doLogout()">יציאה</button>
+    </div>
+  </div>
+  <div id="msg"></div>
+  <div id="meetingsList"></div>
+</div>
+
+<!-- Meeting form modal -->
+<div id="formModal" class="modal-overlay">
+  <div class="modal">
+    <h2 id="formTitle">מפגש חדש</h2>
+    <input type="hidden" id="fId">
+    <div class="field"><label>כותרת</label><input type="text" id="fTitle"></div>
+    <div class="field"><label>תיאור קצר</label><textarea id="fDesc"></textarea></div>
+    <div class="field"><label>תאריך</label><input type="date" id="fDate"></div>
+    <div class="field"><label>שעה</label><input type="time" id="fTime"></div>
+    <div class="field"><label>אזור זמן</label><input type="text" id="fTz" value="Asia/Jerusalem"></div>
+    <div class="field"><label>קישור זום</label><input type="url" id="fZoom" placeholder="https://zoom.us/j/..."></div>
+    <div class="field">
+      <label>סטטוס</label>
+      <select id="fStatus">
+        <option value="draft">טיוטה</option>
+        <option value="open">פתוח להרשמה</option>
+        <option value="closed">סגור</option>
+        <option value="completed">הסתיים</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary btn" onclick="closeForm()">ביטול</button>
+      <button class="btn" onclick="saveForm()">שמירה</button>
+    </div>
+  </div>
+</div>
+
+<!-- Registrations modal -->
+<div id="regsModal" class="modal-overlay">
+  <div class="modal" style="max-width:700px;">
+    <h2 id="regsTitle">נרשמים</h2>
+    <div id="regsActions" style="display:flex;gap:10px;margin-bottom:16px;"></div>
+    <div id="regsContent"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary btn" onclick="closeRegs()">סגירה</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let PW = '';
+const API = '/api';
+
+function headers() {
+  return { 'Content-Type': 'application/json', 'x-admin-password': PW };
+}
+
+async function doLogin() {
+  PW = document.getElementById('pw').value;
+  try {
+    const r = await fetch(API + '/admin/meetings', { headers: { 'x-admin-password': PW } });
+    if (r.status === 401) {
+      document.getElementById('loginErr').textContent = 'סיסמה שגויה';
+      PW = '';
+      return;
+    }
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadMeetings();
+  } catch (e) {
+    document.getElementById('loginErr').textContent = 'שגיאת חיבור';
+  }
+}
+
+function doLogout() {
+  PW = '';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login').style.display = 'flex';
+  document.getElementById('pw').value = '';
+  document.getElementById('loginErr').textContent = '';
+}
+
+document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+function showMsg(text, ok) {
+  const el = document.getElementById('msg');
+  el.className = 'msg ' + (ok ? 'msg-ok' : 'msg-err');
+  el.textContent = text;
+  setTimeout(() => { el.className = ''; el.textContent = ''; }, 5000);
+}
+
+const STATUS_HE = { draft: 'טיוטה', open: 'פתוח', closed: 'סגור', completed: 'הסתיים' };
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+async function loadMeetings() {
+  try {
+    const r = await fetch(API + '/admin/meetings', { headers: { 'x-admin-password': PW } });
+    const data = await r.json();
+    if (!data.ok) { showMsg('שגיאה בטעינת מפגשים', false); return; }
+    renderMeetings(data.meetings);
+  } catch (e) {
+    showMsg('שגיאת חיבור', false);
+  }
+}
+
+function renderMeetings(meetings) {
+  const el = document.getElementById('meetingsList');
+  if (!meetings.length) {
+    el.innerHTML = '<div class="card" style="text-align:center;color:#6E7C78;">אין מפגשים עדיין. לחצו "מפגש חדש" כדי להתחיל.</div>';
+    return;
+  }
+  el.innerHTML = meetings.map(m => `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:start;">
+        <h3>${esc(m.title)}</h3>
+        <span class="status status-${m.status}">${STATUS_HE[m.status] || m.status}</span>
+      </div>
+      <div class="meta">
+        ${fmtDate(m.meeting_date)} | ${(m.meeting_time||'').slice(0,5)} | ${m.registration_count || 0} נרשמים
+      </div>
+      ${m.description ? `<p style="font-size:14px;color:#3A4744;margin-bottom:12px;">${esc(m.description)}</p>` : ''}
+      <div class="actions">
+        <button class="btn btn-small" onclick="editMeeting(${m.id})">עריכה</button>
+        <button class="btn btn-small btn-secondary" onclick="showRegs(${m.id}, '${esc(m.title)}')">נרשמים (${m.registration_count || 0})</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+let allMeetings = [];
+async function loadMeetings() {
+  try {
+    const r = await fetch(API + '/admin/meetings', { headers: { 'x-admin-password': PW } });
+    const data = await r.json();
+    if (!data.ok) { showMsg('שגיאה בטעינת מפגשים', false); return; }
+    allMeetings = data.meetings;
+    renderMeetings(allMeetings);
+  } catch (e) {
+    showMsg('שגיאת חיבור', false);
+  }
+}
+
+function openForm(meeting) {
+  document.getElementById('formTitle').textContent = meeting ? 'עריכת מפגש' : 'מפגש חדש';
+  document.getElementById('fId').value = meeting ? meeting.id : '';
+  document.getElementById('fTitle').value = meeting ? meeting.title : '';
+  document.getElementById('fDesc').value = meeting ? (meeting.description || '') : '';
+  document.getElementById('fDate').value = meeting ? (meeting.meeting_date || '').slice(0, 10) : '';
+  document.getElementById('fTime').value = meeting ? (meeting.meeting_time || '').slice(0, 5) : '';
+  document.getElementById('fTz').value = meeting ? (meeting.timezone || 'Asia/Jerusalem') : 'Asia/Jerusalem';
+  document.getElementById('fZoom').value = meeting ? (meeting.zoom_link || '') : '';
+  document.getElementById('fStatus').value = meeting ? meeting.status : 'draft';
+  document.getElementById('formModal').classList.add('active');
+}
+
+function closeForm() {
+  document.getElementById('formModal').classList.remove('active');
+}
+
+function editMeeting(id) {
+  const m = allMeetings.find(x => x.id === id);
+  if (m) openForm(m);
+}
+
+async function saveForm() {
+  const id = document.getElementById('fId').value;
+  const body = {
+    title: document.getElementById('fTitle').value,
+    description: document.getElementById('fDesc').value,
+    meeting_date: document.getElementById('fDate').value,
+    meeting_time: document.getElementById('fTime').value,
+    timezone: document.getElementById('fTz').value,
+    zoom_link: document.getElementById('fZoom').value,
+    status: document.getElementById('fStatus').value,
+  };
+
+  if (!body.title || !body.meeting_date || !body.meeting_time) {
+    showMsg('נא למלא כותרת, תאריך ושעה', false);
+    return;
+  }
+
+  const method = id ? 'PUT' : 'POST';
+  if (id) body.id = parseInt(id, 10);
+
+  try {
+    const r = await fetch(API + '/admin/meetings', { method, headers: headers(), body: JSON.stringify(body) });
+    const data = await r.json();
+    if (!data.ok) { showMsg('שגיאה בשמירה', false); return; }
+    closeForm();
+    showMsg(id ? 'המפגש עודכן' : 'המפגש נוצר', true);
+    loadMeetings();
+  } catch (e) {
+    showMsg('שגיאת חיבור', false);
+  }
+}
+
+async function showRegs(meetingId, title) {
+  document.getElementById('regsTitle').textContent = 'נרשמים — ' + title;
+  document.getElementById('regsContent').innerHTML = 'טוען...';
+  document.getElementById('regsActions').innerHTML = `
+    <button class="btn btn-small" onclick="sendReminders(${meetingId})">שלח תזכורות</button>
+    <a class="btn btn-small btn-secondary" href="${API}/admin/registrations?meeting_id=${meetingId}&format=csv" style="text-decoration:none;color:#fff;" id="csvLink">ייצוא CSV</a>
+  `;
+  const csvLink = document.getElementById('csvLink');
+  csvLink.addEventListener('click', e => {
+    e.preventDefault();
+    const url = API + '/admin/registrations?meeting_id=' + meetingId + '&format=csv';
+    fetch(url, { headers: { 'x-admin-password': PW } })
+      .then(r => r.blob())
+      .then(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'registrations-' + meetingId + '.csv';
+        a.click();
+      });
+  });
+  document.getElementById('regsModal').classList.add('active');
+
+  try {
+    const r = await fetch(API + '/admin/registrations?meeting_id=' + meetingId, { headers: { 'x-admin-password': PW } });
+    const data = await r.json();
+    if (!data.ok) { document.getElementById('regsContent').innerHTML = 'שגיאה בטעינה'; return; }
+    if (!data.registrations.length) {
+      document.getElementById('regsContent').innerHTML = '<p style="color:#6E7C78;">אין נרשמים עדיין.</p>';
+      return;
+    }
+    document.getElementById('regsContent').innerHTML = `
+      <table class="reg-table">
+        <thead><tr><th>שם</th><th>אימייל</th><th>תאריך</th><th>אישור</th><th>תזכורת</th></tr></thead>
+        <tbody>${data.registrations.map(r => `
+          <tr>
+            <td>${esc(r.name)}</td>
+            <td>${esc(r.email)}</td>
+            <td>${fmtDate(r.registered_at)}</td>
+            <td>${r.confirmation_sent_at ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
+            <td>${r.reminder_sent_at ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
+          </tr>
+        `).join('')}</tbody>
+      </table>
+    `;
+  } catch (e) {
+    document.getElementById('regsContent').innerHTML = 'שגיאת חיבור';
+  }
+}
+
+function closeRegs() {
+  document.getElementById('regsModal').classList.remove('active');
+}
+
+async function sendReminders(meetingId) {
+  if (!confirm('לשלוח תזכורת לכל הנרשמים שטרם קיבלו?')) return;
+  try {
+    const r = await fetch(API + '/admin/send-reminders', {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ meeting_id: meetingId }),
+    });
+    const data = await r.json();
+    if (!data.ok) { showMsg('שגיאה בשליחה', false); return; }
+    showMsg(`נשלחו ${data.sent} תזכורות` + (data.failed ? ` (${data.failed} נכשלו)` : ''), data.failed === 0);
+    showRegs(meetingId, document.getElementById('regsTitle').textContent.replace('נרשמים — ', ''));
+  } catch (e) {
+    showMsg('שגיאת חיבור', false);
+  }
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s || '';
+  return d.innerHTML;
+}
+</script>
+</body>
+</html>
