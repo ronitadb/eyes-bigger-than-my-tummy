@@ -1,5 +1,10 @@
-BUILD 2026-07-03T00:00:00.000Z
+BUILD 2026-07-04 (dist rebuilt from the .dc.html sources — all pages were stale)
 pages: index.html, book.html, ronit.html, zoom.html, materials.html, media.html, contact.html, visual-identity.html, yael.html
+
+Changes since last build (2026-07-04):
+- dist/ was fully regenerated from the root *.dc.html source files. Every dist page had drifted out of sync with its source (design-tool edits go to the .dc.html files, and dist/ had not been rebuilt), so live text edits — e.g. the rewritten body copy on the חומרי קריאה (materials) page — were not appearing on the live site. All pages now match their sources, with nav/cross-links rewritten to clean URLs (/, /book, /ronit, /zoom, /materials, /media, /contact, /yael).
+- Also reflected here: newsletter signup + Brevo integration fully removed (see README); "מפגשי זום" naming; footer tagline period removed; footer site-title in Assistant/green; form label tweaks.
+- To keep this from recurring: whenever the .dc.html sources change, rebuild dist/ from them before deploying.
 assets (26): beityeladim-children.png, beityeladim-diningroom.png, beityeladim-nosheochel.png, beityeladim-room.png, beityeladim-shelf.png, beityeladim-showers.png, beityeladim-silkworms.png, book-cover.jpg, chalk-green.png, cover-art.jpg, image-slot.js, nature-corner.png, reading-corner.png, ronit.jpg, sharon-ink.png, sharon-mother.png, sharon-sewage.png, sharon-swing.png, sharon-tricycle.png, title-handwriting.png, vered-1.png, vered-2.png, vered-3.png, vered-4.png, vered-5.png, yael.jpg
 
 Changes since last build (2026-07-02):
