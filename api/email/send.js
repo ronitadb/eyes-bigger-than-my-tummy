@@ -60,7 +60,7 @@ function textToHtmlParagraphs(text) {
     .split(/\n\n+/)
     .map(function (para) {
       var lines = para.split(/\n/).map(escHtml).join('<br>');
-      return '<p style="font-size: 17px; line-height: 1.8; margin: 0 0 16px;">' + lines + '</p>';
+      return '<p style="font-size: 17px; line-height: 1.8; margin: 0 0 16px; text-align: right; direction: rtl;">' + lines + '</p>';
     })
     .join('\n    ');
 }
@@ -88,32 +88,32 @@ function renderTemplate(templateBody, templateSubject, vars) {
 
   var meetingBlock = '';
   if (vars.title && (vars.date || vars.time)) {
-    meetingBlock = '\n    <div style="background: #EEF3EF; border: 1px solid rgba(34,48,47,.12); border-radius: 4px; padding: 24px; margin-bottom: 24px;">' +
+    meetingBlock = '\n    <div style="background: #EEF3EF; border: 1px solid rgba(34,48,47,.12); border-radius: 4px; padding: 24px; margin-bottom: 24px; text-align: right; direction: rtl;">' +
       '\n      <div style="font-weight: 700; font-size: 18px; color: #2F5248; margin-bottom: 14px;">' + escHtml(vars.title) + '</div>' +
       '\n      <div style="font-size: 16px; line-height: 1.7; color: #3A4744;">' +
       (vars.date ? '\n        <div>📅 ' + escHtml(vars.date) + '</div>' : '') +
       (vars.time ? '\n        <div>🕐 ' + escHtml(vars.time) + '</div>' : '') +
       (vars.zoom_link ? '\n        <div style="margin-top: 10px;"><a href="' + escHtml(vars.zoom_link) + '" style="color: #3D7468; font-weight: 600;">קישור לזום ←</a></div>' : '') +
       '\n      </div>' +
-      (vars.description ? '\n      <p style="font-size: 16px; line-height: 1.7; color: #3A4744; margin: 14px 0 0;">' + escHtml(vars.description) + '</p>' : '') +
+      (vars.description ? '\n      <p style="font-size: 16px; line-height: 1.7; color: #3A4744; margin: 14px 0 0; text-align: right; direction: rtl;">' + escHtml(vars.description) + '</p>' : '') +
       '\n    </div>';
   }
 
   var materialsBlock = '';
   if (vars.materials) {
-    materialsBlock = '\n    <div style="margin: 16px 0; padding: 16px; background: #f5f5f0; border-radius: 4px; font-size: 15px; line-height: 1.7; color: #3A4744;">' + escHtml(vars.materials) + '</div>';
+    materialsBlock = '\n    <div style="margin: 16px 0; padding: 16px; background: #f5f5f0; border-radius: 4px; font-size: 15px; line-height: 1.7; color: #3A4744; text-align: right; direction: rtl;">' + escHtml(vars.materials) + '</div>';
   }
 
   var html = '<!DOCTYPE html>\n' +
     '<html dir="rtl" lang="he">\n' +
     '<head><meta charset="utf-8"></head>\n' +
-    '<body style="font-family: -apple-system, sans-serif; color: #22302F; background: #FAF8F4; margin: 0; padding: 40px 20px;">\n' +
-    '  <div style="max-width: 520px; margin: 0 auto;">\n' +
-    '    <div style="font-size: 20px; font-weight: 700; color: #3D7468; margin-bottom: 24px;">עיניים גדולות זה לא טוב</div>\n' +
+    '<body style="font-family: -apple-system, sans-serif; color: #22302F; background: #FAF8F4; margin: 0; padding: 40px 20px; direction: rtl; text-align: right;">\n' +
+    '  <div dir="rtl" style="max-width: 520px; margin: 0 auto; direction: rtl; text-align: right;">\n' +
+    '    <div style="font-size: 20px; font-weight: 700; color: #3D7468; margin-bottom: 24px; text-align: right;">עיניים גדולות זה לא טוב</div>\n' +
     '    ' + bodyHtml + '\n' +
     meetingBlock + '\n' +
     materialsBlock + '\n' +
-    '    <div style="margin-top: 40px; padding-top: 16px; border-top: 1px solid rgba(34,48,47,.12); font-size: 13px; color: #8A9692;">\n' +
+    '    <div style="margin-top: 40px; padding-top: 16px; border-top: 1px solid rgba(34,48,47,.12); font-size: 13px; color: #8A9692; text-align: right; direction: rtl;">\n' +
     '      <a href="' + escHtml(vars.unsubscribe_url || '') + '" style="color: #8A9692;">להסרה מרשימת התפוצה</a>\n' +
     '    </div>\n' +
     '  </div>\n' +
