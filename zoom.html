@@ -91,10 +91,12 @@
         <div id="join-form">
           <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0 0 14px;">הצטרפו לרשימת המפגשים</div>
           <p style="font-family:'Frank Ruhl Libre',serif; font-size:17px; line-height:1.8; color:#3A4744; margin:0 0 22px;">השאירו את הפרטים שלכם ונעדכן אתכם לקראת כל מפגש — עם הנושא, המועד וקישור לזום. ניתן להסיר את עצמכם מהרשימה בכל עת.</p>
-          <div style="display:flex; flex-direction:column; gap:10px;">
-            <input type="text" id="join-name" placeholder="שם" style="padding:10px 14px; border:1px solid rgba(34,48,47,.2); border-radius:3px; font-size:16px; font-family:inherit; background:#fff;">
-            <input type="email" id="join-email" placeholder="אימייל" style="padding:10px 14px; border:1px solid rgba(34,48,47,.2); border-radius:3px; font-size:16px; font-family:inherit; background:#fff;">
-            <button id="join-btn" style="padding:12px 20px; background:var(--accent); color:#F4F8F4; border:none; border-radius:3px; font-size:16px; font-family:inherit; font-weight:600; cursor:pointer;">הצטרפות</button>
+          <div style="display:flex; flex-wrap:wrap; gap:12px;">
+            <input type="text" id="join-name" placeholder="שם" style="flex:1 1 200px; padding:16px 20px; border:1px solid rgba(34,48,47,.10); border-radius:10px; font-size:17px; font-family:inherit; background:#FAF8F4; color:#22302F;">
+            <input type="email" id="join-email" placeholder="כתובת אימייל" style="flex:1 1 200px; padding:16px 20px; border:1px solid rgba(34,48,47,.10); border-radius:10px; font-size:17px; font-family:inherit; background:#FAF8F4; color:#22302F;">
+          </div>
+          <div style="margin-top:12px;">
+            <button id="join-btn" style="width:100%; padding:16px 20px; background:var(--accent); color:#F4F8F4; border:none; border-radius:10px; font-size:18px; font-family:inherit; font-weight:600; cursor:pointer;">הצטרפות</button>
           </div>
           <div id="join-msg" style="margin-top:12px; font-size:15px;"></div>
         </div>
