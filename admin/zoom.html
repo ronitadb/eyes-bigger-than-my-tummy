@@ -267,7 +267,7 @@ function renderMeetings(){
       '<div class="meta">'+fmtDate(m.meeting_date)+' | '+(m.meeting_time||'').slice(0,5)+
       (m.reminders_sent?' | '+m.reminders_sent+' תזכורות נשלחו':'')+
       (m.followups_sent?' | '+m.followups_sent+' הודעות מעקב':'')+'</div>'+
-      (m.description?'<p style="font-size:14px;color:#3A4744;margin-bottom:12px">'+esc(m.description)+'</p>':'')+
+      (m.description?'<p style="font-size:14px;color:#3A4744;margin-bottom:12px;overflow-wrap:break-word;word-break:break-word">'+esc(m.description)+'</p>':'')+
       '<div class="actions"><button class="btn btn-small" onclick="editMeeting('+m.id+')">עריכה</button>'+
       '<button class="btn btn-small btn-secondary" onclick="openSendModal('+m.id+',\''+esc(m.title)+'\')">שליחת אימייל</button></div></div>'
   }).join('');
