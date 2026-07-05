@@ -85,50 +85,21 @@
       <div id="meetings-list" style="max-width:600px; margin:0 auto;"></div>
     </section>
 
-    <!-- join the next meeting -->
+    <!-- join the list -->
     <section style="padding:0 0 76px;">
-      <div style="max-width:600px; margin:0 auto; background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(30px,4vw,44px) clamp(26px,4vw,46px); text-align:center;">
-        <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0 0 8px;">הצטרפות למפגש הבא</div>
-        <p style="font-family:var(--head-font); font-size:15px; line-height:1.6; color:#3A4744; margin:0 auto 22px; max-width:46ch;">פרטי ההרשמה למפגש הקרוב מתפרסמים בדף הפייסבוק של הספר. אפשר גם לכתוב לנו ונשמח לשלוח קישור והזמנה לקראת המפגש.</p>
-        <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
-          <a href="https://www.facebook.com/profile.php?id=61585440045934" target="_blank" rel="noopener" style="background:var(--accent); color:#F4F8F4; text-decoration:none; padding:12px 26px; border-radius:2px; font-size:15px; font-weight:600;">לדף הפייסבוק</a>
-          <a href="mailto:ronit.adiv@gmail.com" style="border:1px solid var(--accent); color:var(--accent); text-decoration:none; padding:12px 26px; border-radius:2px; font-size:15px; font-weight:600;">שליחת מייל</a>
+      <div style="max-width:600px; margin:0 auto; background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(30px,4vw,44px) clamp(26px,4vw,46px);">
+        <div id="join-form">
+          <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0 0 14px;">הצטרפו לרשימת המפגשים</div>
+          <p style="font-family:'Frank Ruhl Libre',serif; font-size:17px; line-height:1.8; color:#3A4744; margin:0 0 22px;">השאירו את הפרטים שלכם ונעדכן אתכם לקראת כל מפגש — עם הנושא, המועד וקישור לזום. ניתן להסיר את עצמכם מהרשימה בכל עת.</p>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <input type="text" id="join-name" placeholder="שם" style="padding:10px 14px; border:1px solid rgba(34,48,47,.2); border-radius:3px; font-size:16px; font-family:inherit; background:#fff;">
+            <input type="email" id="join-email" placeholder="אימייל" style="padding:10px 14px; border:1px solid rgba(34,48,47,.2); border-radius:3px; font-size:16px; font-family:inherit; background:#fff;">
+            <button onclick="joinList()" style="padding:12px 20px; background:var(--accent); color:#F4F8F4; border:none; border-radius:3px; font-size:16px; font-family:inherit; font-weight:600; cursor:pointer;">הצטרפות</button>
+          </div>
+          <div id="join-msg" style="margin-top:12px; font-size:15px;"></div>
         </div>
       </div>
     </section>
-
-    <script>
-    (function() {
-      var MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-      var DAYS = ['יום ראשון','יום שני','יום שלישי','יום רביעי','יום חמישי','יום שישי','שבת'];
-
-      function fmtDate(d) {
-        var dt = new Date(d + 'T00:00:00');
-        return DAYS[dt.getDay()] + ', ' + dt.getDate() + ' ב' + MONTHS[dt.getMonth()] + ' ' + dt.getFullYear();
-      }
-      function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
-
-      fetch('/api/meetings')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          var el = document.getElementById('meetings-list');
-          if (!data.ok || !data.meetings.length) { el.innerHTML = ''; return; }
-          el.innerHTML = '<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0 0 20px; text-align:center;">המפגשים הקרובים</div>' +
-            data.meetings.map(function(m) {
-              return '<div style="background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(24px,3vw,34px) clamp(26px,4vw,46px); margin-bottom:16px;">' +
-                '<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(18px,2vw,22px); margin:0 0 10px;">' + esc(m.title) + '</div>' +
-                (m.description ? '<p style="font-family:\'Frank Ruhl Libre\',serif; font-size:16px; line-height:1.8; color:#3A4744; margin:0 0 14px; overflow-wrap:break-word; word-break:break-word;">' + esc(m.description) + '</p>' : '') +
-                '<div style="display:flex; flex-wrap:wrap; gap:16px; font-family:var(--head-font); font-size:15px; color:#3A4744;">' +
-                  '<span>📅 ' + fmtDate(m.meeting_date) + '</span>' +
-                  '<span>🕐 ' + (m.meeting_time || '').slice(0,5) + '</span>' +
-                '</div>' +
-              '</div>';
-            }).join('');
-        })
-        .catch(function() {});
-
-    })();
-    </script>
 
   </main>
 
@@ -152,6 +123,74 @@
 
 </div>
 </x-dc>
+<script>
+(function() {
+  var MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+  var DAYS = ['יום ראשון','יום שני','יום שלישי','יום רביעי','יום חמישי','יום שישי','שבת'];
+
+  function fmtDate(d) {
+    var dt = new Date(d + 'T00:00:00');
+    return DAYS[dt.getDay()] + ', ' + dt.getDate() + ' ב' + MONTHS[dt.getMonth()] + ' ' + dt.getFullYear();
+  }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+  fetch('/api/meetings')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var el = document.getElementById('meetings-list');
+      if (!el || !data.ok || !data.meetings.length) return;
+      el.innerHTML = '<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0 0 20px; text-align:center;">המפגשים הקרובים</div>' +
+        data.meetings.map(function(m) {
+          return '<div style="background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(24px,3vw,34px) clamp(26px,4vw,46px); margin-bottom:16px;">' +
+            '<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(18px,2vw,22px); margin:0 0 10px;">' + esc(m.title) + '</div>' +
+            (m.description ? '<p style="font-family:\'Frank Ruhl Libre\',serif; font-size:16px; line-height:1.8; color:#3A4744; margin:0 0 14px; overflow-wrap:break-word; word-break:break-word;">' + esc(m.description) + '</p>' : '') +
+            '<div style="display:flex; flex-wrap:wrap; gap:16px; font-family:var(--head-font); font-size:15px; color:#3A4744;">' +
+              '<span>📅 ' + fmtDate(m.meeting_date) + '</span>' +
+              '<span>🕐 ' + (m.meeting_time || '').slice(0,5) + '</span>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+    })
+    .catch(function() {});
+
+  window.joinList = function() {
+    var name = document.getElementById('join-name').value.trim();
+    var email = document.getElementById('join-email').value.trim();
+    var msgEl = document.getElementById('join-msg');
+
+    if (!name) { msgEl.style.color = '#8b4513'; msgEl.textContent = 'נא להזין שם'; return; }
+    if (!email || email.indexOf('@') < 1) { msgEl.style.color = '#8b4513'; msgEl.textContent = 'נא להזין כתובת אימייל תקינה'; return; }
+
+    msgEl.style.color = '#6E7C78';
+    msgEl.textContent = 'שולח...';
+
+    fetch('/api/join', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, email: email })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok) {
+        document.getElementById('join-form').innerHTML =
+          '<div style="text-align:center; padding:16px 0;">' +
+            '<div style="font-family:\'Frank Ruhl Libre\',serif; font-size:20px; color:var(--head-color); margin-bottom:12px;">תודה שהצטרפת</div>' +
+            '<p style="font-family:var(--head-font); font-size:15px; color:#6E7C78; line-height:1.7;">' +
+              (data.already_joined ? 'כבר נמצאת ברשימה. נעדכן אותך לקראת המפגש הבא.' : 'נעדכן אותך לקראת כל מפגש עם הנושא, המועד וקישור לזום.') +
+            '</p>' +
+          '</div>';
+      } else {
+        msgEl.style.color = '#8b4513';
+        msgEl.textContent = data.message || 'שגיאה, נא לנסות שוב';
+      }
+    })
+    .catch(function() {
+      msgEl.style.color = '#8b4513';
+      msgEl.textContent = 'שגיאת חיבור, נא לנסות שוב';
+    });
+  };
+})();
+</script>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;showGrain&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;מראה&quot;}}">
 class Component extends DCLogic {
   renderVals() {
