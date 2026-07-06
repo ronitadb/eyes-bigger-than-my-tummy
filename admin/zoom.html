@@ -108,7 +108,7 @@
         <select id="partFilter" onchange="loadParticipants()" style="padding:6px 12px;border:1px solid #ccc;border-radius:4px;font-family:inherit;font-size:14px">
           <option value="all">הכל</option>
           <option value="active" selected>פעילים</option>
-          <option value="unsubscribed">הוסרו</option>
+          <option value="unsubscribed">לא פעילים</option>
         </select>
         <button class="btn btn-small btn-secondary" onclick="exportCSV()">ייצוא CSV</button>
       </div>
@@ -341,10 +341,21 @@ function loadParticipants(){
 function renderParticipants(){
   var el=document.getElementById('participantsList');
   if(!allParticipants.length){el.innerHTML='<p style="color:#6E7C78">אין משתתפים.</p>';return}
-  el.innerHTML='<table><thead><tr><th>שם</th><th>אימייל</th><th>סטטוס</th><th>הצטרפות</th></tr></thead><tbody>'+
+  el.innerHTML='<table><thead><tr><th>שם</th><th>אימייל</th><th>סטטוס</th><th>הצטרפות</th><th>פעולה</th></tr></thead><tbody>'+
     allParticipants.map(function(p){
-      return '<tr><td>'+esc(p.name)+'</td><td>'+esc(p.email)+'</td><td><span class="status status-'+p.status+'">'+(p.status==='active'?'פעיל':'הוסר')+'</span></td><td>'+fmtDate(p.joined_at)+'</td></tr>'
+      var actionBtn=p.status==='active'
+        ? '<button class="btn btn-small btn-secondary" onclick="changeParticipantStatus('+p.id+',\'unsubscribed\')">בטל הרשמה</button>'
+        : '<button class="btn btn-small" onclick="changeParticipantStatus('+p.id+',\'active\')">הפעל מחדש</button>';
+      return '<tr><td>'+esc(p.name)+'</td><td>'+esc(p.email)+'</td><td><span class="status status-'+p.status+'">'+(p.status==='active'?'פעיל':'הוסר')+'</span></td><td>'+fmtDate(p.joined_at)+'</td><td>'+actionBtn+'</td></tr>'
     }).join('')+'</tbody></table>';
+}
+function changeParticipantStatus(id,status){
+  var action=status==='unsubscribed'?'לבטל את ההרשמה של משתתף זה?':'להפעיל מחדש משתתף זה?';
+  if(!confirm(action))return;
+  fetch(API+'/admin/participants',{method:'PUT',headers:{'Content-Type':'application/json','x-admin-password':PW},body:JSON.stringify({id:id,status:status})})
+    .then(function(r){return r.json()}).then(function(data){
+      if(data.ok){loadParticipants()}else{alert('שגיאה: '+(data.error||'unknown'))}
+    }).catch(function(){alert('שגיאת רשת')});
 }
 function exportCSV(){
   var filter=document.getElementById('partFilter').value;
