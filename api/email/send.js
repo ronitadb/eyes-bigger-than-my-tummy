@@ -39,6 +39,8 @@ function unsubscribeUrl(email) {
 }
 
 const MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+var DAYS_HE = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+var ORDINALS_HE = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שביעי','שמיני'];
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -65,36 +67,38 @@ function textToHtmlParagraphs(text) {
     .join('\n    ');
 }
 
-const DAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
-const ORDINALS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שביעי','שמיני'];
-
-function formatDayName(dateStr) {
-  if (!dateStr) return '';
-  var d = new Date(dateStr + 'T00:00:00');
-  return 'יום ' + DAYS[d.getDay()];
-}
-
 function renderSeriesScheduleBlock(meetings) {
   if (!meetings || !meetings.length) return '';
 
-  var rows = meetings.map(function (m, i) {
-    var ordinal = ORDINALS[i] || String(i + 1);
-    var dayName = formatDayName(m.meeting_date);
-    var date = formatDate(m.meeting_date);
-    var time = formatTime(m.meeting_time);
-    var dateTimeStr = [dayName, date, time].filter(Boolean).join(' · ');
+  var rowsHtml = '';
+  for (var i = 0; i < meetings.length; i++) {
+    var m = meetings[i];
+    var ordinal = ORDINALS_HE[i] || String(i + 1);
+    var d = m.meeting_date ? new Date(m.meeting_date + 'T00:00:00') : null;
+    var dayName = d ? 'יום ' + DAYS_HE[d.getDay()] : '';
+    var dateStr = formatDate(m.meeting_date);
+    var timeStr = formatTime(m.meeting_time);
+    var when = [dayName, dateStr, timeStr].filter(Boolean).join(' · ');
 
-    return '<div style="padding: 16px 0; border-bottom: 1px solid rgba(61,116,104,.12); text-align: right; direction: rtl;">' +
-      '<div style="font-size: 13px; color: #3D7468; margin-bottom: 2px;">מפגש ' + escHtml(ordinal) + '</div>' +
-      '<div style="font-size: 16px; font-weight: 700; color: #22302F; margin-bottom: 2px;">' + escHtml(m.title) + '</div>' +
-      '<div style="font-size: 13px; color: #3A4744;">' + escHtml(dateTimeStr) + '</div>' +
-    '</div>';
-  }).join('\n      ');
+    var isLast = (i === meetings.length - 1);
+    var borderStyle = isLast ? 'none' : '1px solid rgba(61,116,104,.10)';
 
-  return '\n    <div style="background: #EEF3EF; border-radius: 10px; padding: 28px 28px 12px; margin-top: 32px; text-align: right; direction: rtl;">' +
-    '\n      <div style="font-size: 17px; font-weight: 700; color: #22302F; margin-bottom: 16px;">סדרת מפגשי ״בואו נחזור לביתילדים״</div>' +
-    '\n      ' + rows +
-    '\n    </div>';
+    rowsHtml +=
+      '<tr><td style="padding: 12px 0; border-bottom: ' + borderStyle + '; text-align: right; direction: rtl;">' +
+        '<div style="font-size: 12px; color: #6E7C78;">מפגש ' + escHtml(ordinal) + '</div>' +
+        '<div style="font-size: 14px; font-weight: 600; color: #22302F; margin: 1px 0;">' + escHtml(m.title) + '</div>' +
+        '<div style="font-size: 12px; color: #8A9692;">' + escHtml(when) + '</div>' +
+      '</td></tr>';
+  }
+
+  return '<div style="background: #EEF3EF; border-radius: 8px; padding: 20px 22px 10px; margin-top: 28px; text-align: right; direction: rtl;">' +
+    '<div style="font-size: 14px; font-weight: 600; color: #2F5248; margin-bottom: 8px;">' +
+      'סדרת מפגשי ״בואו נחזור לביתילדים״' +
+    '</div>' +
+    '<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">' +
+      rowsHtml +
+    '</table>' +
+  '</div>';
 }
 
 function renderTemplate(templateBody, templateSubject, vars) {
