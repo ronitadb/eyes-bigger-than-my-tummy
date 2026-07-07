@@ -84,15 +84,15 @@ function renderSeriesScheduleBlock(meetings) {
     var time = formatTime(m.meeting_time);
     var dateTimeStr = [dayName, date, time].filter(Boolean).join(' · ');
 
-    return '<div style="padding: 10px 0; border-bottom: 1px solid rgba(61,116,104,.1); text-align: right; direction: rtl;">' +
-      '<div style="font-size: 14px; color: #22302F;"><span style="color: #3D7468;">מפגש ' + escHtml(ordinal) + '</span> — ' + escHtml(m.title) + '</div>' +
-      '<div style="font-size: 13px; color: #6E7C78; margin-top: 2px;">' + escHtml(dateTimeStr) + '</div>' +
+    return '<div style="padding: 6px 0; text-align: right; direction: rtl;">' +
+      '<div style="font-size: 13px; color: #3A4744;"><span style="color: #3D7468;">מפגש ' + escHtml(ordinal) + '</span> · ' + escHtml(m.title) + '</div>' +
+      '<div style="font-size: 12px; color: #8A9692; margin-top: 1px;">' + escHtml(dateTimeStr) + '</div>' +
     '</div>';
-  }).join('\n      ');
+  }).join('\n        ');
 
-  return '\n    <div style="border-top: 1px solid rgba(34,48,47,.12); margin-top: 32px; padding-top: 16px; text-align: right; direction: rtl;">' +
-    '\n      <div style="font-size: 13px; color: #8A9692; margin-bottom: 12px;">לוח המפגשים בקצרה</div>' +
-    '\n      ' + rows +
+  return '\n    <div style="background: #EEF3EF; border-radius: 6px; padding: 16px 20px; margin-top: 32px; max-width: 400px; text-align: right; direction: rtl;">' +
+    '\n      <div style="font-size: 13px; font-weight: 600; color: #3D7468; margin-bottom: 10px;">סדרת מפגשי ״בואו נחזור לביתלדים״</div>' +
+    '\n        ' + rows +
     '\n    </div>';
 }
 
