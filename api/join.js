@@ -1,5 +1,5 @@
 const { sql } = require('./db/connection');
-const { sendEmail, unsubscribeUrl, renderTemplate } = require('./email/send');
+const { sendEmail, unsubscribeUrl, renderTemplate, renderSeriesScheduleBlock } = require('./email/send');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -53,7 +53,18 @@ module.exports = async (req, res) => {
         SELECT subject, body FROM email_templates WHERE template_type = 'join_confirmation'
       `;
       if (templates.length) {
-        const vars = { name, unsubscribe_url: unsubscribeUrl(email) };
+        const { rows: upcoming } = await sql`
+          SELECT title, meeting_date, meeting_time
+          FROM zoom_meetings
+          WHERE status IN ('draft','open') AND meeting_date >= CURRENT_DATE
+          ORDER BY meeting_date ASC, meeting_time ASC
+          LIMIT 4
+        `;
+        const vars = {
+          name,
+          unsubscribe_url: unsubscribeUrl(email),
+          scheduleBlock: renderSeriesScheduleBlock(upcoming),
+        };
         const { subject, html } = renderTemplate(templates[0].body, templates[0].subject, vars);
         await sendEmail({ to: email, subject, html });
         confirmationSent = true;

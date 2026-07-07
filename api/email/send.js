@@ -65,6 +65,45 @@ function textToHtmlParagraphs(text) {
     .join('\n    ');
 }
 
+const DAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const ORDINALS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שביעי','שמיני'];
+
+function formatDayName(dateStr) {
+  if (!dateStr) return '';
+  var d = new Date(dateStr + 'T00:00:00');
+  return 'יום ' + DAYS[d.getDay()];
+}
+
+function renderSeriesScheduleBlock(meetings) {
+  if (!meetings || !meetings.length) return '';
+
+  var rows = meetings.map(function (m, i) {
+    var ordinal = ORDINALS[i] || String(i + 1);
+    var dayName = formatDayName(m.meeting_date);
+    var date = formatDate(m.meeting_date);
+    var time = formatTime(m.meeting_time);
+    var dateTimeStr = [dayName, date, time].filter(Boolean).join(' · ');
+
+    return '<tr>' +
+      '<td style="padding: 20px 0; border-bottom: 1px solid rgba(61,116,104,.15); vertical-align: top; text-align: right; direction: rtl;">' +
+        '<div style="font-size: 13px; color: #3D7468; margin-bottom: 4px;">מפגש ' + escHtml(ordinal) + '</div>' +
+        '<div style="font-size: 17px; font-weight: 700; color: #22302F;">' + escHtml(m.title) + '</div>' +
+      '</td>' +
+      '<td style="padding: 20px 0; border-bottom: 1px solid rgba(61,116,104,.15); vertical-align: middle; text-align: left; direction: ltr; white-space: nowrap;">' +
+        '<span style="font-size: 14px; color: #3A4744;">' + escHtml(dateTimeStr) + '</span>' +
+      '</td>' +
+    '</tr>';
+  }).join('\n      ');
+
+  return '\n    <div style="background: #EEF3EF; border-radius: 8px; padding: 32px 28px; margin: 28px 0; text-align: right; direction: rtl;">' +
+    '\n      <div style="font-size: 14px; color: #3D7468; margin-bottom: 6px;">לוח המפגשים</div>' +
+    '\n      <div style="font-size: 22px; font-weight: 700; color: #22302F; margin-bottom: 24px;">סדרת מפגשי ״בואו נחזור לבֵּיתַלְדִים״</div>' +
+    '\n      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; direction: rtl;">' +
+    '\n      ' + rows +
+    '\n      </table>' +
+    '\n    </div>';
+}
+
 function renderTemplate(templateBody, templateSubject, vars) {
   var replacements = {
     '{{name}}': vars.name || '',
@@ -113,6 +152,7 @@ function renderTemplate(templateBody, templateSubject, vars) {
     '    ' + bodyHtml + '\n' +
     meetingBlock + '\n' +
     materialsBlock + '\n' +
+    (vars.scheduleBlock || '') + '\n' +
     '    <div style="margin-top: 40px; padding-top: 16px; border-top: 1px solid rgba(34,48,47,.12); font-size: 13px; color: #8A9692; text-align: right; direction: rtl;">\n' +
     '      <a href="' + escHtml(vars.unsubscribe_url || '') + '" style="color: #8A9692;">להסרה מרשימת התפוצה</a>\n' +
     '    </div>\n' +
@@ -123,4 +163,4 @@ function renderTemplate(templateBody, templateSubject, vars) {
   return { subject, html };
 }
 
-module.exports = { sendEmail, unsubscribeToken, unsubscribeUrl, formatDate, formatTime, renderTemplate };
+module.exports = { sendEmail, unsubscribeToken, unsubscribeUrl, formatDate, formatTime, renderTemplate, renderSeriesScheduleBlock };
