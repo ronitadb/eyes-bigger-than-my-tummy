@@ -84,23 +84,16 @@ function renderSeriesScheduleBlock(meetings) {
     var time = formatTime(m.meeting_time);
     var dateTimeStr = [dayName, date, time].filter(Boolean).join(' · ');
 
-    return '<tr>' +
-      '<td style="padding: 18px 0; border-bottom: 1px solid rgba(61,116,104,.12); vertical-align: top; text-align: right; direction: rtl;">' +
-        '<div style="font-size: 13px; color: #3D7468; margin-bottom: 3px;">מפגש ' + escHtml(ordinal) + '</div>' +
-        '<div style="font-size: 16px; font-weight: 700; color: #22302F;">' + escHtml(m.title) + '</div>' +
-      '</td>' +
-      '<td style="padding: 18px 0; border-bottom: 1px solid rgba(61,116,104,.12); vertical-align: middle; text-align: left; direction: ltr; white-space: nowrap;">' +
-        '<span style="font-size: 13px; color: #3A4744;">' + escHtml(dateTimeStr) + '</span>' +
-      '</td>' +
-    '</tr>';
-  }).join('\n        ');
+    return '<div style="padding: 16px 0; border-bottom: 1px solid rgba(61,116,104,.12); text-align: right; direction: rtl;">' +
+      '<div style="font-size: 13px; color: #3D7468; margin-bottom: 2px;">מפגש ' + escHtml(ordinal) + '</div>' +
+      '<div style="font-size: 16px; font-weight: 700; color: #22302F; margin-bottom: 2px;">' + escHtml(m.title) + '</div>' +
+      '<div style="font-size: 13px; color: #3A4744;">' + escHtml(dateTimeStr) + '</div>' +
+    '</div>';
+  }).join('\n      ');
 
-  return '\n    <div style="background: #EEF3EF; border-radius: 10px; padding: 32px 32px 8px; margin-top: 32px; text-align: right; direction: rtl;">' +
-    '\n      <div style="font-size: 14px; color: #3D7468; margin-bottom: 4px;">לוח המפגשים</div>' +
-    '\n      <div style="font-size: 21px; font-weight: 700; color: #22302F; margin-bottom: 20px;">סדרת מפגשי ״בואו נחזור לבֶּיתֶלָדִים״</div>' +
-    '\n      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; direction: rtl;">' +
-    '\n        ' + rows +
-    '\n      </table>' +
+  return '\n    <div style="background: #EEF3EF; border-radius: 10px; padding: 28px 28px 12px; margin-top: 32px; text-align: right; direction: rtl;">' +
+    '\n      <div style="font-size: 17px; font-weight: 700; color: #22302F; margin-bottom: 16px;">סדרת מפגשי ״בואו נחזור לביתילדים״</div>' +
+    '\n      ' + rows +
     '\n    </div>';
 }
 
