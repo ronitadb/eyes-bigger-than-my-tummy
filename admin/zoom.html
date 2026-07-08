@@ -54,6 +54,18 @@
   .msg{padding:12px 16px;border-radius:4px;margin-bottom:16px;font-size:14px}
   .msg-ok{background:#d4edda;color:#155724}
   .msg-err{background:#f8d7da;color:#721c24}
+  .confirm-overlay{display:none;position:fixed;inset:0;background:rgba(34,48,47,.35);z-index:200;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .2s ease}
+  .confirm-overlay.active{display:flex;opacity:1}
+  .confirm-box{background:#FAF8F4;border-radius:10px;padding:32px 28px 24px;max-width:380px;width:100%;box-shadow:0 8px 32px rgba(34,48,47,.15);transform:scale(.95);transition:transform .2s ease;text-align:right}
+  .confirm-overlay.active .confirm-box{transform:scale(1)}
+  .confirm-box h3{font-size:18px;font-weight:700;color:#2F5248;margin-bottom:14px}
+  .confirm-box p{font-size:15px;line-height:1.7;color:#3A4744;margin-bottom:20px;white-space:pre-line}
+  .confirm-buttons{display:flex;gap:10px;justify-content:flex-start}
+  .confirm-btn{padding:10px 22px;border:none;border-radius:6px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:background .15s ease}
+  .confirm-btn-primary{background:#3D7468;color:#fff}
+  .confirm-btn-primary:hover{background:#2F5248}
+  .confirm-btn-secondary{background:transparent;color:#6E7C78;border:1px solid #ccc}
+  .confirm-btn-secondary:hover{background:#eee}
   .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
   .stat-card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:20px;text-align:center}
   .stat-card .num{font-size:32px;font-weight:700;color:#3D7468}
@@ -188,10 +200,55 @@
   </div>
 </div>
 
+<!-- Confirm dialog -->
+<div id="confirmOverlay" class="confirm-overlay">
+  <div class="confirm-box" role="dialog" aria-modal="true">
+    <h3 id="confirmTitle"></h3>
+    <p id="confirmMessage"></p>
+    <div class="confirm-buttons">
+      <button class="confirm-btn confirm-btn-primary" id="confirmOk"></button>
+      <button class="confirm-btn confirm-btn-secondary" id="confirmCancel"></button>
+    </div>
+  </div>
+</div>
+
 <script>
 var PW='', API='/api';
 var allMeetings=[], allParticipants=[], allTemplates=[];
 var sendMeetingId=null;
+
+function confirmDialog(opts){
+  return new Promise(function(resolve){
+    var overlay=document.getElementById('confirmOverlay');
+    var box=overlay.querySelector('.confirm-box');
+    var okBtn=document.getElementById('confirmOk');
+    var cancelBtn=document.getElementById('confirmCancel');
+    document.getElementById('confirmTitle').textContent=opts.title||'אישור';
+    document.getElementById('confirmMessage').textContent=opts.message||'';
+    okBtn.textContent=opts.confirmText||'אישור';
+    cancelBtn.textContent=opts.cancelText||'חזרה';
+    var triggerEl=document.activeElement;
+    function close(val){
+      overlay.classList.remove('active');
+      overlay.removeEventListener('click',onOverlay);
+      document.removeEventListener('keydown',onKey);
+      okBtn.removeEventListener('click',onOk);
+      cancelBtn.removeEventListener('click',onCancel);
+      if(triggerEl&&triggerEl.focus)triggerEl.focus();
+      resolve(val);
+    }
+    function onOk(){close(true)}
+    function onCancel(){close(false)}
+    function onOverlay(e){if(e.target===overlay)close(false)}
+    function onKey(e){if(e.key==='Escape')close(false)}
+    okBtn.addEventListener('click',onOk);
+    cancelBtn.addEventListener('click',onCancel);
+    overlay.addEventListener('click',onOverlay);
+    document.addEventListener('keydown',onKey);
+    overlay.classList.add('active');
+    okBtn.focus();
+  });
+}
 
 function headers(){return{'Content-Type':'application/json','x-admin-password':PW}}
 
@@ -314,11 +371,12 @@ function openSendModal(meetingId,title){
 }
 function closeSendModal(){document.getElementById('sendModal').classList.remove('active');sendMeetingId=null}
 
-function doSendEmail(){
+async function doSendEmail(){
   if(!sendMeetingId)return;
   var type=document.getElementById('sendType').value;
   var typeHe=type==='meeting_reminder'?'תזכורת':'הודעת מעקב';
-  if(!confirm('לשלוח '+typeHe+' לכל המשתתפים הפעילים?'))return;
+  var ok=await confirmDialog({title:'שליחת '+typeHe,message:'לשלוח '+typeHe+' לכל המשתתפים הפעילים?',confirmText:'שלח',cancelText:'חזרה'});
+  if(!ok)return;
   document.getElementById('sendBtn').disabled=true;
   fetch(API+'/admin/send-email',{method:'POST',headers:headers(),body:JSON.stringify({meeting_id:sendMeetingId,template_type:type})})
     .then(function(r){return r.json()}).then(function(data){
@@ -349,9 +407,11 @@ function renderParticipants(){
       return '<tr><td>'+esc(p.name)+'</td><td>'+esc(p.email)+'</td><td><span class="status status-'+p.status+'">'+(p.status==='active'?'פעיל':'הוסר')+'</span></td><td>'+fmtDate(p.joined_at)+'</td><td>'+actionBtn+'</td></tr>'
     }).join('')+'</tbody></table>';
 }
-function changeParticipantStatus(id,status){
-  var action=status==='unsubscribed'?'לבטל את ההרשמה של משתתף זה?':'להפעיל מחדש משתתף זה?';
-  if(!confirm(action))return;
+async function changeParticipantStatus(id,status){
+  var opts=status==='unsubscribed'
+    ?{title:'ביטול הרשמה',message:'האם לבטל את ההרשמה של משתתף זה?\nהמשתתף לא יקבל יותר הודעות על מפגשי הזום.\nניתן להפעיל את ההרשמה מחדש בכל עת.',confirmText:'בטל הרשמה',cancelText:'חזרה'}
+    :{title:'הפעלה מחדש',message:'להפעיל מחדש את ההרשמה של משתתף זה?\nהמשתתף יתחיל לקבל הודעות על מפגשי הזום.',confirmText:'הפעל מחדש',cancelText:'חזרה'};
+  if(!await confirmDialog(opts))return;
   fetch(API+'/admin/participants',{method:'PUT',headers:{'Content-Type':'application/json','x-admin-password':PW},body:JSON.stringify({id:id,status:status})})
     .then(function(r){return r.json()}).then(function(data){
       if(data.ok){loadParticipants()}else{alert('שגיאה: '+(data.error||'unknown'))}
