@@ -66,6 +66,17 @@
   .confirm-btn-primary:hover{background:#2F5248}
   .confirm-btn-secondary{background:transparent;color:#6E7C78;border:1px solid #ccc}
   .confirm-btn-secondary:hover{background:#eee}
+  .custom-select{position:relative;display:inline-block;font-family:inherit}
+  .custom-select-trigger{display:flex;align-items:center;gap:6px;padding:7px 14px;background:#FAF8F4;border:1px solid #c8cdc9;border-radius:6px;font-size:14px;font-family:inherit;font-weight:500;color:#2F5248;cursor:pointer;user-select:none;transition:border-color .15s,box-shadow .15s}
+  .custom-select-trigger:hover{border-color:#3D7468}
+  .custom-select.open .custom-select-trigger{border-color:#3D7468;box-shadow:0 0 0 2px rgba(61,116,104,.12)}
+  .custom-select-arrow{font-size:10px;color:#6E7C78;transition:transform .15s;margin-right:2px}
+  .custom-select.open .custom-select-arrow{transform:rotate(180deg)}
+  .custom-select-menu{display:none;position:absolute;top:calc(100% + 4px);right:0;min-width:100%;background:#FAF8F4;border:1px solid #c8cdc9;border-radius:6px;box-shadow:0 6px 20px rgba(34,48,47,.12);z-index:50;overflow:hidden}
+  .custom-select.open .custom-select-menu{display:block}
+  .custom-select-option{padding:9px 16px;font-size:14px;color:#3A4744;cursor:pointer;transition:background .1s;white-space:nowrap}
+  .custom-select-option:hover{background:rgba(61,116,104,.08)}
+  .custom-select-option.selected{color:#3D7468;font-weight:600;background:rgba(61,116,104,.06)}
   .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
   .stat-card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:20px;text-align:center}
   .stat-card .num{font-size:32px;font-weight:700;color:#3D7468}
@@ -117,11 +128,14 @@
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
       <h3 style="color:#2F5248">משתתפים</h3>
       <div style="display:flex;gap:8px">
-        <select id="partFilter" onchange="loadParticipants()" style="padding:6px 12px;border:1px solid #ccc;border-radius:4px;font-family:inherit;font-size:14px">
-          <option value="all">הכל</option>
-          <option value="active" selected>פעילים</option>
-          <option value="unsubscribed">לא פעילים</option>
-        </select>
+        <div class="custom-select" id="partFilterWrap" data-value="active" data-onchange="loadParticipants">
+          <button type="button" class="custom-select-trigger"><span class="custom-select-label">פעילים</span><span class="custom-select-arrow">▾</span></button>
+          <div class="custom-select-menu">
+            <div class="custom-select-option" data-value="all">הכל</div>
+            <div class="custom-select-option selected" data-value="active">פעילים</div>
+            <div class="custom-select-option" data-value="unsubscribed">לא פעילים</div>
+          </div>
+        </div>
         <button class="btn btn-small btn-secondary" onclick="exportCSV()">ייצוא CSV</button>
       </div>
     </div>
@@ -149,12 +163,15 @@
     <div class="field"><label>חומרים נלווים</label><textarea id="fMaterials" placeholder="קישורים, מאמרים, הערות..."></textarea></div>
     <div class="field">
       <label>סטטוס</label>
-      <select id="fStatus">
-        <option value="draft">טיוטה</option>
-        <option value="open">פתוח</option>
-        <option value="closed">סגור</option>
-        <option value="completed">הסתיים</option>
-      </select>
+      <div class="custom-select" id="fStatusWrap" data-value="draft">
+        <button type="button" class="custom-select-trigger" style="width:100%;justify-content:space-between"><span class="custom-select-label">טיוטה</span><span class="custom-select-arrow">▾</span></button>
+        <div class="custom-select-menu" style="left:0;right:0">
+          <div class="custom-select-option selected" data-value="draft">טיוטה</div>
+          <div class="custom-select-option" data-value="open">פתוח</div>
+          <div class="custom-select-option" data-value="closed">סגור</div>
+          <div class="custom-select-option" data-value="completed">הסתיים</div>
+        </div>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeMeetingForm()">ביטול</button>
@@ -170,10 +187,13 @@
     <p id="sendInfo" style="font-size:14px;color:#6E7C78;margin-bottom:16px"></p>
     <div class="field">
       <label>סוג הודעה</label>
-      <select id="sendType">
-        <option value="meeting_reminder">תזכורת לפני מפגש</option>
-        <option value="meeting_followup">הודעה לאחר מפגש</option>
-      </select>
+      <div class="custom-select" id="sendTypeWrap" data-value="meeting_reminder">
+        <button type="button" class="custom-select-trigger" style="width:100%;justify-content:space-between"><span class="custom-select-label">תזכורת לפני מפגש</span><span class="custom-select-arrow">▾</span></button>
+        <div class="custom-select-menu" style="left:0;right:0">
+          <div class="custom-select-option selected" data-value="meeting_reminder">תזכורת לפני מפגש</div>
+          <div class="custom-select-option" data-value="meeting_followup">הודעה לאחר מפגש</div>
+        </div>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeSendModal()">ביטול</button>
@@ -251,6 +271,53 @@ function confirmDialog(opts){
 }
 
 function headers(){return{'Content-Type':'application/json','x-admin-password':PW}}
+
+// Custom select helpers
+function csGetValue(id){var el=document.getElementById(id);return el?el.getAttribute('data-value'):''}
+function csSetValue(id,val){
+  var wrap=document.getElementById(id);if(!wrap)return;
+  wrap.setAttribute('data-value',val);
+  var opts=wrap.querySelectorAll('.custom-select-option');
+  for(var i=0;i<opts.length;i++){
+    var match=opts[i].getAttribute('data-value')===val;
+    opts[i].classList.toggle('selected',match);
+    if(match)wrap.querySelector('.custom-select-label').textContent=opts[i].textContent;
+  }
+}
+(function initCustomSelects(){
+  document.querySelectorAll('.custom-select').forEach(function(wrap){
+    var trigger=wrap.querySelector('.custom-select-trigger');
+    trigger.addEventListener('click',function(e){
+      e.stopPropagation();
+      document.querySelectorAll('.custom-select.open').forEach(function(other){if(other!==wrap)other.classList.remove('open')});
+      wrap.classList.toggle('open');
+    });
+    wrap.querySelectorAll('.custom-select-option').forEach(function(opt){
+      opt.addEventListener('click',function(e){
+        e.stopPropagation();
+        var val=opt.getAttribute('data-value');
+        csSetValue(wrap.id,val);
+        wrap.classList.remove('open');
+        var cb=wrap.getAttribute('data-onchange');
+        if(cb&&window[cb])window[cb]();
+      });
+    });
+    trigger.addEventListener('keydown',function(e){
+      if(e.key==='Escape'){wrap.classList.remove('open');return}
+      if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+        e.preventDefault();
+        var opts=wrap.querySelectorAll('.custom-select-option');
+        var cur=wrap.getAttribute('data-value');
+        var idx=0;
+        for(var i=0;i<opts.length;i++){if(opts[i].getAttribute('data-value')===cur){idx=i;break}}
+        idx=e.key==='ArrowDown'?Math.min(idx+1,opts.length-1):Math.max(idx-1,0);
+        opts[idx].click();
+      }
+    });
+  });
+  document.addEventListener('click',function(){document.querySelectorAll('.custom-select.open').forEach(function(w){w.classList.remove('open')})});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.custom-select.open').forEach(function(w){w.classList.remove('open')})});
+})();
 
 // Auth
 function doLogin(){
@@ -340,7 +407,7 @@ function openMeetingForm(m){
   document.getElementById('fTz').value=m?(m.timezone||'Asia/Jerusalem'):'Asia/Jerusalem';
   document.getElementById('fZoom').value=m?(m.zoom_link||''):'';
   document.getElementById('fMaterials').value=m?(m.related_materials||''):'';
-  document.getElementById('fStatus').value=m?m.status:'draft';
+  csSetValue('fStatusWrap',m?m.status:'draft');
   document.getElementById('meetingModal').classList.add('active');
 }
 function closeMeetingForm(){document.getElementById('meetingModal').classList.remove('active')}
@@ -351,7 +418,7 @@ function saveMeeting(){
   var body={title:document.getElementById('fTitle').value,description:document.getElementById('fDesc').value,
     meeting_date:document.getElementById('fDate').value,meeting_time:document.getElementById('fTime').value,
     timezone:document.getElementById('fTz').value,zoom_link:document.getElementById('fZoom').value,
-    related_materials:document.getElementById('fMaterials').value,status:document.getElementById('fStatus').value};
+    related_materials:document.getElementById('fMaterials').value,status:csGetValue('fStatusWrap')};
   if(!body.title||!body.meeting_date||!body.meeting_time){showMsg('נא למלא כותרת, תאריך ושעה',false);return}
   if(id)body.id=parseInt(id,10);
   fetch(API+'/admin/meetings',{method:id?'PUT':'POST',headers:headers(),body:JSON.stringify(body)})
@@ -373,7 +440,7 @@ function closeSendModal(){document.getElementById('sendModal').classList.remove(
 
 async function doSendEmail(){
   if(!sendMeetingId)return;
-  var type=document.getElementById('sendType').value;
+  var type=csGetValue('sendTypeWrap');
   var typeHe=type==='meeting_reminder'?'תזכורת':'הודעת מעקב';
   var ok=await confirmDialog({title:'שליחת '+typeHe,message:'לשלוח '+typeHe+' לכל המשתתפים הפעילים?',confirmText:'שלח',cancelText:'חזרה'});
   if(!ok)return;
@@ -388,7 +455,7 @@ async function doSendEmail(){
 
 // Participants
 function loadParticipants(){
-  var filter=document.getElementById('partFilter').value;
+  var filter=csGetValue('partFilterWrap');
   fetch(API+'/admin/participants?status='+filter,{headers:{'x-admin-password':PW}})
     .then(function(r){return r.json()}).then(function(data){
       if(!data.ok)return;
@@ -418,7 +485,7 @@ async function changeParticipantStatus(id,status){
     }).catch(function(){alert('שגיאת רשת')});
 }
 function exportCSV(){
-  var filter=document.getElementById('partFilter').value;
+  var filter=csGetValue('partFilterWrap');
   fetch(API+'/admin/participants?status='+filter+'&format=csv',{headers:{'x-admin-password':PW}})
     .then(function(r){return r.blob()}).then(function(blob){
       var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='zoom-participants.csv';a.click();
