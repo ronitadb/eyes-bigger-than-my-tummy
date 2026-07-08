@@ -123,12 +123,14 @@ function renderSeriesScheduleBlock(meetings) {
     }
   }
 
-  return '<div style="background: #EEF3EF; border-radius: 6px; padding: 14px 16px 10px; max-width: 360px; margin: 28px auto 0; text-align: right; direction: rtl;">' +
-    '<div style="font-size: 11px; font-weight: 500; color: #8A9E98; margin-bottom: 8px;">' +
-      'סדרת מפגשי ״בואו נחזור לביתילדים״' +
+  return '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 28px;"><tr><td align="center">' +
+    '<div style="background: #EEF3EF; border-radius: 6px; padding: 14px 16px 10px; max-width: 460px; width: 100%; text-align: right; direction: rtl;">' +
+      '<div style="font-size: 11px; font-weight: 500; color: #8A9E98; margin-bottom: 8px;">' +
+        'סדרת מפגשי ״בואו נחזור לביתילדים״' +
+      '</div>' +
+      rowsHtml +
     '</div>' +
-    rowsHtml +
-  '</div>';
+  '</td></tr></table>';
 }
 
 function renderTemplate(templateBody, templateSubject, vars) {
