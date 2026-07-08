@@ -85,30 +85,46 @@ function textToHtmlParagraphs(text) {
 function renderSeriesScheduleBlock(meetings) {
   if (!meetings || !meetings.length) return '';
 
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   var rowsHtml = '';
   for (var i = 0; i < meetings.length; i++) {
     var m = meetings[i];
     var ordinal = ORDINALS_HE[i] || String(i + 1);
-    var dayName = formatDayName(m.meeting_date);
-    var dateStr = formatDate(m.meeting_date);
-    var timeStr = formatTime(m.meeting_time);
-    var when = [dayName, dateStr, timeStr].filter(Boolean).join(' · ');
+    var meetingDate = toLocalDate(m.meeting_date);
+    var isPast = meetingDate && meetingDate < today;
 
     var sep = (i < meetings.length - 1)
-      ? '<div style="border-bottom: 1px solid rgba(61,116,104,.08); margin: 8px 0;"></div>'
+      ? '<div style="border-bottom: 1px solid rgba(61,116,104,.06); margin: 10px 0;"></div>'
       : '';
 
-    rowsHtml +=
-      '<div style="text-align: right; direction: rtl;">' +
-        '<div style="font-size: 12px; color: #3A4744;">' +
-          '<span style="color: #3D7468;">מפגש ' + escHtml(ordinal) + '</span> · ' + escHtml(m.title) +
-        '</div>' +
-        '<div style="font-size: 11px; color: #8A9692; margin-top: 1px;">' + escHtml(when) + '</div>' +
-      '</div>' + sep;
+    if (isPast) {
+      rowsHtml +=
+        '<div style="text-align: right; direction: rtl;">' +
+          '<div style="font-size: 12px; color: #B0BAB7;">' +
+            '<span style="color: #9AADA6;">מפגש ' + escHtml(ordinal) + '</span> · ' + escHtml(m.title) +
+          '</div>' +
+          '<div style="font-size: 11px; color: #C0C8C5; margin-top: 1px;">התקיים</div>' +
+        '</div>' + sep;
+    } else {
+      var dayName = formatDayName(m.meeting_date);
+      var dateStr = formatDate(m.meeting_date);
+      var timeStr = formatTime(m.meeting_time);
+      var when = [dayName, dateStr, timeStr].filter(Boolean).join(' · ');
+
+      rowsHtml +=
+        '<div style="text-align: right; direction: rtl;">' +
+          '<div style="font-size: 12px; color: #3A4744;">' +
+            '<span style="color: #3D7468;">מפגש ' + escHtml(ordinal) + '</span> · ' + escHtml(m.title) +
+          '</div>' +
+          '<div style="font-size: 11px; color: #8A9692; margin-top: 1px;">' + escHtml(when) + '</div>' +
+        '</div>' + sep;
+    }
   }
 
-  return '<div style="background: #EEF3EF; border-radius: 6px; padding: 14px 16px 10px; margin-top: 28px; max-width: 360px; text-align: right; direction: rtl;">' +
-    '<div style="font-size: 12px; font-weight: 600; color: #3D7468; margin-bottom: 8px;">' +
+  return '<div style="background: #EEF3EF; border-radius: 6px; padding: 14px 16px 10px; max-width: 360px; margin: 28px auto 0; text-align: right; direction: rtl;">' +
+    '<div style="font-size: 11px; font-weight: 500; color: #8A9E98; margin-bottom: 8px;">' +
       'סדרת מפגשי ״בואו נחזור לביתילדים״' +
     '</div>' +
     rowsHtml +

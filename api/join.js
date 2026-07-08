@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
         const { rows: upcoming } = await sql`
           SELECT title, meeting_date, meeting_time
           FROM zoom_meetings
-          WHERE status IN ('draft','open') AND meeting_date >= CURRENT_DATE
+          WHERE status IN ('draft','open')
           ORDER BY meeting_date ASC, meeting_time ASC
           LIMIT 4
         `;
