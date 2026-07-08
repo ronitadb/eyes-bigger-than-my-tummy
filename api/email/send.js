@@ -124,12 +124,12 @@ function renderSeriesScheduleBlock(meetings) {
   }
 
   return '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 28px;"><tr><td align="center">' +
-    '<div style="background: #EEF3EF; border-radius: 6px; padding: 14px 16px 10px; max-width: 460px; width: 100%; text-align: right; direction: rtl;">' +
+    '<table cellpadding="0" cellspacing="0" border="0" style="background: #EEF3EF; border-radius: 6px;"><tr><td style="padding: 14px 20px 10px; text-align: right; direction: rtl;">' +
       '<div style="font-size: 11px; font-weight: 500; color: #8A9E98; margin-bottom: 8px;">' +
         'סדרת מפגשי ״בואו נחזור לביתילדים״' +
       '</div>' +
       rowsHtml +
-    '</div>' +
+    '</td></tr></table>' +
   '</td></tr></table>';
 }
 
