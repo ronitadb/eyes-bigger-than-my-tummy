@@ -76,7 +76,12 @@ function textToHtmlParagraphs(text) {
   return text
     .split(/\n\n+/)
     .map(function (para) {
-      var lines = para.split(/\n/).map(escHtml).join('<br>');
+      var lines = para.split(/\n/).map(function (line) {
+        var escaped = escHtml(line);
+        return escaped.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, function (_, linkText, url) {
+          return '<a href="' + url + '" style="color: #3D7468; text-decoration: underline;" target="_blank">' + linkText + '</a>';
+        });
+      }).join('<br>');
       return '<p style="font-size: 17px; line-height: 1.8; margin: 0 0 16px; text-align: right; direction: rtl;">' + lines + '</p>';
     })
     .join('\n    ');
