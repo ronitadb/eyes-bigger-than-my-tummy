@@ -157,19 +157,30 @@ function renderTemplate(templateBody, templateSubject, vars) {
     subject = subject.split(key).join(replacements[key]);
   }
 
-  var bodyHtml = textToHtmlParagraphs(bodyText.trim());
-
   var meetingBlock = '';
   if (vars.title && (vars.date || vars.time)) {
     meetingBlock = '\n    <div style="background: #EEF3EF; border: 1px solid rgba(34,48,47,.12); border-radius: 4px; padding: 24px; margin-bottom: 24px; text-align: right; direction: rtl;">' +
       '\n      <div style="font-weight: 700; font-size: 18px; color: #2F5248; margin-bottom: 14px;">' + escHtml(vars.title) + '</div>' +
       '\n      <div style="font-size: 16px; line-height: 1.7; color: #3A4744;">' +
-      (vars.date ? '\n        <div>📅 ' + escHtml(vars.date) + '</div>' : '') +
-      (vars.time ? '\n        <div>🕐 ' + escHtml(vars.time) + '</div>' : '') +
+      (vars.date ? '\n        <div>' + escHtml(vars.date) + '</div>' : '') +
+      (vars.time ? '\n        <div>' + escHtml(vars.time) + '</div>' : '') +
       (vars.zoom_link ? '\n        <div style="margin-top: 10px;"><a href="' + escHtml(vars.zoom_link) + '" style="color: #3D7468; font-weight: 600;">קישור לזום ←</a></div>' : '') +
       '\n      </div>' +
       (vars.description ? '\n      <p style="font-size: 16px; line-height: 1.7; color: #3A4744; margin: 14px 0 0; text-align: right; direction: rtl;">' + escHtml(vars.description) + '</p>' : '') +
       '\n    </div>';
+  }
+
+  var paragraphs = textToHtmlParagraphs(bodyText.trim());
+  var bodyHtml;
+  if (meetingBlock) {
+    var firstClose = paragraphs.indexOf('</p>');
+    if (firstClose !== -1) {
+      bodyHtml = paragraphs.slice(0, firstClose + 4) + '\n' + meetingBlock + '\n    ' + paragraphs.slice(firstClose + 4).replace(/^\s+/, '');
+    } else {
+      bodyHtml = paragraphs + '\n' + meetingBlock;
+    }
+  } else {
+    bodyHtml = paragraphs;
   }
 
   var materialsBlock = '';
@@ -184,7 +195,6 @@ function renderTemplate(templateBody, templateSubject, vars) {
     '  <div dir="rtl" style="max-width: 520px; margin: 0 auto; direction: rtl; text-align: right;">\n' +
     '    <div style="font-size: 20px; font-weight: 700; color: #3D7468; margin-bottom: 24px; text-align: right;">עיניים גדולות זה לא טוב</div>\n' +
     '    ' + bodyHtml + '\n' +
-    meetingBlock + '\n' +
     materialsBlock + '\n' +
     (vars.scheduleBlock || '') + '\n' +
     '    <div style="margin-top: 40px; padding-top: 16px; border-top: 1px solid rgba(34,48,47,.12); font-size: 13px; color: #8A9692; text-align: right; direction: rtl;">\n' +
