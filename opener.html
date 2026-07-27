@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>פתיח</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'David Libre',David,'Times New Roman',serif}
+
+.bg{position:fixed;inset:0;background:#FAF8F4;z-index:0}
+
+.orb{
+  position:absolute;border-radius:50%;filter:blur(80px);opacity:0;
+  animation:orbFade 4s ease-in forwards;
+}
+.orb1{width:500px;height:500px;background:rgba(61,116,104,.12);top:-10%;right:-5%;animation-delay:0s}
+.orb2{width:400px;height:400px;background:rgba(154,173,166,.15);bottom:-8%;left:-8%;animation-delay:1s}
+.orb3{width:350px;height:350px;background:rgba(61,116,104,.08);top:40%;left:30%;animation-delay:2s}
+.orb4{width:300px;height:300px;background:rgba(200,190,170,.12);top:10%;left:60%;animation-delay:3s}
+.orb5{width:450px;height:450px;background:rgba(61,116,104,.06);bottom:20%;right:20%;animation-delay:1.5s}
+
+@keyframes orbFade{to{opacity:1}}
+
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-25px,35px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,25px)}}
+
+.orb1{animation:orbFade 4s ease-in forwards, drift1 25s ease-in-out infinite}
+.orb2{animation:orbFade 4s ease-in 1s forwards, drift2 30s ease-in-out infinite}
+.orb3{animation:orbFade 4s ease-in 2s forwards, drift3 20s ease-in-out infinite}
+.orb4{animation:orbFade 4s ease-in 3s forwards, drift1 28s ease-in-out infinite}
+.orb5{animation:orbFade 4s ease-in 1.5s forwards, drift2 22s ease-in-out infinite}
+
+.line{
+  position:absolute;
+  background:rgba(61,116,104,.04);
+  transform-origin:center;
+}
+.line1{width:1px;height:120%;top:-10%;right:25%;transform:rotate(15deg)}
+.line2{width:1px;height:100%;top:0;left:35%;transform:rotate(-10deg)}
+.line3{width:1px;height:110%;top:-5%;right:55%;transform:rotate(8deg)}
+
+.stage{
+  position:relative;z-index:1;
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+}
+
+.text-block{
+  position:absolute;
+  max-width:720px;
+  padding:0 40px;
+  text-align:center;
+  opacity:0;
+  transform:translateY(12px);
+  transition:opacity 1.2s ease, transform 1.2s ease;
+  pointer-events:none;
+}
+.text-block.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+.text-block.fading{
+  opacity:0;
+  transform:translateY(-8px);
+}
+
+.son{
+  font-size:28px;
+  line-height:1.9;
+  color:#22302F;
+  font-weight:400;
+}
+.mother{
+  font-size:28px;
+  line-height:1.9;
+  color:#3D7468;
+  font-weight:600;
+}
+
+.final{
+  font-size:26px;
+  line-height:2;
+  color:#22302F;
+}
+.final em{
+  font-style:normal;
+  color:#3D7468;
+  font-weight:600;
+}
+
+.progress{
+  position:fixed;bottom:0;left:0;right:0;height:2px;z-index:10;
+  background:rgba(61,116,104,.1);
+}
+.progress-bar{
+  height:100%;width:0;
+  background:rgba(61,116,104,.3);
+  transition:width 0.3s linear;
+}
+
+.click-hint{
+  position:fixed;bottom:40px;left:50%;transform:translateX(-50%);
+  font-size:14px;color:rgba(61,116,104,.4);
+  font-family:-apple-system,sans-serif;
+  z-index:10;
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="orb orb4"></div>
+  <div class="orb orb5"></div>
+  <div class="line line1"></div>
+  <div class="line line2"></div>
+  <div class="line line3"></div>
+</div>
+
+<div class="stage" id="stage"></div>
+
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+<div class="click-hint" id="hint">לחצו להתחיל</div>
+
+<script>
+var scenes = [
+  { text: 'היי אמא.', cls: 'son', hold: 2500 },
+  { text: '"היי!"', cls: 'mother', hold: 2000 },
+  { text: '"אני כותב מטלה באוניברסיטה על החינוך המשותף שאת גדלת בו,\nואני צריך להשוות למקומות אחרים שגידלו ככה.\nזה לא עובד."', cls: 'son', hold: 7000 },
+  { text: '"למה? מה לא עובד?"', cls: 'mother', hold: 2500 },
+  { text: '"אני שם במילות חיפוש בגוגל\n״ילדים שלא גודלו על ידי ההורים שלהם״.\n\nמה שעולה לי זה ילדים שהתייתמו,\nאו שההורים שלהם לא היו כשירים.\nאימוץ.\nאומנה."', cls: 'son', hold: 8000 },
+  { text: '"תחפש ״ילדים שלא גודלו על ידי ההורים שלהם\nוגודלו בקבוצה״."', cls: 'mother', hold: 5000 },
+  { text: '"אוקיי, מחפש..\nעולים לי בתי יתומים ופנימיות.\nזה לא זה."', cls: 'son', hold: 5000 },
+  { text: '"אוקיי...\nתחפש ילדים שלא גודלו על ידי ההורים שלהם,\nוגודלו בקבוצה,\nכשההורים שלהם היו עם מסוגלות הורית."', cls: 'mother', hold: 6000 },
+  { text: '"אוי...\nעולה לי ספרטה העתיקה...\nוגם שם הילדים עברו לחינוך קבוצתי רק בגיל שבע.\nוהבנות בכלל נשארו בבית.\nזה לא זה."', cls: 'son', hold: 7000 },
+  { text: '"אז מה זה אומר?"', cls: 'mother', hold: 3000 },
+  { text: 'זה אומר –\nשיש ילדים שגדלו בלי ההורים שלהם.\nויש ילדים שגדלו בקבוצה.\nויש ילדים שגדלו במסגרות חלופיות\nכי ההורים שלהם לא יכלו לגדל אותם.', cls: 'final', hold: 8000 },
+  { text: 'אבל כנראה שאין עוד מסגרות של ילדים\nשגם <em>גדלו בקבוצה מינקות</em>,\nגם <em>גודלו על ידי אנשים שהם לא ההורים שלהם</em>,\nוגם ש<em>ההורים שלהם בחיים, מתפקדים וכשירים</em>.', cls: 'final', hold: 10000 },
+];
+
+var FADE_IN = 1200;
+var FADE_OUT = 800;
+var stage = document.getElementById('stage');
+var bar = document.getElementById('progressBar');
+var hint = document.getElementById('hint');
+var totalTime = 0;
+var started = false;
+
+for (var i = 0; i < scenes.length; i++) {
+  totalTime += FADE_IN + scenes[i].hold + FADE_OUT + 200;
+}
+
+function formatText(text, cls) {
+  var lines = text.split('\n');
+  var html = '';
+  for (var j = 0; j < lines.length; j++) {
+    if (lines[j] === '') {
+      html += '<br>';
+    } else {
+      html += (j > 0 ? '<br>' : '') + lines[j];
+    }
+  }
+  return html;
+}
+
+function run() {
+  if (started) return;
+  started = true;
+  hint.style.display = 'none';
+
+  var elapsed = 0;
+  var startTime = Date.now();
+
+  function updateProgress() {
+    var pct = Math.min(100, ((Date.now() - startTime) / totalTime) * 100);
+    bar.style.width = pct + '%';
+    if (pct < 100) requestAnimationFrame(updateProgress);
+  }
+  requestAnimationFrame(updateProgress);
+
+  var delay = 0;
+  for (var i = 0; i < scenes.length; i++) {
+    (function(scene, d) {
+      setTimeout(function() {
+        var el = document.createElement('div');
+        el.className = 'text-block ' + scene.cls;
+        el.innerHTML = formatText(scene.text, scene.cls);
+        stage.appendChild(el);
+
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            el.classList.add('visible');
+          });
+        });
+
+        setTimeout(function() {
+          el.classList.remove('visible');
+          el.classList.add('fading');
+          setTimeout(function() {
+            if (el.parentNode) el.parentNode.removeChild(el);
+          }, FADE_OUT);
+        }, FADE_IN + scene.hold);
+      }, d);
+    })(scenes[i], delay);
+
+    delay += FADE_IN + scenes[i].hold + FADE_OUT + 200;
+  }
+}
+
+document.addEventListener('click', run);
+document.addEventListener('keydown', function(e) {
+  if (e.code === 'Space' || e.code === 'Enter') run();
+});
+</script>
+</body>
+</html>
