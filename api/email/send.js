@@ -174,8 +174,10 @@ function renderTemplate(templateBody, templateSubject, vars) {
   var bodyHtml;
   if (meetingBlock) {
     var firstClose = paragraphs.indexOf('</p>');
-    if (firstClose !== -1) {
-      bodyHtml = paragraphs.slice(0, firstClose + 4) + '\n' + meetingBlock + '\n    ' + paragraphs.slice(firstClose + 4).replace(/^\s+/, '');
+    var secondClose = firstClose !== -1 ? paragraphs.indexOf('</p>', firstClose + 4) : -1;
+    var insertAt = secondClose !== -1 ? secondClose : firstClose;
+    if (insertAt !== -1) {
+      bodyHtml = paragraphs.slice(0, insertAt + 4) + '\n' + meetingBlock + '\n    ' + paragraphs.slice(insertAt + 4).replace(/^\s+/, '');
     } else {
       bodyHtml = paragraphs + '\n' + meetingBlock;
     }
