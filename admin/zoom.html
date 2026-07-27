@@ -97,7 +97,10 @@
 <div id="app" class="app">
   <div class="header">
     <h1>ניהול מפגשי זום</h1>
-    <button class="btn-small btn-secondary" style="border:1px solid #ccc;background:none;color:#666" onclick="doLogout()">יציאה</button>
+    <div style="display:flex;gap:16px;align-items:center">
+      <a href="/admin/content" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">עריכת תוכן</a>
+      <button class="btn-small btn-secondary" style="border:1px solid #ccc;background:none;color:#666" onclick="doLogout()">יציאה</button>
+    </div>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="showTab('dashboard')">סקירה</button>

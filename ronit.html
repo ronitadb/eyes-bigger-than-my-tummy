@@ -58,7 +58,7 @@
       <figure style="margin:0;">
         <img src="assets/ronit.jpg" alt="רונית בלנרו-אדיב" style="width:min(220px,60vw); height:auto; display:block; margin-inline:auto; border:1px solid rgba(34,48,47,.16); box-shadow:0 14px 32px rgba(34,48,47,.16);">
       </figure>
-      <div style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(17px,2.2vw,23px); color:#475451; margin-top:24px;">סופרת · פסיכולוגית קלינית · ילדת קיבוץ</div>
+      <div data-cms="tagline" style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(17px,2.2vw,23px); color:#475451; margin-top:24px;">סופרת · פסיכולוגית קלינית · ילדת קיבוץ</div>
     </section>
 
     
@@ -105,9 +105,9 @@
     </section>
 
     <section style="padding:60px 0; border-top:1px solid rgba(34,48,47,.12);">
-      <div style="max-width:68ch; margin:0 auto;">
+      <div data-cms="about-bio" style="max-width:68ch; margin:0 auto;">
         <div style="font-size:13px; letter-spacing:.08em; color:var(--accent); font-weight:600; text-align:center;">על המחברת</div>
-        
+
         <p style="font-size: 18px; line-height: 2.05; color: #414B48; margin: 24px 0 24px; width: 800px; position: relative; left: 150px">רונית בלנרו-אדיב היא פסיכולוגית קלינית עם התמחות בטיפול בילדים וניסיון ייחודי בטיפול בילדים שהוצאו מביתם והושמו במסגרות טיפול-פנימייתי. נולדה בשנות ה-70 בקיבוץ השומר הצעיר והתחנכה בבית ילדים בלינה המשותפת ובמוסד החינוכי עד יציאתה לצבא.</p><p style="font-size: 18px; line-height: 2.05; color: #414B48; margin: 0 0 24px; width: 800px; position: relative; left: 150px">נשואה ואם לארבעה, מזה שתים עשרה שנים מתגוררת בניו זילנד. בשנת 2016 ראה אור בהוצאת רסלינג הספר ״חיבוק חזק ולא כואב – הטיפול ה׳טוב דיו׳ בילדים המוצאים מביתם״, שכתבה עם ורד ביבי ותניה אורן-צייפמן כחלק מעבודה רבת-שנים בטיפול הפנימייתי.</p>
         <p style="font-size: 18px; line-height: 2.05; color: #414B48; margin: 0; width: 800px; position: relative; left: 150px">״עיניים גדולות זה לא טוב״ הוא הרומן הראשון פרי עטה.</p>
       </div>
@@ -237,6 +237,7 @@
     </div>
   </footer>
 
+<script>(function(){fetch('/api/content?page=ronit').then(function(r){return r.json()}).then(function(d){if(!d.blocks)return;d.blocks.forEach(function(b){var el=document.querySelector('[data-cms="'+b.block_id+'"]');if(el)el.innerHTML=b.content.replace(/\n/g,'<br>')})}).catch(function(){})})()</script>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;showGrain&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;מראה&quot;}}">
