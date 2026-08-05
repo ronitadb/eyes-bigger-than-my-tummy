@@ -18,21 +18,11 @@
   </style>
 </helmet>
 
-<div lang="he" dir="rtl" style="--accent:#3D7468; --banner:#56847A; --paper:#FAF8F4; --gold:#C6A04A; --head-font:'Assistant',sans-serif; --head-color:#2F5248; position:relative; background:#FAF8F4; min-height:100vh; font-family:'Assistant',-apple-system,sans-serif; color:#22302F; -webkit-font-smoothing:antialiased;">
+<div lang="he" dir="rtl" style="--accent:#3D7468; --banner:#56847A; --paper:#FAF8F4; --gold:#C6A04A; --head-font:'Assistant',sans-serif; --head-color:#2F5248; background:#FAF8F4; min-height:100vh; font-family:'Assistant',-apple-system,sans-serif; color:#22302F; -webkit-font-smoothing:antialiased;">
 
   <sc-if value="{{ grain }}" hint-placeholder-val="{{ true }}">
     <div style="position:fixed; inset:0; pointer-events:none; z-index:9999; mix-blend-mode:multiply; opacity:.06; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;); background-size:160px;"></div>
   </sc-if>
-
-  <!-- ✦ golden thread — prototype (materials) ✦ -->
-  <div aria-hidden="true" style="position:absolute; top:0; bottom:0; left:clamp(12px,3vw,40px); width:6px; pointer-events:none; z-index:0;">
-    <!-- constant hairline -->
-    <div style="position:absolute; top:180px; bottom:130px; left:50%; transform:translateX(-50%); width:1.5px; background:var(--gold); opacity:.32;"></div>
-    <!-- upper glow — aligned to the illustration -->
-    <div style="position:absolute; top:19.5%; left:50%; transform:translateX(-50%); width:1.5px; height:180px; background:var(--gold); opacity:.9; box-shadow:0 0 7px 1.5px rgba(198,160,74,.5);"></div>
-    <!-- lower glow — a quieter warmth by the closing lines, where little gold remains -->
-    <div style="position:absolute; top:73%; left:50%; transform:translateX(-50%); width:1.5px; height:130px; background:var(--gold); opacity:.5; box-shadow:0 0 6px 1px rgba(198,160,74,.32);"></div>
-  </div>
 
   <header id="top" style="display:flex; align-items:center; flex-wrap:wrap; gap:14px; padding:24px clamp(20px,5vw,72px); border-bottom:1px solid rgba(34,48,47,.12);">
     <div style="display:flex; align-items:center; flex-wrap:wrap; gap:34px;">
