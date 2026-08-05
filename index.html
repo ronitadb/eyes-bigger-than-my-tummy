@@ -28,7 +28,7 @@
   </style>
 </helmet>
 
-<div lang="he" dir="rtl" style="--accent:#3D7468; --banner:#56847A; --paper:#FAF8F4; --head-font:'Assistant',sans-serif; --head-color:#2F5248; background:#FAF8F4; min-height:100vh; font-family:'Assistant',-apple-system,sans-serif; color:#22302F; -webkit-font-smoothing:antialiased;">
+<div lang="he" dir="rtl" style="--accent:#3D7468; --banner:#56847A; --paper:#FAF8F4; --gold:#C6A04A; --head-font:'Assistant',sans-serif; --head-color:#2F5248; background:#FAF8F4; min-height:100vh; font-family:'Assistant',-apple-system,sans-serif; color:#22302F; -webkit-font-smoothing:antialiased;">
 
   <sc-if value="{{ grain }}" hint-placeholder-val="{{ true }}">
     <div style="position:fixed; inset:0; pointer-events:none; z-index:9999; mix-blend-mode:multiply; opacity:.06; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;); background-size:160px;"></div>
@@ -123,15 +123,19 @@
       <div style="text-align:center; margin-bottom:38px;">
         <div style="font-size:13px; letter-spacing:.04em; color:var(--accent); font-weight:600;">קולות מהקהילה</div>
       </div>
-      <div style="display:flex; flex-wrap:wrap; gap:44px; justify-content:center;">
-        <blockquote style="flex:1 1 320px; max-width:440px; margin:0; text-align:center;">
-          <p data-cms="quote-1" style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,26px); line-height:1.5; color:#22302F; margin:0;">מעלה זיכרונות ומזכיר נשכחות... ממש מרגש! זה יעזור לי להסביר למשפחה שלי במילים שאין לי, למה אני זה אני ואיך נהייתי ככה...&nbsp;</p>
-          <cite data-cms="quote-1-cite" style="display:block; margin-top:16px; font-style:normal; font-size:14px; color:#6E7C78;">מאימיילים ששלחתם אליי</cite>
-        </blockquote>
-        <blockquote style="flex:1 1 320px; max-width:440px; margin:0; text-align:center;">
-          <p data-cms="quote-2" style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,26px); line-height:1.5; color:#22302F; margin:0;">גם אני גדלתי בחינוך המשותף בלינה בבית הילדים. אני רק מתחילה לקרוא אבל אני כבר עם דמעות רק מהעטיפה....</p>
-          <cite data-cms="quote-2-cite" style="display:block; margin-top:16px; font-style:normal; font-size:14px; color:#6E7C78;">מאימיילים ששלחתם אליי</cite>
-        </blockquote>
+      <div style="padding:32px 0; background:linear-gradient(90deg, transparent, rgba(198,160,74,.06) 22%, rgba(198,160,74,.06) 78%, transparent);">
+        <div aria-hidden="true" style="height:1px; width:min(300px,70%); margin:0 auto 30px; background:linear-gradient(90deg, transparent, var(--gold), transparent); opacity:.7;"></div>
+        <div style="display:flex; flex-wrap:wrap; gap:44px; justify-content:center;">
+          <blockquote style="flex:1 1 320px; max-width:440px; margin:0; text-align:center;">
+            <p data-cms="quote-1" style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,26px); line-height:1.5; color:#22302F; margin:0;">מעלה זיכרונות ומזכיר נשכחות... ממש מרגש! זה יעזור לי להסביר למשפחה שלי במילים שאין לי, למה אני זה אני ואיך נהייתי ככה...&nbsp;</p>
+            <cite data-cms="quote-1-cite" style="display:block; margin-top:16px; font-style:normal; font-size:14px; color:#6E7C78;">מאימיילים ששלחתם אליי</cite>
+          </blockquote>
+          <blockquote style="flex:1 1 320px; max-width:440px; margin:0; text-align:center;">
+            <p data-cms="quote-2" style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-size:clamp(20px,2.4vw,26px); line-height:1.5; color:#22302F; margin:0;">גם אני גדלתי בחינוך המשותף בלינה בבית הילדים. אני רק מתחילה לקרוא אבל אני כבר עם דמעות רק מהעטיפה....</p>
+            <cite data-cms="quote-2-cite" style="display:block; margin-top:16px; font-style:normal; font-size:14px; color:#6E7C78;">מאימיילים ששלחתם אליי</cite>
+          </blockquote>
+        </div>
+        <div aria-hidden="true" style="height:1px; width:min(300px,70%); margin:30px auto 0; background:linear-gradient(90deg, transparent, var(--gold), transparent); opacity:.7;"></div>
       </div>
       <div style="text-align:center; margin-top:34px;">
         <a href="/media" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:16px;">לביקורות</a>
