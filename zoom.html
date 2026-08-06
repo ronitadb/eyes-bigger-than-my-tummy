@@ -157,7 +157,8 @@
       if (!el || !data.ok || !data.meetings.length) return;
       el.innerHTML = '<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0 0 20px; text-align:center;">המפגשים הקרובים</div>' +
         data.meetings.map(function(m) {
-          return '<div style="background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(24px,3vw,34px) clamp(26px,4vw,46px); margin-bottom:16px;">' +
+          return '<div style="background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(24px,3vw,34px) clamp(26px,4vw,46px); margin-bottom:16px; position:relative;">' +
+            '<div aria-hidden="true" style="position:absolute; top:0; bottom:0; right:-5px; width:3px; background:#EDA72E;"></div>' +
             '<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(18px,2vw,22px); margin:0 0 10px;">' + esc(m.title) + '</div>' +
             (m.description ? '<p style="font-family:\'Frank Ruhl Libre\',serif; font-size:16px; line-height:1.8; color:#3A4744; margin:0 0 14px; overflow-wrap:break-word; word-break:break-word;">' + esc(m.description) + '</p>' : '') +
             '<div style="display:flex; flex-wrap:wrap; gap:16px; font-family:var(--head-font); font-size:15px; color:#3A4744;">' +
