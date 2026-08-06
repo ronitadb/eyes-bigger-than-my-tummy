@@ -15,6 +15,13 @@
     *{box-sizing:border-box;}
     html,body{margin:0;padding:0;}
     img{max-width:100%;display:block;}
+    #join-type-select{display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; width:100%; padding:16px 20px; border:1px solid rgba(34,48,47,.10); border-radius:10px; font-size:17px; background:#FAF8F4; color:#22302F;}
+    #join-type-select:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+    #join-type-menu{position:absolute; z-index:30; inset-inline:0; margin-top:6px; background:#FAF8F4; border:1px solid rgba(34,48,47,.12); border-radius:10px; box-shadow:0 14px 34px rgba(34,48,47,.18); overflow:hidden; display:none;}
+    #join-type-menu.jt-open{display:block;}
+    .jt-opt{padding:14px 20px; font-size:17px; color:#22302F; cursor:pointer;}
+    .jt-opt:hover,.jt-opt.jt-active{background:#E6EEEA; color:var(--head-color);}
+    .jt-opt[aria-selected="true"]{font-weight:600; color:var(--accent); background:#EEF3EF;}
   </style>
 </helmet>
 
@@ -114,14 +121,18 @@
             <input type="text" id="join-name" placeholder="שם" style="flex:1 1 200px; padding:16px 20px; border:1px solid rgba(34,48,47,.10); border-radius:10px; font-size:17px; font-family:inherit; background:#FAF8F4; color:#22302F;">
             <input type="email" id="join-email" placeholder="כתובת אימייל" style="flex:1 1 200px; padding:16px 20px; border:1px solid rgba(34,48,47,.10); border-radius:10px; font-size:17px; font-family:inherit; background:#FAF8F4; color:#22302F;">
           </div>
-          <div style="margin-top:12px;">
-            <label for="join-type" style="display:block; font-family:var(--head-font); color:var(--head-color); font-weight:600; font-size:16px; margin:0 0 8px;">מי אני?</label>
-            <select id="join-type" style="width:100%; padding:16px 20px; border:1px solid rgba(34,48,47,.10); border-radius:10px; font-size:17px; font-family:inherit; background:#FAF8F4; color:#22302F;">
-              <option value="" disabled selected>בחרו...</option>
-              <option value="ילד ביתלדים">ילד ביתלדים</option>
-              <option value="הורה">הורה</option>
-              <option value="משתתף שאינו אחד מהשניים">משתתף שאינו אחד מהשניים</option>
-            </select>
+          <div style="margin-top:12px; position:relative;">
+            <label id="join-type-lbl" style="display:block; font-family:var(--head-font); color:var(--head-color); font-weight:600; font-size:16px; margin:0 0 8px;">מי אני?</label>
+            <input type="hidden" id="join-type" value="">
+            <div id="join-type-select" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="join-type-lbl">
+              <span id="join-type-label" style="color:#8A9692;">בחרו...</span>
+              <span aria-hidden="true" style="color:#6E7C78; font-size:13px; line-height:1;">▾</span>
+            </div>
+            <div id="join-type-menu" role="listbox">
+              <div class="jt-opt" role="option" data-value="ילד ביתלדים">ילד ביתלדים</div>
+              <div class="jt-opt" role="option" data-value="הורה">הורה</div>
+              <div class="jt-opt" role="option" data-value="משתתף שאינו אחד מהשניים">משתתף שאינו אחד מהשניים</div>
+            </div>
           </div>
           <div style="margin-top:12px;">
             <button id="join-btn" style="width:100%; padding:16px 20px; background:var(--accent); color:#F4F8F4; border:none; border-radius:10px; font-size:18px; font-family:inherit; font-weight:600; cursor:pointer;">הצטרפות</button>
@@ -233,6 +244,50 @@
       msgEl.textContent = 'שגיאת חיבור, נא לנסות שוב';
     });
   };
+
+  // Custom "מי אני?" dropdown — styled to match the site, replaces the native select popup.
+  // Uses document-level delegation + a CSS class so it survives the framework re-render.
+  (function() {
+    document.addEventListener('click', function(e) {
+      var menu = document.getElementById('join-type-menu');
+      if (!menu) return;
+      var trigger = document.getElementById('join-type-select');
+      var opt = e.target.closest ? e.target.closest('.jt-opt') : null;
+      if (opt && menu.contains(opt)) {
+        var val = opt.getAttribute('data-value');
+        var hidden = document.getElementById('join-type');
+        if (hidden) hidden.value = val;
+        var labelEl = document.getElementById('join-type-label');
+        if (labelEl) { labelEl.textContent = val; labelEl.style.color = '#22302F'; }
+        [].forEach.call(menu.querySelectorAll('.jt-opt'), function(o) {
+          o.setAttribute('aria-selected', o === opt ? 'true' : 'false');
+        });
+        menu.classList.remove('jt-open');
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        return;
+      }
+      if (trigger && (e.target === trigger || trigger.contains(e.target))) {
+        var isOpen = menu.classList.toggle('jt-open');
+        trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        return;
+      }
+      menu.classList.remove('jt-open');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    });
+    document.addEventListener('keydown', function(e) {
+      var menu = document.getElementById('join-type-menu');
+      if (!menu) return;
+      var trigger = document.getElementById('join-type-select');
+      if (e.key === 'Escape') {
+        menu.classList.remove('jt-open');
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      } else if ((e.key === 'Enter' || e.key === ' ') && trigger && e.target === trigger) {
+        e.preventDefault();
+        var isOpen = menu.classList.toggle('jt-open');
+        trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }
+    });
+  })();
 })();
 </script>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;showGrain&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;מראה&quot;}}">
