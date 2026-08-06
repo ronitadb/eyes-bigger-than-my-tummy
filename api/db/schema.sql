@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS zoom_participants (
   joined_at                 TIMESTAMPTZ NOT NULL DEFAULT now(),
   unsubscribed_at           TIMESTAMPTZ,
   last_confirmation_sent_at TIMESTAMPTZ,
+  participant_type          TEXT,
   notes                     TEXT
 );
 

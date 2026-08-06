@@ -115,6 +115,15 @@
             <input type="email" id="join-email" placeholder="כתובת אימייל" style="flex:1 1 200px; padding:16px 20px; border:1px solid rgba(34,48,47,.10); border-radius:10px; font-size:17px; font-family:inherit; background:#FAF8F4; color:#22302F;">
           </div>
           <div style="margin-top:12px;">
+            <label for="join-type" style="display:block; font-family:var(--head-font); color:var(--head-color); font-weight:600; font-size:16px; margin:0 0 8px;">מי אני?</label>
+            <select id="join-type" style="width:100%; padding:16px 20px; border:1px solid rgba(34,48,47,.10); border-radius:10px; font-size:17px; font-family:inherit; background:#FAF8F4; color:#22302F;">
+              <option value="" disabled selected>בחרו...</option>
+              <option value="ילד ביתלדים">ילד ביתלדים</option>
+              <option value="הורה">הורה</option>
+              <option value="משתתף שאינו אחד מהשניים">משתתף שאינו אחד מהשניים</option>
+            </select>
+          </div>
+          <div style="margin-top:12px;">
             <button id="join-btn" style="width:100%; padding:16px 20px; background:var(--accent); color:#F4F8F4; border:none; border-radius:10px; font-size:18px; font-family:inherit; font-weight:600; cursor:pointer;">הצטרפות</button>
           </div>
           <div id="join-msg" style="margin-top:12px; font-size:15px;"></div>
@@ -189,10 +198,12 @@
   window.joinList = function() {
     var name = document.getElementById('join-name').value.trim();
     var email = document.getElementById('join-email').value.trim();
+    var participantType = document.getElementById('join-type').value;
     var msgEl = document.getElementById('join-msg');
 
     if (!name) { msgEl.style.color = '#8b4513'; msgEl.textContent = 'נא להזין שם'; return; }
     if (!email || email.indexOf('@') < 1) { msgEl.style.color = '#8b4513'; msgEl.textContent = 'נא להזין כתובת אימייל תקינה'; return; }
+    if (!participantType) { msgEl.style.color = '#8b4513'; msgEl.textContent = 'נא לבחור מי אני'; return; }
 
     msgEl.style.color = '#6E7C78';
     msgEl.textContent = 'שולח...';
@@ -200,7 +211,7 @@
     fetch('/api/join', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name, email: email })
+      body: JSON.stringify({ name: name, email: email, participant_type: participantType })
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {

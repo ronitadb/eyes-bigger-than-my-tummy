@@ -35,9 +35,9 @@ module.exports = async (req, res) => {
     }
 
     if (format === 'csv') {
-      const header = 'שם,אימייל,סטטוס,תאריך הצטרפות,תאריך הסרה,הערות';
+      const header = 'שם,אימייל,מי אני?,סטטוס,תאריך הצטרפות,תאריך הסרה,הערות';
       const lines = rows.map(r =>
-        [r.name, r.email, r.status, fmtDate(r.joined_at), fmtDate(r.unsubscribed_at), r.notes || '']
+        [r.name, r.email, r.participant_type || '', r.status, fmtDate(r.joined_at), fmtDate(r.unsubscribed_at), r.notes || '']
           .map(v => `"${String(v).replace(/"/g, '""')}"`)
           .join(',')
       );

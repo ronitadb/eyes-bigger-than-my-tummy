@@ -18,6 +18,9 @@ module.exports = async (req, res) => {
 
   const email = String(body.email || '').trim().toLowerCase();
   const name = String(body.name || '').trim();
+  const ALLOWED_TYPES = ['ילד ביתלדים', 'הורה', 'משתתף שאינו אחד מהשניים'];
+  const participantTypeRaw = String(body.participant_type || '').trim();
+  const participantType = ALLOWED_TYPES.indexOf(participantTypeRaw) > -1 ? participantTypeRaw : null;
 
   if (!name || name.length < 2) {
     return res.status(400).json({ ok: false, error: 'invalid_name', message: 'נא להזין שם' });
@@ -45,6 +48,16 @@ module.exports = async (req, res) => {
         INSERT INTO zoom_participants (name, email)
         VALUES (${name}, ${email})
       `;
+    }
+
+    // Store "who am I?" group. Wrapped so a missing column can't break signup
+    // (before the participant_type migration has been run on the database).
+    if (participantType) {
+      try {
+        await sql`UPDATE zoom_participants SET participant_type = ${participantType} WHERE email = ${email}`;
+      } catch (typeErr) {
+        console.error('participant_type update skipped (column may not exist yet):', typeErr.message);
+      }
     }
 
     let confirmationSent = false;
