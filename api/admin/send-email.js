@@ -33,9 +33,7 @@ module.exports = async (req, res) => {
     }
     const template = templates[0];
 
-    const { rows: participants } = await sql`
-      SELECT id, name, email FROM zoom_participants WHERE status = 'active'
-    `;
+    const participants = await getRecipients(meeting.audience);
 
     let sent = 0;
     let failed = 0;
@@ -76,3 +74,26 @@ module.exports = async (req, res) => {
     res.status(500).json({ ok: false, error: 'server_error' });
   }
 };
+
+// Active participants for the meeting's audience:
+//   'parents'  -> those who chose the parents series
+//   'children' -> those who chose the children series
+//   'all' (or column missing) -> everyone
+async function getRecipients(audience) {
+  if (audience === 'parents' || audience === 'children') {
+    const like = audience === 'parents' ? '%להורים%' : '%לילדי%';
+    try {
+      const { rows } = await sql`
+        SELECT id, name, email FROM zoom_participants
+        WHERE status = 'active' AND participant_type LIKE ${like}
+      `;
+      return rows;
+    } catch (e) {
+      console.error('group filter failed, sending to all active:', e.message);
+    }
+  }
+  const { rows } = await sql`
+    SELECT id, name, email FROM zoom_participants WHERE status = 'active'
+  `;
+  return rows;
+}

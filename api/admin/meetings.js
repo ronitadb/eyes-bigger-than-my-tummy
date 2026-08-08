@@ -20,18 +20,22 @@ module.exports = async (req, res) => {
 
     if (req.method === 'POST') {
       const b = parseBody(req);
+      const audience = ['parents', 'children', 'all'].indexOf(b.audience) > -1 ? b.audience : 'all';
       const { rows } = await sql`
         INSERT INTO zoom_meetings (title, description, meeting_date, meeting_time, timezone, zoom_link, status, related_materials)
         VALUES (${b.title}, ${b.description || null}, ${b.meeting_date}, ${b.meeting_time},
                 ${b.timezone || 'Asia/Jerusalem'}, ${b.zoom_link || null}, ${b.status || 'draft'}, ${b.related_materials || null})
         RETURNING *
       `;
-      return res.status(201).json({ ok: true, meeting: rows[0] });
+      const meeting = rows[0];
+      await setAudience(meeting, audience);
+      return res.status(201).json({ ok: true, meeting });
     }
 
     if (req.method === 'PUT') {
       const b = parseBody(req);
       if (!b.id) return res.status(400).json({ ok: false, error: 'missing_id' });
+      const audience = ['parents', 'children', 'all'].indexOf(b.audience) > -1 ? b.audience : 'all';
       const { rows } = await sql`
         UPDATE zoom_meetings SET
           title = ${b.title},
@@ -47,7 +51,9 @@ module.exports = async (req, res) => {
         RETURNING *
       `;
       if (!rows.length) return res.status(404).json({ ok: false, error: 'not_found' });
-      return res.status(200).json({ ok: true, meeting: rows[0] });
+      const meeting = rows[0];
+      await setAudience(meeting, audience);
+      return res.status(200).json({ ok: true, meeting });
     }
 
     res.setHeader('Allow', 'GET, POST, PUT');
@@ -60,4 +66,15 @@ module.exports = async (req, res) => {
 
 function parseBody(req) {
   return typeof req.body === 'object' && req.body !== null ? req.body : {};
+}
+
+// Set the meeting's audience in a separate, resilient write so that creating or
+// editing a meeting keeps working even before the audience-column migration has run.
+async function setAudience(meeting, audience) {
+  try {
+    await sql`UPDATE zoom_meetings SET audience = ${audience} WHERE id = ${meeting.id}`;
+    meeting.audience = audience;
+  } catch (e) {
+    console.error('audience set skipped (column may not exist yet):', e.message);
+  }
 }

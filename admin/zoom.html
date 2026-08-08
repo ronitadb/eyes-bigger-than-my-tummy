@@ -176,6 +176,17 @@
         </div>
       </div>
     </div>
+    <div class="field">
+      <label>קהל יעד (למי יישלחו אימיילים)</label>
+      <div class="custom-select" id="fAudienceWrap" data-value="all">
+        <button type="button" class="custom-select-trigger" style="width:100%;justify-content:space-between"><span class="custom-select-label">כולם</span><span class="custom-select-arrow">▾</span></button>
+        <div class="custom-select-menu" style="left:0;right:0">
+          <div class="custom-select-option selected" data-value="all">כולם</div>
+          <div class="custom-select-option" data-value="parents">הורים</div>
+          <div class="custom-select-option" data-value="children">ילדים</div>
+        </div>
+      </div>
+    </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeMeetingForm()">ביטול</button>
       <button class="btn" onclick="saveMeeting()">שמירה</button>
@@ -386,12 +397,13 @@ function updateStats(s){
 function renderDashboardParticipants(n){var el=document.getElementById('statPart');if(el)el.textContent=n}
 
 // Meetings
+function audienceLabel(a){return a==='parents'?'הורים':a==='children'?'ילדים':'כולם';}
 function renderMeetings(){
   var el=document.getElementById('meetingsList');
   if(!allMeetings.length){el.innerHTML='<div class="card" style="text-align:center;color:#6E7C78">אין מפגשים. לחצו "מפגש חדש".</div>';return}
   el.innerHTML=allMeetings.map(function(m){
     return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:start"><h3>'+esc(m.title)+'</h3><span class="status status-'+m.status+'">'+STATUS_HE[m.status]+'</span></div>'+
-      '<div class="meta">'+fmtDate(m.meeting_date)+' | '+(m.meeting_time||'').slice(0,5)+
+      '<div class="meta">'+fmtDate(m.meeting_date)+' | '+(m.meeting_time||'').slice(0,5)+' | קהל: '+audienceLabel(m.audience)+
       (m.reminders_sent?' | '+m.reminders_sent+' תזכורות נשלחו':'')+
       (m.followups_sent?' | '+m.followups_sent+' הודעות מעקב':'')+'</div>'+
       (m.description?'<p style="font-size:14px;color:#3A4744;margin-bottom:12px;overflow-wrap:break-word;word-break:break-word">'+esc(m.description)+'</p>':'')+
@@ -411,6 +423,7 @@ function openMeetingForm(m){
   document.getElementById('fZoom').value=m?(m.zoom_link||''):'';
   document.getElementById('fMaterials').value=m?(m.related_materials||''):'';
   csSetValue('fStatusWrap',m?m.status:'draft');
+  csSetValue('fAudienceWrap',m?(m.audience||'all'):'all');
   document.getElementById('meetingModal').classList.add('active');
 }
 function closeMeetingForm(){document.getElementById('meetingModal').classList.remove('active')}
@@ -421,7 +434,7 @@ function saveMeeting(){
   var body={title:document.getElementById('fTitle').value,description:document.getElementById('fDesc').value,
     meeting_date:document.getElementById('fDate').value,meeting_time:document.getElementById('fTime').value,
     timezone:document.getElementById('fTz').value,zoom_link:document.getElementById('fZoom').value,
-    related_materials:document.getElementById('fMaterials').value,status:csGetValue('fStatusWrap')};
+    related_materials:document.getElementById('fMaterials').value,status:csGetValue('fStatusWrap'),audience:csGetValue('fAudienceWrap')};
   if(!body.title||!body.meeting_date||!body.meeting_time){showMsg('נא למלא כותרת, תאריך ושעה',false);return}
   if(id)body.id=parseInt(id,10);
   fetch(API+'/admin/meetings',{method:id?'PUT':'POST',headers:headers(),body:JSON.stringify(body)})
@@ -466,15 +479,16 @@ function loadParticipants(){
       renderParticipants();
     });
 }
+function seriesLabel(t){if(!t)return '<span style="color:#8A9692">—</span>';if(t.indexOf('להורים')>-1)return 'הורים';if(t.indexOf('לילדי')>-1||t.indexOf('ביתלדים')>-1)return 'ילדים';return esc(t);}
 function renderParticipants(){
   var el=document.getElementById('participantsList');
   if(!allParticipants.length){el.innerHTML='<p style="color:#6E7C78">אין משתתפים.</p>';return}
-  el.innerHTML='<table><thead><tr><th>שם</th><th>אימייל</th><th>סטטוס</th><th>הצטרפות</th><th>פעולה</th></tr></thead><tbody>'+
+  el.innerHTML='<table><thead><tr><th>שם</th><th>אימייל</th><th>סדרת מפגשים</th><th>סטטוס</th><th>הצטרפות</th><th>פעולה</th></tr></thead><tbody>'+
     allParticipants.map(function(p){
       var actionBtn=p.status==='active'
         ? '<button class="btn btn-small btn-secondary" onclick="changeParticipantStatus('+p.id+',\'unsubscribed\')">בטל הרשמה</button>'
         : '<button class="btn btn-small" onclick="changeParticipantStatus('+p.id+',\'active\')">הפעל מחדש</button>';
-      return '<tr><td>'+esc(p.name)+'</td><td>'+esc(p.email)+'</td><td><span class="status status-'+p.status+'">'+(p.status==='active'?'פעיל':'הוסר')+'</span></td><td>'+fmtDate(p.joined_at)+'</td><td>'+actionBtn+'</td></tr>'
+      return '<tr><td>'+esc(p.name)+'</td><td>'+esc(p.email)+'</td><td>'+seriesLabel(p.participant_type)+'</td><td><span class="status status-'+p.status+'">'+(p.status==='active'?'פעיל':'הוסר')+'</span></td><td>'+fmtDate(p.joined_at)+'</td><td>'+actionBtn+'</td></tr>'
     }).join('')+'</tbody></table>';
 }
 async function changeParticipantStatus(id,status){

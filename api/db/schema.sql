@@ -24,6 +24,8 @@ CREATE TABLE IF NOT EXISTS zoom_meetings (
   zoom_link         TEXT,
   status            TEXT NOT NULL DEFAULT 'draft'
                     CHECK (status IN ('draft','open','closed','completed')),
+  audience          TEXT NOT NULL DEFAULT 'all'
+                    CHECK (audience IN ('all','parents','children')),
   related_materials TEXT,
   created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
