@@ -80,7 +80,7 @@
     <section style="padding:48px 0 80px;">
       <div style="background:#E6EEEA; border-radius:4px; padding:48px clamp(28px,5vw,56px);">
         <div style="font-size:13px; letter-spacing:.04em; color:var(--accent); font-weight:600; margin-bottom:22px;">כתבו לנו</div>
-        <form onSubmit="{{ noSubmit }}" style="display:flex; flex-direction:column; gap:16px; max-width:600px;">
+        <form id="contact-form" style="display:flex; flex-direction:column; gap:16px; max-width:600px;">
           <div style="display:flex; flex-wrap:wrap; gap:16px;">
             <input name="name" type="text" placeholder="שם" style="flex:1 1 200px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
             <input name="email" type="email" placeholder="אימייל" style="flex:1 1 200px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
@@ -88,8 +88,9 @@
           <textarea name="message" placeholder="ההודעה שלכם" rows="5" style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit; resize:vertical;"></textarea>
           <div style="display:flex; flex-wrap:wrap; gap:18px; align-items:center;">
             <button type="submit" style="background:var(--accent); color:#F4F8F4; border:none; padding:14px 34px; border-radius:2px; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit;">שליחה</button>
-            <span style="font-size:13px; color:#8A7C64;">* השליחה תיפתח בתוכנת המייל שלכם עם ההודעה מוכנה.</span>
+            <span style="font-size:13px; color:#8A7C64;">* ההודעה תישלח ישירות לרונית.</span>
           </div>
+          <div id="contact-msg" style="font-size:14px; color:#8b4513;"></div>
         </form>
       </div>
     </section>
@@ -115,6 +116,36 @@
     </div>
   </footer>
 
+<script>
+(function(){
+  function setMsg(m,color,text){ if(m){ m.style.color=color; m.textContent=text; } }
+  document.addEventListener('submit', function(e){
+    if(!e.target || e.target.id!=='contact-form') return;
+    e.preventDefault();
+    var form=e.target, el=form.elements;
+    function v(n){return el[n]&&el[n].value?el[n].value.trim():'';}
+    var name=v('name'), email=v('email'), message=v('message');
+    var msg=document.getElementById('contact-msg');
+    if(!message){ setMsg(msg,'#8b4513','נא לכתוב הודעה לפני השליחה.'); return; }
+    if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ setMsg(msg,'#8b4513','כתובת האימייל אינה תקינה.'); return; }
+    var btn=form.querySelector('button[type="submit"]');
+    if(btn){ btn.disabled=true; btn.textContent='שולח…'; }
+    setMsg(msg,'#6E7C78','שולח…');
+    fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,email:email,message:message})})
+      .then(function(r){ return r.json().catch(function(){return {};}).then(function(d){ return {ok:r.ok, d:d}; }); })
+      .then(function(res){
+        if(res.ok){
+          setMsg(msg,'#2F5248','תודה. ההודעה נשלחה לרונית.');
+          form.reset();
+        } else {
+          setMsg(msg,'#8b4513','השליחה נכשלה. נסו שוב, או כתבו לנו במייל ל־ronit.adiv@beteladim.co.il');
+        }
+      })
+      .catch(function(){ setMsg(msg,'#8b4513','השליחה נכשלה. בדקו את החיבור ונסו שוב.'); })
+      .then(function(){ if(btn){ btn.disabled=false; btn.textContent='שליחה'; } });
+  });
+})();
+</script>
 <script>(function(){fetch('/api/content?page=contact').then(function(r){return r.json()}).then(function(d){if(!d.blocks)return;d.blocks.forEach(function(b){var el=document.querySelector('[data-cms="'+b.block_id+'"]');if(el)el.innerHTML=b.content.replace(/\n/g,'<br>')})}).catch(function(){})})()</script>
 </div>
 </x-dc>
@@ -124,17 +155,6 @@ class Component extends DCLogic {
   renderVals() {
     return {
       grain: this.props.showGrain !== false,
-      noSubmit: (e) => {
-        e.preventDefault();
-        const f = e.target;
-        const name = (f.name && f.name.value ? f.name.value : "").trim();
-        const email = (f.email && f.email.value ? f.email.value : "").trim();
-        const message = (f.message && f.message.value ? f.message.value : "").trim();
-        const subject = "פנייה מהאתר" + (name ? " מאת " + name : "");
-        const body = (message || "") + (email ? "\n\nמייל לחזרה: " + email : "");
-        window.location.href = "mailto:ronit.adiv@beteladim.co.il?subject=" +
-          encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-      },
     };
   }
 }
