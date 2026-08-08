@@ -106,8 +106,21 @@
         <li style="margin:0; text-wrap:pretty;"><span style="color:var(--accent);">—</span>&nbsp; סיפורים ומחשבות שמציגים זווית אחרת, קולות שונים, או חוויות נוספות שהמאמרים אינם נוגעים בהם או מפספסים אותם.</li>
       </ul>
       <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0; text-wrap:pretty;">כי כדי להבין באמת את המציאות שגדלנו בתוכה, אנחנו זקוקים גם לתיאוריה שתמפה אותה – וגם לסיפורים ולשפה של מי שחיו אותה.</p>
-      <div style="text-align:center; margin:30px 0 0;">
-        <a href="/contact" style="display:inline-block; background:var(--accent); color:#F4F8F4; padding:14px 28px; border-radius:2px; font-size:16px; font-weight:600; text-decoration:none;">שליחת סיפור, מחשבה או עמדה לספרייה המשותפת</a>
+      <div style="background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(26px,4vw,36px) clamp(22px,4vw,34px); margin:30px 0 0;">
+        <div style="font-size:13px; letter-spacing:.04em; color:var(--accent); font-weight:600; margin-bottom:16px;">שליחת סיפור, מחשבה או עמדה לספרייה המשותפת</div>
+        <form id="story-submit-form" style="display:flex; flex-direction:column; gap:14px;">
+          <div style="display:flex; flex-wrap:wrap; gap:14px;">
+            <input name="sender" type="text" placeholder="שם (לא חובה)" style="flex:1 1 180px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
+            <input name="email" type="email" placeholder="אימייל לחזרה (לא חובה)" style="flex:1 1 180px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
+          </div>
+          <input name="title" type="text" placeholder="כותרת (לא חובה)" style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
+          <textarea name="story" rows="7" required placeholder="הסיפור, הזיכרון או המחשבה שלכם..." style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit; resize:vertical;"></textarea>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center;">
+            <button type="submit" style="background:var(--accent); color:#F4F8F4; border:none; padding:14px 34px; border-radius:2px; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit;">שליחה לספרייה</button>
+            <span style="font-size:13px; color:#8A7C64;">* השליחה תיפתח בתוכנת המייל שלכם עם ההודעה מוכנה.</span>
+          </div>
+          <div id="story-msg" style="font-size:14px; color:#8b4513;"></div>
+        </form>
       </div>
     </section>
 
@@ -203,6 +216,23 @@
     </div>
   </footer>
 
+<script>
+(function(){
+  document.addEventListener('submit', function(e){
+    if(!e.target || e.target.id!=='story-submit-form') return;
+    e.preventDefault();
+    var el=e.target.elements;
+    function v(n){return el[n]&&el[n].value?el[n].value.trim():'';}
+    var name=v('sender'), email=v('email'), title=v('title'), story=v('story');
+    var msg=document.getElementById('story-msg');
+    if(!story){ if(msg) msg.textContent='נא לכתוב את הסיפור או המחשבה לפני השליחה.'; return; }
+    if(msg) msg.textContent='';
+    var subject='סיפור לספרייה המשותפת'+(title?' – '+title:'')+(name?' | '+name:'');
+    var body=story+(name?'\n\nמאת: '+name:'')+(email?'\nמייל לחזרה: '+email:'');
+    window.location.href='mailto:ronit.adiv@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  });
+})();
+</script>
 <script>(function(){fetch('/api/content?page=materials').then(function(r){return r.json()}).then(function(d){if(!d.blocks)return;d.blocks.forEach(function(b){var el=document.querySelector('[data-cms="'+b.block_id+'"]');if(el)el.innerHTML=b.content.replace(/\n/g,'<br>')})}).catch(function(){})})()</script>
 </div>
 </x-dc>
