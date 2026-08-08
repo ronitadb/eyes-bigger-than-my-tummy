@@ -114,10 +114,16 @@
             <input name="email" type="email" placeholder="אימייל לחזרה (לא חובה)" style="flex:1 1 180px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
           </div>
           <input name="title" type="text" placeholder="כותרת (לא חובה)" style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
-          <textarea name="story" rows="7" required placeholder="הסיפור, הזיכרון או המחשבה שלכם..." style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit; resize:vertical;"></textarea>
+          <textarea name="story" rows="7" placeholder="הסיפור, הזיכרון או המחשבה שלכם..." style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit; resize:vertical;"></textarea>
+          <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+            <label for="story-file" style="display:inline-flex; align-items:center; gap:8px; background:#FBF7EC; border:1px solid rgba(61,116,104,.55); color:var(--accent); padding:11px 20px; border-radius:2px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit;">צירוף קובץ</label>
+            <input id="story-file" name="file" type="file" accept=".pdf,.doc,.docx,.txt,.rtf,.odt,.jpg,.jpeg,.png,.heic,.gif" style="position:absolute; width:1px; height:1px; opacity:0; overflow:hidden;">
+            <span id="story-file-name" style="font-size:14px; color:#6E7C78;">לא נבחר קובץ</span>
+          </div>
+          <span style="font-size:12px; color:#8A9692;">מסמך או תמונה (PDF, Word, תמונה וכד׳), עד 3MB.</span>
           <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center;">
             <button type="submit" style="background:var(--accent); color:#F4F8F4; border:none; padding:14px 34px; border-radius:2px; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit;">שליחה לספרייה</button>
-            <span style="font-size:13px; color:#8A7C64;">* השליחה תיפתח בתוכנת המייל שלכם עם ההודעה מוכנה.</span>
+            <span style="font-size:13px; color:#8A7C64;">* הסיפור יישלח ישירות לרונית.</span>
           </div>
           <div id="story-msg" style="font-size:14px; color:#8b4513;"></div>
         </form>
@@ -218,18 +224,64 @@
 
 <script>
 (function(){
+  var MAX=3*1024*1024;
+  function setMsg(m,color,text){ if(m){ m.style.color=color; m.textContent=text; } }
+
+  document.addEventListener('change', function(e){
+    if(!e.target || e.target.id!=='story-file') return;
+    var span=document.getElementById('story-file-name');
+    var f=e.target.files && e.target.files[0];
+    if(span) span.textContent = f ? f.name : 'לא נבחר קובץ';
+  });
+
   document.addEventListener('submit', function(e){
     if(!e.target || e.target.id!=='story-submit-form') return;
     e.preventDefault();
-    var el=e.target.elements;
+    var form=e.target, el=form.elements;
     function v(n){return el[n]&&el[n].value?el[n].value.trim():'';}
-    var name=v('sender'), email=v('email'), title=v('title'), story=v('story');
+    var sender=v('sender'), email=v('email'), title=v('title'), story=v('story');
     var msg=document.getElementById('story-msg');
-    if(!story){ if(msg) msg.textContent='נא לכתוב את הסיפור או המחשבה לפני השליחה.'; return; }
-    if(msg) msg.textContent='';
-    var subject='סיפור לספרייה המשותפת'+(title?' – '+title:'')+(name?' | '+name:'');
-    var body=story+(name?'\n\nמאת: '+name:'')+(email?'\nמייל לחזרה: '+email:'');
-    window.location.href='mailto:ronit.adiv@beteladim.co.il?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    var fileInput=document.getElementById('story-file');
+    var file=fileInput && fileInput.files && fileInput.files[0];
+
+    if(!story && !file){ setMsg(msg,'#8b4513','נא לכתוב סיפור או לצרף קובץ לפני השליחה.'); return; }
+    if(file && file.size>MAX){ setMsg(msg,'#8b4513','הקובץ גדול מדי (מעל 3MB). נא לצרף קובץ קטן יותר.'); return; }
+
+    var btn=form.querySelector('button[type="submit"]');
+
+    function send(payload){
+      if(btn){ btn.disabled=true; btn.textContent='שולח…'; }
+      setMsg(msg,'#6E7C78','שולח…');
+      fetch('/api/story',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+        .then(function(r){ return r.json().catch(function(){return {};}).then(function(d){ return {ok:r.ok, d:d}; }); })
+        .then(function(res){
+          if(res.ok){
+            setMsg(msg,'#2F5248','תודה. הסיפור נשלח לספרייה המשותפת.');
+            form.reset();
+            var span=document.getElementById('story-file-name'); if(span) span.textContent='לא נבחר קובץ';
+          } else if(res.d && res.d.error==='toolarge'){
+            setMsg(msg,'#8b4513','הקובץ גדול מדי. נא לצרף קובץ קטן יותר.');
+          } else {
+            setMsg(msg,'#8b4513','השליחה נכשלה. נסו שוב, או שלחו לנו במייל ל־ronit.adiv@beteladim.co.il');
+          }
+        })
+        .catch(function(){ setMsg(msg,'#8b4513','השליחה נכשלה. בדקו את החיבור ונסו שוב.'); })
+        .then(function(){ if(btn){ btn.disabled=false; btn.textContent='שליחה לספרייה'; } });
+    }
+
+    var payload={sender:sender,email:email,title:title,story:story};
+    if(file){
+      var reader=new FileReader();
+      reader.onload=function(){
+        var base64=String(reader.result||'').split(',')[1]||'';
+        payload.file={name:file.name, type:file.type, data:base64};
+        send(payload);
+      };
+      reader.onerror=function(){ setMsg(msg,'#8b4513','לא הצלחנו לקרוא את הקובץ. נסו שוב.'); };
+      reader.readAsDataURL(file);
+    } else {
+      send(payload);
+    }
   });
 })();
 </script>
