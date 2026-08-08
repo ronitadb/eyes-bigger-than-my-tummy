@@ -32,7 +32,7 @@
         <a href="/book" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">על הספר</a>
         <a href="/ronit" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">על רונית</a>
         <a href="/zoom" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">מפגשי זום</a>
-        <a href="/materials" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">חומרי קריאה</a>
+        <a href="/materials" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">הספרייה המשותפת</a>
         <a href="/media" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">תקשורת וביקורות</a>
         <a href="/contact" style="color:#445049; text-decoration:none; font-size:15px; letter-spacing:.03em;">צרו קשר</a>
       </nav>
@@ -61,8 +61,8 @@
       <div style="display:flex; flex-wrap:wrap; gap:24px;">
         <div style="flex:1 1 240px; border:1px solid rgba(34,48,47,.16); background:#F0F4F1; padding:28px 26px;">
           <h3 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:21px; margin:0 0 6px;">במייל</h3>
-          <div style="font-size:15px; color:#475451; margin-bottom:16px;">ronit.adiv@gmail.com</div>
-          <a href="mailto:ronit.adiv@gmail.com" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">שליחת מייל ←</a>
+          <div style="font-size:15px; color:#475451; margin-bottom:16px;">ronit.adiv@beteladim.co.il</div>
+          <a href="mailto:ronit.adiv@beteladim.co.il" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">שליחת מייל ←</a>
         </div>
         <div style="flex:1 1 240px; border:1px solid rgba(34,48,47,.16); background:#F0F4F1; padding:28px 26px;">
           <h3 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:21px; margin:0 0 6px;">בפייסבוק</h3>
@@ -132,7 +132,7 @@ class Component extends DCLogic {
         const message = (f.message && f.message.value ? f.message.value : "").trim();
         const subject = "פנייה מהאתר" + (name ? " מאת " + name : "");
         const body = (message || "") + (email ? "\n\nמייל לחזרה: " + email : "");
-        window.location.href = "mailto:ronit.adiv@gmail.com?subject=" +
+        window.location.href = "mailto:ronit.adiv@beteladim.co.il?subject=" +
           encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
       },
     };
