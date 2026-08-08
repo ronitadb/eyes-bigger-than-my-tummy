@@ -2,7 +2,7 @@
 // from the "הספרייה המשותפת" (materials) page. Stores it for review and emails
 // it to Ronit via Resend. Nothing is published without explicit consent + review.
 
-const { sql } = require('./db/connection');
+const { sql } = require('../lib/db');
 
 const RECIPIENT = 'ronit.adiv@beteladim.co.il';
 const MAX_FILE_BYTES = 3 * 1024 * 1024; // 3MB raw (~4MB base64, under Vercel's 4.5MB limit)
@@ -25,8 +25,45 @@ function paragraphs(text) {
 
 const ATTR_LABEL = { full: 'בשם המלא', first: 'בשם פרטי בלבד', anonymous: 'באופן אנונימי' };
 
+function displayName(sender, attribution) {
+  const s = (sender || '').trim();
+  if (attribution === 'full') return s || 'אנונימי';
+  if (attribution === 'first') return s ? s.split(/\s+/)[0] : 'אנונימי';
+  return 'אנונימי';
+}
+
+// GET /api/story — public feed: published, consented stories, newest first.
+// Emails are never exposed. Returns [] gracefully if the table isn't migrated.
+async function listPublished(req, res) {
+  try {
+    const { rows } = await sql`
+      SELECT id, sender, title, body, attribution, published_at, created_at
+      FROM stories
+      WHERE status = 'published' AND consent = true
+      ORDER BY COALESCE(published_at, created_at) DESC
+    `;
+    const stories = rows.map(function (r) {
+      return {
+        id: r.id,
+        title: r.title || '',
+        body: r.body || '',
+        author: displayName(r.sender, r.attribution),
+        date: r.published_at || r.created_at,
+      };
+    });
+    res.status(200).json({ ok: true, stories });
+  } catch (err) {
+    console.error('GET /api/story error:', err.message);
+    res.status(200).json({ ok: true, stories: [] });
+  }
+}
+
 module.exports = async (req, res) => {
+  if (req.method === 'GET') {
+    return listPublished(req, res);
+  }
   if (req.method !== 'POST') {
+    res.setHeader('Allow', 'GET, POST');
     res.status(405).json({ error: 'method' });
     return;
   }

@@ -1,6 +1,6 @@
-const { sql } = require('../db/connection');
-const { checkAdmin } = require('./auth');
-const { sendEmail, unsubscribeUrl, formatDate, formatTime, renderTemplate } = require('../email/send');
+const { sql } = require('../../lib/db');
+const { checkAdmin } = require('../../lib/auth');
+const { sendEmail, unsubscribeUrl, formatDate, formatTime, renderTemplate } = require('../../lib/email');
 
 module.exports = async (req, res) => {
   if (!checkAdmin(req)) {

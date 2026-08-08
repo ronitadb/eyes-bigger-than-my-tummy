@@ -339,7 +339,7 @@
     btn.style.display='none';
   });
 
-  fetch('/api/stories').then(function(r){return r.json();}).then(function(d){
+  fetch('/api/story').then(function(r){return r.json();}).then(function(d){
     if(!d || !d.ok || !d.stories || !d.stories.length) return;
     var html='<div style="margin:40px 0 0;">';
     html+='<div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:4px;">מן הספרייה</div>';

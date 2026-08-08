@@ -1,5 +1,5 @@
 const { sql } = require('@vercel/postgres');
-const { checkAdmin } = require('./auth');
+const { checkAdmin } = require('../../lib/auth');
 
 module.exports = async function handler(req, res) {
   if (!checkAdmin(req)) return res.status(401).json({ error: 'Unauthorized' });

@@ -1,5 +1,5 @@
-const { sql } = require('./db/connection');
-const { unsubscribeToken } = require('./email/send');
+const { sql } = require('../lib/db');
+const { unsubscribeToken } = require('../lib/email');
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {

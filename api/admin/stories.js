@@ -1,5 +1,5 @@
-const { sql } = require('../db/connection');
-const { checkAdmin } = require('./auth');
+const { sql } = require('../../lib/db');
+const { checkAdmin } = require('../../lib/auth');
 
 const STATUSES = ['pending', 'published', 'hidden'];
 const ATTRIBUTIONS = ['full', 'first', 'anonymous'];

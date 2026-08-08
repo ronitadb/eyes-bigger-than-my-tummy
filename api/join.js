@@ -1,5 +1,5 @@
-const { sql } = require('./db/connection');
-const { sendEmail, unsubscribeUrl, renderTemplate, renderSeriesScheduleBlock } = require('./email/send');
+const { sql } = require('../lib/db');
+const { sendEmail, unsubscribeUrl, renderTemplate, renderSeriesScheduleBlock } = require('../lib/email');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
