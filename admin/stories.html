@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ניהול הספרייה המשותפת</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Assistant',sans-serif;background:#f5f5f0;color:#22302F;min-height:100vh}
+  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+  .login-box{background:#fff;border:1px solid #ddd;border-radius:6px;padding:40px;max-width:360px;width:100%;text-align:center}
+  .login-box h1{font-size:22px;color:#3D7468;margin-bottom:24px}
+  .login-box input{width:100%;padding:12px;border:1px solid #ccc;border-radius:4px;font-size:16px;font-family:inherit;margin-bottom:14px}
+  .login-box button{width:100%;padding:12px;background:#3D7468;color:#fff;border:none;border-radius:4px;font-size:16px;font-family:inherit;font-weight:600;cursor:pointer}
+  .login-box .err{color:#c44;font-size:14px;margin-top:10px}
+  .app{display:none;max-width:820px;margin:0 auto;padding:20px}
+  .header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #ddd;margin-bottom:20px}
+  .header h1{font-size:22px;color:#3D7468}
+  .header a{font-size:14px;color:#6E7C78}
+  .filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .filter{padding:7px 16px;cursor:pointer;font-size:14px;font-weight:600;color:#6E7C78;background:#fff;border:1px solid #ddd;border-radius:20px;font-family:inherit}
+  .filter.active{color:#fff;background:#3D7468;border-color:#3D7468}
+  .btn{display:inline-block;padding:9px 18px;background:#3D7468;color:#fff;border:none;border-radius:4px;font-size:14px;font-family:inherit;font-weight:600;cursor:pointer}
+  .btn-secondary{background:#6E7C78}
+  .btn-small{padding:6px 13px;font-size:13px}
+  .btn-danger{background:#c44}
+  .btn:disabled{opacity:.5;cursor:default}
+  .card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:20px;margin-bottom:16px}
+  .card .top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .card h3{font-size:18px;color:#2F5248}
+  .card .meta{font-size:13px;color:#6E7C78;margin-bottom:12px;line-height:1.7}
+  .card .body{font-size:15px;line-height:1.8;color:#3A4744;white-space:pre-wrap;background:#fafaf7;border:1px solid #eee;border-radius:4px;padding:14px 16px;margin-bottom:14px;max-height:320px;overflow-y:auto}
+  .card .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .status{display:inline-block;padding:3px 12px;border-radius:12px;font-size:12px;font-weight:600}
+  .status-pending{background:#fff3cd;color:#856404}
+  .status-published{background:#d4edda;color:#155724}
+  .status-hidden{background:#eee;color:#999}
+  .pill{display:inline-block;padding:2px 9px;border-radius:10px;font-size:12px;font-weight:600;margin-inline-start:6px}
+  .pill-yes{background:#e3f0ea;color:#2F5248}
+  .pill-no{background:#f6e0e0;color:#a33}
+  .empty{text-align:center;color:#8A9692;padding:50px 20px;font-size:16px}
+  .msg{padding:12px 16px;border-radius:4px;margin-bottom:16px;font-size:14px}
+  .msg-ok{background:#d4edda;color:#155724}
+  .msg-err{background:#f8d7da;color:#721c24}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center;padding:20px}
+  .modal-overlay.active{display:flex}
+  .modal{background:#fff;border-radius:8px;padding:28px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto}
+  .modal h2{font-size:20px;color:#2F5248;margin-bottom:20px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:14px;font-weight:600;color:#3A4744;margin-bottom:6px}
+  .field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:4px;font-size:15px;font-family:inherit}
+  .field textarea{min-height:180px;resize:vertical;line-height:1.7}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+</style>
+</head>
+<body>
+
+<div id="login" class="login-wrap">
+  <div class="login-box">
+    <h1>ניהול הספרייה המשותפת</h1>
+    <input type="password" id="pw" placeholder="סיסמת ניהול" autocomplete="current-password">
+    <button onclick="doLogin()">כניסה</button>
+    <div id="loginErr" class="err"></div>
+  </div>
+</div>
+
+<div id="app" class="app">
+  <div class="header">
+    <h1>הספרייה המשותפת — סיפורים</h1>
+    <a href="/admin/zoom">← לניהול מפגשי הזום</a>
+  </div>
+
+  <div id="msg"></div>
+
+  <div class="filters">
+    <button class="filter active" data-f="all" onclick="setFilter('all')">הכל</button>
+    <button class="filter" data-f="pending" onclick="setFilter('pending')">ממתינים</button>
+    <button class="filter" data-f="published" onclick="setFilter('published')">פורסמו</button>
+    <button class="filter" data-f="hidden" onclick="setFilter('hidden')">מוסתרים</button>
+  </div>
+
+  <div id="list"></div>
+</div>
+
+<!-- edit modal -->
+<div id="editOverlay" class="modal-overlay">
+  <div class="modal">
+    <h2>עריכת סיפור</h2>
+    <div class="field">
+      <label>שם השולח/ת</label>
+      <input id="eSender" type="text">
+    </div>
+    <div class="field">
+      <label>ייחוס בפרסום</label>
+      <select id="eAttr">
+        <option value="full">בשם המלא</option>
+        <option value="first">בשם פרטי בלבד</option>
+        <option value="anonymous">באופן אנונימי</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>כותרת</label>
+      <input id="eTitle" type="text">
+    </div>
+    <div class="field">
+      <label>הסיפור</label>
+      <textarea id="eBody"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeEdit()">ביטול</button>
+      <button class="btn" onclick="saveEdit()">שמירה</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var API='/api';
+var PW='';
+var STORIES=[];
+var FILTER='all';
+var editId=null;
+
+var STATUS_LABEL={pending:'ממתין',published:'פורסם',hidden:'מוסתר'};
+var ATTR_LABEL={full:'שם מלא',first:'שם פרטי',anonymous:'אנונימי'};
+
+function headers(){return{'Content-Type':'application/json','x-admin-password':PW}}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function fmtDate(d){if(!d)return '';var x=new Date(d);if(isNaN(x))return '';return x.toLocaleDateString('he-IL')+' '+x.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}
+
+function doLogin(){
+  PW=document.getElementById('pw').value;
+  fetch(API+'/admin/stories',{headers:{'x-admin-password':PW}})
+    .then(function(r){
+      if(r.status===401){document.getElementById('loginErr').textContent='סיסמה שגויה';PW='';return null}
+      document.getElementById('login').style.display='none';
+      document.getElementById('app').style.display='block';
+      return r.json();
+    })
+    .then(function(d){if(d&&d.ok){STORIES=d.stories||[];render()}})
+    .catch(function(){document.getElementById('loginErr').textContent='שגיאת חיבור'});
+}
+document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
+
+function load(){
+  fetch(API+'/admin/stories',{headers:{'x-admin-password':PW}})
+    .then(function(r){return r.json()})
+    .then(function(d){if(d&&d.ok){STORIES=d.stories||[];render()}});
+}
+
+function setFilter(f){
+  FILTER=f;
+  var btns=document.querySelectorAll('.filter');
+  for(var i=0;i<btns.length;i++){btns[i].classList.toggle('active',btns[i].getAttribute('data-f')===f)}
+  render();
+}
+
+function showMsg(text,ok){
+  var m=document.getElementById('msg');
+  m.innerHTML='<div class="msg '+(ok?'msg-ok':'msg-err')+'">'+esc(text)+'</div>';
+  setTimeout(function(){m.innerHTML=''},4000);
+}
+
+function render(){
+  var list=document.getElementById('list');
+  var items=STORIES.filter(function(s){return FILTER==='all'||s.status===FILTER});
+  if(!items.length){list.innerHTML='<div class="empty">אין סיפורים להצגה בקטגוריה זו.</div>';return}
+  var html='';
+  items.forEach(function(s){
+    var consentPill=s.consent
+      ? '<span class="pill pill-yes">אישר/ה פרסום</span>'
+      : '<span class="pill pill-no">ללא אישור פרסום</span>';
+    var meta=[];
+    meta.push('התקבל: '+esc(fmtDate(s.created_at)));
+    if(s.sender)meta.push('שם: '+esc(s.sender));
+    if(s.email)meta.push('מייל: '+esc(s.email));
+    meta.push('ייחוס: '+esc(ATTR_LABEL[s.attribution]||s.attribution));
+    if(s.has_file)meta.push('📎 קובץ מצורף'+(s.file_name?' ('+esc(s.file_name)+')':'')+' — נשלח למייל');
+    if(s.status==='published'&&s.published_at)meta.push('פורסם: '+esc(fmtDate(s.published_at)));
+
+    var actions='';
+    if(s.status!=='published'){
+      if(s.consent){actions+='<button class="btn btn-small" onclick="setStatus('+s.id+',\'published\')">פרסום</button>'}
+      else{actions+='<button class="btn btn-small" disabled title="המשתתף/ת לא אישר/ה פרסום">פרסום</button>'}
+    }
+    if(s.status==='published'){actions+='<button class="btn btn-small btn-secondary" onclick="setStatus('+s.id+',\'hidden\')">הסתרה</button>'}
+    if(s.status!=='pending'){actions+='<button class="btn btn-small btn-secondary" onclick="setStatus('+s.id+',\'pending\')">החזרה לממתין</button>'}
+    actions+='<button class="btn btn-small btn-secondary" onclick="openEdit('+s.id+')">עריכה</button>';
+    actions+='<button class="btn btn-small btn-danger" onclick="del('+s.id+')">מחיקה</button>';
+
+    html+='<div class="card">'+
+      '<div class="top">'+
+        '<h3>'+(s.title?esc(s.title):'<span style="color:#aaa">(ללא כותרת)</span>')+'</h3>'+
+        '<span class="status status-'+s.status+'">'+esc(STATUS_LABEL[s.status]||s.status)+'</span>'+
+      '</div>'+
+      '<div class="meta">'+meta.join(' · ')+'<br>'+consentPill+'</div>'+
+      (s.body?'<div class="body">'+esc(s.body)+'</div>':'<div class="meta" style="color:#aaa">(ללא טקסט — קובץ מצורף בלבד)</div>')+
+      '<div class="actions">'+actions+'</div>'+
+    '</div>';
+  });
+  list.innerHTML=html;
+}
+
+function setStatus(id,status){
+  fetch(API+'/admin/stories',{method:'PUT',headers:headers(),body:JSON.stringify({id:id,status:status})})
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if(d&&d.ok){showMsg('עודכן.',true);load()}
+      else if(d&&d.error==='no_consent'){showMsg('אי אפשר לפרסם — המשתתף/ת לא אישר/ה פרסום.',false)}
+      else{showMsg('שגיאה בעדכון.',false)}
+    })
+    .catch(function(){showMsg('שגיאת חיבור.',false)});
+}
+
+function del(id){
+  if(!window.confirm('למחוק את הסיפור לצמיתות? לא ניתן לשחזר.'))return;
+  fetch(API+'/admin/stories',{method:'DELETE',headers:headers(),body:JSON.stringify({id:id})})
+    .then(function(r){return r.json()})
+    .then(function(d){if(d&&d.ok){showMsg('נמחק.',true);load()}else{showMsg('שגיאה במחיקה.',false)}})
+    .catch(function(){showMsg('שגיאת חיבור.',false)});
+}
+
+function openEdit(id){
+  var s=null;for(var i=0;i<STORIES.length;i++){if(STORIES[i].id===id)s=STORIES[i]}
+  if(!s)return;
+  editId=id;
+  document.getElementById('eSender').value=s.sender||'';
+  document.getElementById('eAttr').value=s.attribution||'anonymous';
+  document.getElementById('eTitle').value=s.title||'';
+  document.getElementById('eBody').value=s.body||'';
+  document.getElementById('editOverlay').classList.add('active');
+}
+function closeEdit(){editId=null;document.getElementById('editOverlay').classList.remove('active')}
+function saveEdit(){
+  if(!editId)return;
+  var body={
+    id:editId,
+    sender:document.getElementById('eSender').value,
+    attribution:document.getElementById('eAttr').value,
+    title:document.getElementById('eTitle').value,
+    body:document.getElementById('eBody').value
+  };
+  fetch(API+'/admin/stories',{method:'PUT',headers:headers(),body:JSON.stringify(body)})
+    .then(function(r){return r.json()})
+    .then(function(d){if(d&&d.ok){showMsg('נשמר.',true);closeEdit();load()}else{showMsg('שגיאה בשמירה.',false)}})
+    .catch(function(){showMsg('שגיאת חיבור.',false)});
+}
+document.getElementById('editOverlay').addEventListener('click',function(e){if(e.target===this)closeEdit()});
+</script>
+</body>
+</html>

@@ -31,6 +31,23 @@ CREATE TABLE IF NOT EXISTS zoom_meetings (
   updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS stories (
+  id            SERIAL PRIMARY KEY,
+  sender        TEXT,
+  email         TEXT,
+  title         TEXT,
+  body          TEXT,
+  attribution   TEXT NOT NULL DEFAULT 'anonymous'
+                CHECK (attribution IN ('full','first','anonymous')),
+  consent       BOOLEAN NOT NULL DEFAULT false,
+  status        TEXT NOT NULL DEFAULT 'pending'
+                CHECK (status IN ('pending','published','hidden')),
+  has_file      BOOLEAN NOT NULL DEFAULT false,
+  file_name     TEXT,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+  published_at  TIMESTAMPTZ
+);
+
 CREATE TABLE IF NOT EXISTS email_templates (
   id              SERIAL PRIMARY KEY,
   template_type   TEXT NOT NULL UNIQUE,
