@@ -1,7 +1,7 @@
 // Contact form on /contact — emails the message straight to Ronit via Resend.
 // No storage, no moderation: this is private correspondence, not published content.
 
-const RECIPIENT = 'ronit.adiv@beteladim.co.il';
+const RECIPIENT = 'ronit@beityeladim.co.nz';
 
 function esc(s) {
   return String(s)
