@@ -77,99 +77,86 @@
 <script>
 var API='/api/admin/content';
 var PW='';
-var savedBlocks={};
+var overrides={};   // "slug/block_id" -> saved content (override)
+var defaults={};    // "slug/block_id" -> the real current text from the site code
+var order={};       // slug -> [block_id, ...] in page order
 
 var PAGES=[
-  {slug:'index',name:'עמוד הבית',blocks:[
-    {id:'hero-subtitle',label:'כותרת משנה'},
-    {id:'hero-description',label:'תיאור ראשי'},
-    {id:'book-paragraph',label:'על הספר — תיאור'},
-    {id:'author-bio',label:'על המחברת — ביוגרפיה'},
-    {id:'zoom-description',label:'מפגשי זום — תיאור'},
-    {id:'quote-1',label:'ציטוט ראשון'},
-    {id:'quote-1-cite',label:'ציטוט ראשון — מקור'},
-    {id:'quote-2',label:'ציטוט שני'},
-    {id:'quote-2-cite',label:'ציטוט שני — מקור'},
-  ]},
-  {slug:'book',name:'הספר',blocks:[
-    {id:'opening-quote',label:'ציטוט פתיחה מהספר'},
-    {id:'cover-caption',label:'כיתוב מתחת לעטיפה'},
-    {id:'story-paragraph',label:'הסיפור — תיאור'},
-    {id:'language-paragraph',label:'השפה — תיאור'},
-    {id:'questions-paragraph',label:'השאלות — תיאור'},
-  ]},
-  {slug:'ronit',name:'רונית',blocks:[
-    {id:'tagline',label:'תגית מתחת לשם'},
-    {id:'about-bio',label:'על המחברת — ביוגרפיה'},
-  ]},
-  {slug:'media',name:'תקשורת וביקורות',blocks:[
-    {id:'subtitle',label:'כותרת משנה'},
-  ]},
-  {slug:'zoom',name:'מפגשי זום — עמוד הרשמה',blocks:[
-    {id:'subtitle',label:'כותרת משנה'},
-    {id:'body-paragraph-1',label:'גוף — פסקה ראשונה (זיכרונות)'},
-    {id:'body-paragraph-2',label:'גוף — פסקה שנייה (הזמנה)'},
-    {id:'body-paragraph-3',label:'גוף — פסקה שלישית (מפגשים פתוחים)'},
-    {id:'body-paragraph-4',label:'גוף — פסקה רביעית (טקסים)'},
-    {id:'body-question-1',label:'שאלה ראשונה'},
-    {id:'body-question-2',label:'שאלה שנייה'},
-    {id:'body-question-3',label:'שאלה שלישית'},
-    {id:'body-motto-1',label:'מוטו — שורה 1'},
-    {id:'body-motto-2',label:'מוטו — שורה 2'},
-    {id:'body-motto-3',label:'מוטו — שורה 3'},
-    {id:'body-motto-4',label:'מוטו — שורה 4'},
-    {id:'body-motto-5',label:'מוטו — שורה 5'},
-    {id:'body-closing',label:'גוף — פסקת סיום'},
-    {id:'body-closing-quote',label:'ציטוט סיום'},
-    {id:'form-description',label:'תיאור טופס ההרשמה'},
-  ]},
-  {slug:'materials',name:'הספרייה המשותפת',blocks:[
-    {id:'subtitle',label:'כותרת משנה'},
-  ]},
-  {slug:'contact',name:'צור קשר',blocks:[
-    {id:'intro',label:'טקסט פתיחה'},
-  ]},
+  {slug:'index',    url:'/',          name:'עמוד הבית'},
+  {slug:'book',     url:'/book',      name:'הספר'},
+  {slug:'ronit',    url:'/ronit',     name:'רונית'},
+  {slug:'zoom',     url:'/zoom',      name:'מפגשי זום'},
+  {slug:'materials',url:'/materials', name:'הספרייה המשותפת'},
+  {slug:'media',    url:'/media',     name:'תקשורת וביקורות'},
+  {slug:'contact',  url:'/contact',   name:'צור קשר'}
 ];
 
-function headers(){return{'Content-Type':'application/json','x-admin-password':PW}}
+var LABELS={
+  'hero-subtitle':'כותרת משנה','hero-description':'תיאור ראשי','book-paragraph':'על הספר — תיאור',
+  'author-bio':'על המחברת — ביוגרפיה','zoom-description':'מפגשי זום — תיאור',
+  'quote-1':'ציטוט ראשון','quote-1-cite':'ציטוט ראשון — מקור','quote-2':'ציטוט שני','quote-2-cite':'ציטוט שני — מקור',
+  'opening-quote':'ציטוט פתיחה מהספר','cover-caption':'כיתוב מתחת לעטיפה','story-paragraph':'הסיפור — תיאור',
+  'language-paragraph':'השפה — תיאור','questions-paragraph':'השאלות — תיאור',
+  'tagline':'תגית מתחת לשם','about-bio':'על המחברת — ביוגרפיה',
+  'subtitle':'כותרת משנה','intro':'טקסט פתיחה',
+  'body-paragraph-1':'פסקה ראשונה','body-paragraph-2':'פסקה שנייה','body-paragraph-3':'פסקה שלישית',
+  'body-closing-quote':'ציטוט סיום','form-description':'תיאור טופס ההרשמה'
+};
+function labelFor(id){ return LABELS[id] || id.replace(/-/g,' '); }
 
+function headers(){return{'Content-Type':'application/json','x-admin-password':PW}}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function showMsg(text,ok){
   var el=document.getElementById('msgArea');
   el.innerHTML='<div class="msg '+(ok?'msg-ok':'msg-err')+'">'+esc(text)+'</div>';
   setTimeout(function(){el.innerHTML=''},4000);
 }
+function key(slug,id){return slug+'/'+id;}
+function currentValue(k){ return (k in overrides) ? overrides[k] : (defaults[k]||''); }
 
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+// Turn a page element's HTML into the plain, line-broken text shown in the editor.
+function extractText(el){
+  var html=el.innerHTML.replace(/<br\s*\/?>/gi,'\n');
+  var tmp=document.createElement('div'); tmp.innerHTML=html;
+  var t=tmp.textContent||'';
+  return t.replace(/ /g,' ').replace(/[ \t]+/g,' ').replace(/ *\n */g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+}
+
+// Fetch each page and read its real editable text (the data-cms spots), in page order.
+function loadDefaults(){
+  return Promise.all(PAGES.map(function(p){
+    return fetch(p.url,{cache:'no-store'}).then(function(r){return r.text();}).then(function(html){
+      var doc=new DOMParser().parseFromString(html,'text/html');
+      var els=doc.querySelectorAll('[data-cms]');
+      order[p.slug]=[];
+      for(var i=0;i<els.length;i++){
+        var id=els[i].getAttribute('data-cms');
+        order[p.slug].push(id);
+        defaults[key(p.slug,id)]=extractText(els[i]);
+      }
+    }).catch(function(){ if(!order[p.slug]) order[p.slug]=[]; });
+  }));
+}
 
 function enterApp(data){
-  savedBlocks={};
-  data.blocks.forEach(function(b){
-    savedBlocks[b.page_slug+'/'+b.block_id]=b.content;
-  });
+  overrides={};
+  ((data&&data.blocks)||[]).forEach(function(b){ overrides[key(b.page_slug,b.block_id)]=b.content; });
   document.getElementById('login').style.display='none';
   document.getElementById('app').style.display='block';
-  renderPages();
+  document.getElementById('pages').innerHTML='<div style="text-align:center; color:#8A9692; padding:50px 20px;">טוען את תוכן העמודים…</div>';
+  loadDefaults().then(renderPages);
 }
 
 function doLogin(){
   PW=document.getElementById('pw').value;
   fetch(API,{headers:headers()})
-    .then(function(r){
-      if(!r.ok)throw new Error('wrong');
-      return r.json();
-    })
-    .then(function(data){
-      sessionStorage.setItem('cms-auth',PW);
-      enterApp(data);
-    })
-    .catch(function(){
-      document.getElementById('loginErr').textContent='סיסמה שגויה';
-    });
+    .then(function(r){ if(!r.ok)throw new Error('wrong'); return r.json(); })
+    .then(function(data){ sessionStorage.setItem('cms-auth',PW); enterApp(data); })
+    .catch(function(){ document.getElementById('loginErr').textContent='סיסמה שגויה'; });
 }
 
 function doLogout(){
-  PW='';
-  savedBlocks={};
+  PW=''; overrides={}; defaults={}; order={};
   sessionStorage.removeItem('cms-auth');
   document.getElementById('app').style.display='none';
   document.getElementById('login').style.display='flex';
@@ -191,23 +178,25 @@ function renderPages(){
   var container=document.getElementById('pages');
   var html='';
   PAGES.forEach(function(page){
+    var ids=order[page.slug]||[];
     html+='<div class="page-section" id="section-'+page.slug+'">';
     html+='<div class="page-header" onclick="toggleSection(\''+page.slug+'\')">';
-    html+='<h2>'+esc(page.name)+'</h2>';
+    html+='<h2>'+esc(page.name)+' <span style="font-size:13px; color:#8A9692; font-weight:400;">('+ids.length+')</span></h2>';
     html+='<span class="arrow">▼</span>';
     html+='</div>';
     html+='<div class="page-body">';
-    page.blocks.forEach(function(block){
-      var key=page.slug+'/'+block.id;
-      var val=savedBlocks[key]||'';
-      html+='<div class="block-card" id="card-'+page.slug+'-'+block.id+'">';
-      html+='<label>'+esc(block.label)+'</label>';
-      html+='<textarea id="txt-'+page.slug+'-'+block.id+'" data-key="'+key+'">'+esc(val)+'</textarea>';
-      if(!val) html+='<div class="placeholder-hint">ריק = משתמש בטקסט שנמצא בקוד האתר</div>';
+    if(!ids.length){ html+='<div class="placeholder-hint" style="padding:6px 2px 2px;">אין טקסטים ניתנים לעריכה בעמוד זה.</div>'; }
+    ids.forEach(function(id){
+      var k=key(page.slug,id);
+      var edited=(k in overrides);
+      var val=currentValue(k);
+      html+='<div class="block-card" id="card-'+page.slug+'-'+id+'">';
+      html+='<label>'+esc(labelFor(id))+'</label>';
+      html+='<textarea id="txt-'+page.slug+'-'+id+'" data-key="'+k+'">'+esc(val)+'</textarea>';
       html+='<div class="block-actions">';
-      html+='<button class="btn btn-small" onclick="saveBlock(\''+page.slug+'\',\''+block.id+'\')">שמירה</button>';
-      if(val) html+='<button class="btn btn-small btn-reset" onclick="resetBlock(\''+page.slug+'\',\''+block.id+'\')">איפוס לברירת מחדל</button>';
-      html+='<span class="block-status" id="status-'+page.slug+'-'+block.id+'">'+(val?'נערך':'')+'</span>';
+      html+='<button class="btn btn-small" onclick="saveBlock(\''+page.slug+'\',\''+id+'\')">שמירה</button>';
+      html+='<button class="btn btn-small btn-reset" id="reset-'+page.slug+'-'+id+'" onclick="resetBlock(\''+page.slug+'\',\''+id+'\')"'+(edited?'':' style="display:none"')+'>שחזור לטקסט המקורי</button>';
+      html+='<span class="block-status'+(edited?' saved':'')+'" id="status-'+page.slug+'-'+id+'">'+(edited?'נערך · גרסה שמורה':'טקסט האתר')+'</span>';
       html+='</div>';
       html+='</div>';
     });
@@ -216,48 +205,35 @@ function renderPages(){
   container.innerHTML=html;
 }
 
-function toggleSection(slug){
-  document.getElementById('section-'+slug).classList.toggle('open');
-}
+function toggleSection(slug){ document.getElementById('section-'+slug).classList.toggle('open'); }
 
 function saveBlock(pageSlug,blockId){
-  var textarea=document.getElementById('txt-'+pageSlug+'-'+blockId);
-  var content=textarea.value;
-  var key=pageSlug+'/'+blockId;
-
-  fetch(API,{
-    method:'PUT',
-    headers:headers(),
-    body:JSON.stringify({page_slug:pageSlug,block_id:blockId,content:content})
-  })
-  .then(function(r){return r.json()})
-  .then(function(data){
-    if(!data.ok){showMsg('שגיאה בשמירה',false);return}
-    if(data.action==='deleted'){
-      delete savedBlocks[key];
-    } else {
-      savedBlocks[key]=content;
-    }
-    renderPages();
-    showMsg('נשמר בהצלחה',true);
-  })
-  .catch(function(){showMsg('שגיאה בשמירה',false)});
+  var k=key(pageSlug,blockId);
+  var content=document.getElementById('txt-'+pageSlug+'-'+blockId).value;
+  fetch(API,{method:'PUT',headers:headers(),body:JSON.stringify({page_slug:pageSlug,block_id:blockId,content:content})})
+    .then(function(r){return r.json()})
+    .then(function(data){
+      if(!data.ok){showMsg('שגיאה בשמירה',false);return}
+      overrides[k]=content;
+      var st=document.getElementById('status-'+pageSlug+'-'+blockId); if(st){st.textContent='נערך · גרסה שמורה'; st.classList.add('saved');}
+      var rb=document.getElementById('reset-'+pageSlug+'-'+blockId); if(rb) rb.style.display='';
+      showMsg('נשמר בהצלחה',true);
+    })
+    .catch(function(){showMsg('שגיאה בשמירה',false)});
 }
 
 function resetBlock(pageSlug,blockId){
-  var key=pageSlug+'/'+blockId;
-  fetch(API,{
-    method:'DELETE',
-    headers:headers(),
-    body:JSON.stringify({page_slug:pageSlug,block_id:blockId})
-  })
-  .then(function(r){return r.json()})
-  .then(function(){
-    delete savedBlocks[key];
-    renderPages();
-    showMsg('אופס לברירת מחדל',true);
-  })
-  .catch(function(){showMsg('שגיאה',false)});
+  var k=key(pageSlug,blockId);
+  fetch(API,{method:'DELETE',headers:headers(),body:JSON.stringify({page_slug:pageSlug,block_id:blockId})})
+    .then(function(r){return r.json()})
+    .then(function(){
+      delete overrides[k];
+      var ta=document.getElementById('txt-'+pageSlug+'-'+blockId); if(ta) ta.value=defaults[k]||'';
+      var st=document.getElementById('status-'+pageSlug+'-'+blockId); if(st){st.textContent='טקסט האתר'; st.classList.remove('saved');}
+      var rb=document.getElementById('reset-'+pageSlug+'-'+blockId); if(rb) rb.style.display='none';
+      showMsg('שוחזר לטקסט המקורי',true);
+    })
+    .catch(function(){showMsg('שגיאה',false)});
 }
 
 document.getElementById('pw').addEventListener('keydown',function(e){
