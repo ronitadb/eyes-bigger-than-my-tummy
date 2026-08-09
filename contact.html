@@ -74,12 +74,19 @@
           <div style="font-size:15px; color:#475451; margin-bottom:16px;">מפגשי קריאה וקבוצות</div>
           <a href="/zoom" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">לפרטים ←</a>
         </div>
-        <div style="flex:1 1 240px; border:1px solid rgba(34,48,47,.16); background:#F0F4F1; padding:28px 26px;">
-          <h3 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:21px; margin:0 0 6px;">טיפול פסיכולוגי</h3>
-          <div style="font-size:15px; color:#475451; margin-bottom:16px;">רונית בלנרו-אדיב · פסיכולוגית קלינית</div>
-          <a href="/door" style="color:var(--accent); font-weight:600; text-decoration:none; font-size:15px;">כניסה אל הדלת ←</a>
-        </div>
       </div>
+    </section>
+
+    <style>
+      .clinic-entry img { transition: box-shadow .2s ease, transform .2s ease; }
+      .clinic-entry:hover img { transform: translateY(-3px); box-shadow: 0 20px 42px rgba(34,48,47,.26); }
+      .clinic-entry:hover .clinic-cap { text-decoration: underline; text-underline-offset: 4px; }
+    </style>
+    <section style="padding:6px 0 48px; border-top:1px solid rgba(34,48,47,.12);">
+      <a href="/door" class="clinic-entry" aria-label="לקליניקה של רונית" style="display:flex; flex-direction:column; align-items:center; gap:16px; text-decoration:none; width:max-content; max-width:100%; margin:0 auto;">
+        <img src="assets/ronit-door.jpg" alt="רונית בלנרו-אדיב, פסיכולוגית קלינית" style="width:clamp(170px,40vw,205px); height:auto; border-radius:8px; box-shadow:0 14px 34px rgba(34,48,47,.20); display:block;">
+        <span class="clinic-cap" style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:20px;">לקליניקה של רונית<span style="color:var(--accent); font-weight:600; font-size:17px; margin-inline-start:8px;">←</span></span>
+      </a>
     </section>
 
     <section style="padding:48px 0 80px;">
