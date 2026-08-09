@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Ronit Adiv-Blanario, clinical psychologist — three reflections, and an invitation to write.">
+<link rel="canonical" href="https://eyes-bigger-than-my-tummy.vercel.app/door">
+<title>Ronit Adiv-Blanario — the door</title>
+<style>
+  :root {
+    /* warm paper — light */
+    --page: #e7e3db;
+    --surface: #faf9f5;
+    --raised: #ffffff;
+    --hairline: #d7d0c3;
+    --border: #cdc7bb;
+
+    --ink: #2c2820;
+    --ink-body: #3a352d;
+    --ink-soft: #726a5d;
+    --ink-mute: #8a8175;
+    --ink-faint: #a49b8c;
+
+    /* terracotta — primary accent (from the ACC "warn" family) */
+    --terra: #b0604a;
+    --terra-deep: #8a4a32;
+    --terra-soft: #f6e3db;
+    --terra-tint: #e8d2c8;
+
+    /* sage — secondary accent (from the ACC "ok" family), echoes the foliage */
+    --sage: #7c8a6a;
+    --sage-deep: #5f6b50;
+    --sage-soft: #e8ecdf;
+
+    --gold: #c9a24a;
+    --on-band: #f7efe6;
+
+    /* colored bands */
+    --hero-a: #e0e5d5;
+    --hero-b: #ece7de;
+    --band-terra-a: #b46550;
+    --band-terra-b: #9a5138;
+    --band-sage-a: #808d6a;
+    --band-sage-b: #6a7654;
+    --door-a: #a85640;
+    --door-b: #813f2b;
+
+    --shadow-card: 0 10px 34px rgba(44, 40, 32, 0.16);
+
+    --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "Hoefler Text", Georgia, "Times New Roman", serif;
+    --sans: system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #201c16;
+      --surface: #26221b;
+      --raised: #2b271f;
+      --hairline: #39332b;
+      --border: #443e33;
+
+      --ink: #ece5d7;
+      --ink-body: #ddd5c5;
+      --ink-soft: #b3aa9a;
+      --ink-mute: #948b7c;
+      --ink-faint: #776f61;
+
+      --terra: #cd8a71;
+      --terra-deep: #dd9d84;
+      --terra-soft: #3a2820;
+      --terra-tint: #4a352d;
+
+      --sage: #9aa886;
+      --sage-deep: #b0bd9c;
+      --sage-soft: #2a2e22;
+
+      --gold: #d4b06a;
+      --on-band: #f4ece2;
+
+      --hero-a: #262a1f;
+      --hero-b: #211d16;
+      --band-terra-a: #8f4c37;
+      --band-terra-b: #6f3a29;
+      --band-sage-a: #56624a;
+      --band-sage-b: #414b37;
+      --door-a: #7f4130;
+      --door-b: #5c2e20;
+
+      --shadow-card: 0 14px 40px rgba(0, 0, 0, 0.55);
+    }
+  }
+
+  :root[data-theme="light"] {
+    --page: #e7e3db; --surface: #faf9f5; --raised: #ffffff; --hairline: #d7d0c3; --border: #cdc7bb;
+    --ink: #2c2820; --ink-body: #3a352d; --ink-soft: #726a5d; --ink-mute: #8a8175; --ink-faint: #a49b8c;
+    --terra: #b0604a; --terra-deep: #8a4a32; --terra-soft: #f6e3db; --terra-tint: #e8d2c8;
+    --sage: #7c8a6a; --sage-deep: #5f6b50; --sage-soft: #e8ecdf; --gold: #c9a24a; --on-band: #f7efe6;
+    --hero-a: #e0e5d5; --hero-b: #ece7de;
+    --band-terra-a: #b46550; --band-terra-b: #9a5138; --band-sage-a: #808d6a; --band-sage-b: #6a7654;
+    --door-a: #a85640; --door-b: #813f2b; --shadow-card: 0 10px 34px rgba(44, 40, 32, 0.16);
+  }
+  :root[data-theme="dark"] {
+    --page: #201c16; --surface: #26221b; --raised: #2b271f; --hairline: #39332b; --border: #443e33;
+    --ink: #ece5d7; --ink-body: #ddd5c5; --ink-soft: #b3aa9a; --ink-mute: #948b7c; --ink-faint: #776f61;
+    --terra: #cd8a71; --terra-deep: #dd9d84; --terra-soft: #3a2820; --terra-tint: #4a352d;
+    --sage: #9aa886; --sage-deep: #b0bd9c; --sage-soft: #2a2e22; --gold: #d4b06a; --on-band: #f4ece2;
+    --hero-a: #262a1f; --hero-b: #211d16;
+    --band-terra-a: #8f4c37; --band-terra-b: #6f3a29; --band-sage-a: #56624a; --band-sage-b: #414b37;
+    --door-a: #7f4130; --door-b: #5c2e20; --shadow-card: 0 14px 40px rgba(0, 0, 0, 0.55);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink-body);
+    font-family: var(--serif);
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--terra-tint); }
+  .wrap { max-width: 40rem; margin: 0 auto; padding: 0 clamp(1.5rem, 6vw, 3rem); }
+
+  /* ── hero banner ──────────────────────────── */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(168deg, var(--hero-a) 0%, var(--hero-b) 62%, var(--page) 100%);
+    border-bottom: 1px solid var(--hairline);
+    padding: clamp(3.5rem, 9vw, 6rem) 0 clamp(3rem, 7vw, 4.5rem);
+    text-align: center;
+  }
+  /* soft bokeh, echoing the portrait's background */
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: -10% -10% auto -10%;
+    height: 130%;
+    background:
+      radial-gradient(circle at 16% 22%, rgba(201, 162, 74, 0.24), transparent 42%),
+      radial-gradient(circle at 84% 12%, rgba(124, 138, 106, 0.30), transparent 46%),
+      radial-gradient(circle at 72% 68%, rgba(201, 162, 74, 0.16), transparent 40%),
+      radial-gradient(circle at 30% 80%, rgba(124, 138, 106, 0.20), transparent 44%);
+    filter: blur(6px);
+    pointer-events: none;
+  }
+  .hero .wrap { position: relative; display: flex; flex-direction: column; align-items: center; gap: 1.6rem; }
+
+  .portrait {
+    width: min(17rem, 68vw);
+    aspect-ratio: 3 / 4;
+    background: var(--raised);
+    padding: 0.6rem;
+    border: 1px solid rgba(255,255,255,0.6);
+    border-radius: 4px;
+    box-shadow: var(--shadow-card);
+  }
+  .portrait img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+
+  .name {
+    font-size: clamp(2rem, 5.6vw, 2.9rem);
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .role {
+    font-family: var(--sans);
+    font-size: 0.76rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--terra-deep);
+    margin: 0.85rem 0 0;
+  }
+  .role::before, .role::after {
+    content: "";
+    display: inline-block;
+    width: 1.6rem;
+    height: 1px;
+    vertical-align: middle;
+    background: var(--terra);
+    opacity: 0.6;
+    margin: 0 0.85rem;
+  }
+
+  /* ── reflections ──────────────────────────── */
+  section.reflection { padding: clamp(3rem, 8vw, 4.75rem) 0; }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--terra-deep);
+    margin: 0 0 1.6rem;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 1.6rem;
+    height: 2px;
+    background: var(--terra);
+    border-radius: 2px;
+  }
+  .reflection.sage .eyebrow { color: var(--sage-deep); }
+  .reflection.sage .eyebrow::before { background: var(--sage); }
+
+  section p { margin: 0 0 1.25rem; color: var(--ink-body); font-size: 1.16rem; }
+  section p:last-child { margin-bottom: 0; }
+
+  .opening {
+    font-size: clamp(2rem, 5.6vw, 3.1rem);
+    line-height: 1.16;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--terra-deep);
+    margin: 0 0 1.9rem;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .opening::before { content: "\201C"; }
+  .opening::after { content: "\201D"; }
+
+  /* drop cap on each section's first body paragraph */
+  .lead::first-letter {
+    float: left;
+    font-size: 3.5em;
+    line-height: 0.74;
+    padding: 0.08em 0.12em 0 0;
+    color: var(--terra);
+    font-weight: 500;
+  }
+  .reflection.sage .lead::first-letter { color: var(--sage-deep); }
+
+  em, .book { font-style: italic; }
+  .closing-line { font-style: italic; color: var(--ink); }
+
+  /* ── pull-quote banners ───────────────────── */
+  .banner {
+    text-align: center;
+    color: var(--on-band);
+    padding: clamp(2.75rem, 7vw, 4.25rem) 0;
+  }
+  .banner.terra { background: linear-gradient(135deg, var(--band-terra-a), var(--band-terra-b)); }
+  .banner.sage  { background: linear-gradient(135deg, var(--band-sage-a), var(--band-sage-b)); }
+  .banner p {
+    margin: 0;
+    font-style: italic;
+    font-size: clamp(1.5rem, 4.4vw, 2.25rem);
+    line-height: 1.28;
+    text-wrap: balance;
+    color: var(--on-band);
+  }
+  .banner .attribution {
+    display: block;
+    margin-top: 1.1rem;
+    font-style: normal;
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  /* ── the door ─────────────────────────────── */
+  .door {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    color: var(--on-band);
+    background: linear-gradient(160deg, var(--door-a), var(--door-b));
+    padding: clamp(3.5rem, 9vw, 5.5rem) 0 clamp(3rem, 7vw, 4.25rem);
+  }
+  .door::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 80% 18%, rgba(201, 162, 74, 0.22), transparent 45%),
+      radial-gradient(circle at 12% 88%, rgba(0, 0, 0, 0.18), transparent 42%);
+    pointer-events: none;
+  }
+  .door .wrap { position: relative; display: flex; flex-direction: column; align-items: center; gap: 1.7rem; }
+  .door-eyebrow {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin: 0;
+  }
+  .door-art { width: 82px; height: 108px; color: var(--on-band); }
+  .door-panel { transform-origin: 15px 50%; transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1); }
+
+  .knock {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--terra-deep);
+    background: var(--on-band);
+    padding: 0.9rem 1.9rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .knock::after { content: "\2192"; transition: transform 0.22s ease; }
+  .knock:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.24); }
+  .knock:hover::after { transform: translateX(3px); }
+  .door:hover .door-panel,
+  .door.open .door-panel { transform: perspective(360px) rotateY(-36deg); }
+  .door.open .knock { display: none; }
+  .knock:focus-visible { outline: 2px solid var(--on-band); outline-offset: 3px; }
+
+  /* ── contact form (composes an email in the visitor's mail app) ── */
+  .form-wrap {
+    width: min(30rem, 100%);
+    display: grid;
+    gap: 1rem;
+    text-align: left;
+    background: var(--surface);
+    color: var(--ink-body);
+    border-radius: 7px;
+    box-shadow: var(--shadow-card);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0 clamp(1.25rem, 4vw, 1.75rem);
+    transition: max-height 0.5s ease, opacity 0.4s ease, padding 0.4s ease, margin-top 0.4s ease;
+  }
+  .door.open .form-wrap {
+    max-height: 44rem;
+    opacity: 1;
+    margin-top: 0.3rem;
+    padding-top: clamp(1.5rem, 4vw, 1.9rem);
+    padding-bottom: clamp(1.5rem, 4vw, 1.9rem);
+  }
+  .field { display: grid; gap: 0.4rem; }
+  .form-wrap label {
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terra-deep);
+  }
+  .form-wrap input,
+  .form-wrap textarea {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: var(--raised);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.65rem 0.75rem;
+    width: 100%;
+    resize: vertical;
+  }
+  .form-wrap input:focus,
+  .form-wrap textarea:focus {
+    outline: none;
+    border-color: var(--terra);
+    box-shadow: 0 0 0 3px var(--terra-tint);
+  }
+  .send {
+    justify-self: start;
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+    color: var(--on-band);
+    background: var(--terra);
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 0.8rem 1.5rem;
+    transition: background 0.18s ease;
+  }
+  .send:hover { background: var(--terra-deep); }
+  .send:focus-visible { outline: 2px solid var(--terra-deep); outline-offset: 3px; }
+  .form-note {
+    font-family: var(--sans);
+    font-size: 0.76rem;
+    line-height: 1.5;
+    color: var(--ink-mute);
+    margin: 0;
+  }
+  .form-note a { color: var(--terra-deep); }
+
+  .email-plain {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    color: var(--on-band);
+    opacity: 0.82;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(247, 239, 230, 0.35);
+    padding-bottom: 2px;
+  }
+  .email-plain:hover { opacity: 1; }
+
+  footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    text-align: center;
+    padding: 2.75rem 1.5rem;
+  }
+  footer .grace {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .home-link {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    color: var(--ink-mute);
+    text-decoration: none;
+  }
+  .home-link:hover { color: var(--terra); }
+
+  /* ── entrance ─────────────────────────────── */
+  .rise { opacity: 0; animation: rise 0.85s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+  .d1 { animation-delay: 0.05s; } .d2 { animation-delay: 0.18s; }
+  .d3 { animation-delay: 0.31s; } .d4 { animation-delay: 0.44s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rise { animation: none; opacity: 1; transform: none; }
+    .door-panel, .knock, .knock::after, .form-wrap, .send { transition: none; }
+    .door:hover .door-panel { transform: none; }
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="portrait rise d1">
+      <img src="assets/ronit-door.jpg" alt="Ronit Adiv-Blanario, clinical psychologist, smiling outdoors" />
+    </div>
+    <div class="rise d2">
+      <h1 class="name">Ronit Adiv-Blanario</h1>
+      <p class="role">Clinical Psychologist</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="reflection">
+    <div class="wrap">
+      <p class="eyebrow">From the therapy room</p>
+      <p class="opening">Where would he live now?</p>
+      <p class="lead">My breath was caught in surprise as I struggled not to disrupt the fragile moment. It was one of those moments which you strive towards, yet, when it unexpectedly arrives, you are completely unprepared.</p>
+      <p>&ldquo;Who?&rdquo;</p>
+      <p>&ldquo;Gus.&rdquo; Anna spoke quietly, as if whispering to herself. I had not heard her voice before. For the past three months, she came every week, entered the room in silence heading straight to the bookshelf and handed me over <span class="book">Ida, Always</span>. From my place on the soft rug, leaning against the beanbag, as I read Ida and Gus&rsquo; story, all I could see was Anna&rsquo;s back. She was entirely absorbed in her drawings, page after page, not allowing any contact. In the next long months, those drawings will become a &lsquo;road-map&rsquo; through which Anna and I will walk together in the uncharted territory of her agonised loss of both her parents five months ago.</p>
+      <p>Anna&rsquo;s aunt and uncle, who took her in, had brought her to me out of their utter helplessness. She attended school every day, yet had withdrawn into an unapproachable shell as she ceased speaking. I would read <span class="book">Ida, Always</span> week after week until it was no longer about the words; it became a lullaby.</p>
+      <p>She turned around facing me. &ldquo;Does he need to move out of the Zoo?&rdquo;</p>
+      <p>My heart went out to her, as this simple question unfolded the abrupt loss of the world she knew for the past eight years; her entire life. I was overwhelmed by the moment&rsquo;s unfamiliarity &mdash; she spoke; she was facing me. And she was in pain.</p>
+      <p>Ida and Gus accompanied us for months. Months of weaving together heartbreaking moments and the rediscovery of how to smile. And similarly to Gus&rsquo; heart, which kept beating in spite of Ida&rsquo;s departure, forcing Gus to stay alive, Anna&rsquo;s heart kept beating too.</p>
+    </div>
+  </section>
+
+  <aside class="banner terra rise">
+    <div class="wrap">
+      <p>&ldquo;So much exposure, so much vulnerability, and so much courage.&rdquo;</p>
+    </div>
+  </aside>
+
+  <section class="reflection sage">
+    <div class="wrap">
+      <p class="eyebrow">On trust</p>
+      <p class="lead">Therapy is a door. A door through which the therapist is invited to enter.</p>
+      <p>How difficult it is to let an unfamiliar person step into our realms of pain.</p>
+      <p>And every client does it. So much exposure, so much vulnerability, and so much courage.</p>
+      <p>Slowly, slowly, trust is built. The client&rsquo;s trust in me, the therapist; and my trust in them. A fragile tapestry.</p>
+      <p>And the client hurts&mdash;in their own language, in their own world. And the therapist misses, disappoints, makes mistakes.</p>
+      <p>And the client also finds calmness, and rest. And the therapist also hits the mark, and is truly present.</p>
+      <p>And between these, that same tapestry is woven&mdash;from moments of rupture and repair. Two people willing to be in this together. Committed. Honest. Trying.</p>
+      <p class="closing-line">This is therapy for me.</p>
+      <p>Therapy is a door. And the trust a client gives when opening it is something beyond value&mdash;something that evokes awe and gratitude.</p>
+    </div>
+  </aside>
+
+  <aside class="banner sage rise">
+    <div class="wrap">
+      <p>&ldquo;An anchor, a lighthouse &mdash; so that when this knowing is revealed, they will not be alone in it.&rdquo;</p>
+    </div>
+  </aside>
+
+  <section class="reflection">
+    <div class="wrap">
+      <p class="eyebrow">How I practice</p>
+      <p class="lead">The therapist does not know the client better than the client knows themselves. But the therapist is not the client&mdash;and that is the source of their therapeutic power: they observe from the outside, holding a perspective that the client, simply by living their own life, does not and is not meant to have.</p>
+      <p>The therapist does not seek to be &ldquo;in the client&rsquo;s shoes.&rdquo; They seek to learn, together with the client, the client&rsquo;s own shoes.</p>
+      <p>The therapist listens. To everything. To the things that are said and the things that remain unsaid; to the strained wringing of hands or the habitually indifferent look; to the quiver in the voice or the sudden, unexpected outburst of anger. The therapist listens and thinks. Sometimes silent. Sometimes asking. Seeing.</p>
+      <p>The therapist enables the client to grow a quiet knowing within themselves. What knowing? Knowing themselves: Who are they? From what hidden places are they driven? The therapist does not bring this knowledge ready-made, for they do not know the client better than the client knows themselves. The therapist is there&mdash;an anchor, a lighthouse&mdash;so that when this knowing is revealed, when the client grasps it, they will not be alone in it.</p>
+      <p>And from here flow the tenderness, the quiet, the presence, and the security.</p>
+      <p>This is therapy for me. And this is how I practice: with children, teenagers, adults, families, and couples.</p>
+      <p>I love providing therapy. I love the responsibility.</p>
+      <p>Responsibility is a privilege. With deep gratitude to all my clients who have invited me to step through their door and walk there, together with them.</p>
+    </div>
+  </section>
+</main>
+
+<section class="door" id="door">
+  <div class="wrap">
+    <p class="door-eyebrow rise">Therapy is a door</p>
+    <svg class="door-art rise" viewBox="0 0 82 108" fill="none" aria-hidden="true">
+      <rect x="9" y="6" width="64" height="96" rx="1.5" stroke="currentColor" stroke-width="1.4" opacity="0.55"/>
+      <line x1="2" y1="102" x2="80" y2="102" stroke="currentColor" stroke-width="1.4" opacity="0.55"/>
+      <g class="door-panel">
+        <rect x="15" y="12" width="52" height="84" rx="1" stroke="currentColor" stroke-width="1.4"/>
+        <circle cx="60" cy="54" r="1.9" fill="currentColor"/>
+      </g>
+    </svg>
+
+    <button type="button" class="knock rise" id="openForm" aria-expanded="false" aria-controls="contactForm">Write to me</button>
+
+    <form class="form-wrap" id="contactForm">
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required />
+      </div>
+      <div class="field">
+        <label for="f-email">Your email</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" required />
+      </div>
+      <div class="field">
+        <label for="f-msg">Your message</label>
+        <textarea id="f-msg" name="message" rows="5" required></textarea>
+      </div>
+      <button type="submit" class="send">Send</button>
+      <p class="form-note">This opens a message in your own email app, already addressed to me. You can also write directly to <a href="mailto:ronit.adiv@gmail.com">ronit.adiv@gmail.com</a>.</p>
+    </form>
+    <a id="mailto-link" hidden aria-hidden="true"></a>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var door = document.getElementById("door");
+    var openBtn = document.getElementById("openForm");
+    var form = document.getElementById("contactForm");
+    var link = document.getElementById("mailto-link");
+    if (!door || !openBtn || !form || !link) return;
+
+    openBtn.addEventListener("click", function () {
+      var isOpen = door.classList.toggle("open");
+      openBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      if (isOpen) {
+        window.setTimeout(function () {
+          var first = document.getElementById("f-name");
+          if (first) first.focus();
+        }, 420);
+      }
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = document.getElementById("f-name").value.trim();
+      var email = document.getElementById("f-email").value.trim();
+      var msg = document.getElementById("f-msg").value.trim();
+      var subject = "A message through your door — " + name;
+      var body = msg + "\n\n— " + name + "\n" + email;
+      link.setAttribute(
+        "href",
+        "mailto:ronit.adiv@gmail.com?subject=" +
+          encodeURIComponent(subject) +
+          "&body=" +
+          encodeURIComponent(body)
+      );
+      link.click();
+    });
+  })();
+</script>
+
+<footer>
+  <span class="grace">With gratitude</span>
+  <a class="home-link" href="/">&larr; Return to Bigger Eyes Than My Tummy</a>
+</footer>
+</body>
+</html>
