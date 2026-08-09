@@ -44,7 +44,7 @@ SET subject = 'תודה שהייתם איתנו',
 נסיים כאן את המפגש, אבל לא את השיחה.
 
 להמשך הקריאה באתר:
-https://eyes-bigger-than-my-tummy.vercel.app
+https://www.beityeladim.co.il
 
 להתראות במפגש הבא,
 רונית',

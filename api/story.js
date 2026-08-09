@@ -4,7 +4,7 @@
 
 const { sql } = require('../lib/db');
 
-const RECIPIENT = 'ronit@beityeladim.co.nz';
+const RECIPIENT = 'ronit@beityeladim.co.il';
 const MAX_FILE_BYTES = 3 * 1024 * 1024; // 3MB raw (~4MB base64, under Vercel's 4.5MB limit)
 const ATTRIBUTIONS = ['full', 'first', 'anonymous'];
 

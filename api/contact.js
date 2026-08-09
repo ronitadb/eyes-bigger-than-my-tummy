@@ -10,7 +10,7 @@
 // Recipient is resolved from the target KEY only — a client-supplied email is never used here.
 const RECIPIENTS = {
   door: 'ronit.adiv@gmail.com',
-  default: 'ronit@beityeladim.co.nz',
+  default: 'ronit@beityeladim.co.il',
 };
 
 // Per-source, per-language branding for the notification email.
