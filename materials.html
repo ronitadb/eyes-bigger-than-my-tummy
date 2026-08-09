@@ -357,7 +357,13 @@
       html+='</article>';
     });
     html+='</div>';
-    wrap.innerHTML=html;
+    // Re-assert if the x-dc framework rebuilds the DOM (a fast fetch can resolve
+    // during x-dc's initial render and get wiped). Re-query by id and only paint
+    // when empty, so a reader's expanded story isn't collapsed.
+    function paint(){ var el=document.getElementById('stories-anthology'); if(el && !el.querySelector('article')) el.innerHTML=html; }
+    paint();
+    [50,200,500,1200].forEach(function(ms){ setTimeout(paint, ms); });
+    window.addEventListener('load', paint);
   }).catch(function(){});
 })();
 </script>
