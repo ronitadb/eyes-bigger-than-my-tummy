@@ -99,57 +99,33 @@
         <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-weight:500; font-size:clamp(20px,2.4vw,26px); line-height:1.5; color:#2F5248; margin:0 0 6px;">פיוס</p>
         <p style="font-family:'Frank Ruhl Libre',serif; font-style:italic; font-weight:500; font-size:clamp(20px,2.4vw,26px); line-height:1.5; color:#2F5248; margin:0;">ושלום.</p>
       </div>
-      <h3 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.4vw,26px); line-height:1.25; margin:42px 0 16px; text-wrap:balance;">הקולות שלכם: הסיפורים, המחשבות והעדויות</h3>
-      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 22px; text-wrap:pretty;">לצד הניתוח התיאורטי והמאמרים, הספרייה המשותפת נבנית מהחיים עצמם.</p>
-      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 22px; text-wrap:pretty;">אני מזמינה אתכם – ילדים שהיו שם, הורים שגידלו, ובני משפחה – להפוך לחלק מהספרייה הזו, ולשלוח את הסיפורים, הזיכרונות והמחשבות שלכם.</p>
-      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 14px; text-wrap:pretty;">הספרייה פתוחה ומזמינה לקבל את כל גווני הקולות:</p>
-      <ul style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:1.9; color:#3A4744; margin:0 0 22px; padding-inline-start:1.2em; list-style:none;">
-        <li style="margin:0 0 12px; text-wrap:pretty;"><span style="color:var(--accent);">—</span>&nbsp; סיפורים המהדהדים את מה שהמאמרים מתארים, ומביאים את הזיכרונות והחוויות האישיות שלכם בתוך המבנה הזה.</li>
-        <li style="margin:0; text-wrap:pretty;"><span style="color:var(--accent);">—</span>&nbsp; סיפורים ומחשבות שמציגים זווית אחרת, קולות שונים, או חוויות נוספות שהמאמרים אינם נוגעים בהם או מפספסים אותם.</li>
-      </ul>
-      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0; text-wrap:pretty;">כי כדי להבין באמת את המציאות שגדלנו בתוכה, אנחנו זקוקים גם לתיאוריה שתמפה אותה – וגם לסיפורים ולשפה של מי שחיו אותה.</p>
-      <div id="stories-anthology"></div>
-      <div style="background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(26px,4vw,36px) clamp(22px,4vw,34px); margin:30px 0 0;">
-        <div style="font-size:13px; letter-spacing:.04em; color:var(--accent); font-weight:600; margin-bottom:16px;">שליחת סיפור, מחשבה או עמדה לספרייה המשותפת</div>
-        <form id="story-submit-form" style="display:flex; flex-direction:column; gap:14px;">
-          <div style="display:flex; flex-wrap:wrap; gap:14px;">
-            <input name="sender" type="text" placeholder="שם (לא חובה)" style="flex:1 1 180px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
-            <input name="email" type="email" placeholder="אימייל לחזרה (לא חובה)" style="flex:1 1 180px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
-          </div>
-          <input name="title" type="text" placeholder="כותרת (לא חובה)" style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
-          <textarea name="story" rows="7" placeholder="הסיפור, הזיכרון או המחשבה שלכם..." style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit; resize:vertical;"></textarea>
-          <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
-            <label for="story-file" style="display:inline-flex; align-items:center; gap:8px; background:#FBF7EC; border:1px solid rgba(61,116,104,.55); color:var(--accent); padding:11px 20px; border-radius:2px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit;">צירוף קובץ</label>
-            <input id="story-file" name="file" type="file" accept=".pdf,.doc,.docx,.txt,.rtf,.odt,.jpg,.jpeg,.png,.heic,.gif" style="position:absolute; width:1px; height:1px; opacity:0; overflow:hidden;">
-            <span id="story-file-name" style="font-size:14px; color:#6E7C78;">לא נבחר קובץ</span>
-          </div>
-          <span style="font-size:12px; color:#8A9692;">מסמך או תמונה (PDF, Word, תמונה וכד׳), עד 3MB.</span>
-          <label style="display:flex; gap:10px; align-items:flex-start; font-family:'Frank Ruhl Libre',serif; font-size:15px; line-height:1.7; color:#3A4744; cursor:pointer; margin-top:6px;">
-            <input id="story-consent" name="consent" type="checkbox" value="1" style="margin-top:5px; width:17px; height:17px; accent-color:var(--accent); flex:0 0 auto;">
-            <span>אני מאשר/ת שהסיפור יצטרף לספרייה המשותפת באתר. רונית תעבור על הדברים ותבחר מה ומתי לפרסם. ללא סימון — הסיפור יישלח לרונית בלבד.</span>
-          </label>
-          <div style="font-family:'Frank Ruhl Libre',serif; font-size:14px; color:#6E7C78; margin-top:2px;">אם יפורסם — כיצד לייחס אליי?</div>
-          <div style="display:flex; flex-wrap:wrap; gap:18px;">
-            <label style="display:inline-flex; gap:7px; align-items:center; font-size:15px; color:#3A4744; cursor:pointer;"><input type="radio" name="attribution" value="full" style="accent-color:var(--accent);">בשמי המלא</label>
-            <label style="display:inline-flex; gap:7px; align-items:center; font-size:15px; color:#3A4744; cursor:pointer;"><input type="radio" name="attribution" value="first" style="accent-color:var(--accent);">בשם פרטי בלבד</label>
-            <label style="display:inline-flex; gap:7px; align-items:center; font-size:15px; color:#3A4744; cursor:pointer;"><input type="radio" name="attribution" value="anonymous" style="accent-color:var(--accent);">באופן אנונימי</label>
-          </div>
-          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-top:4px;">
-            <button type="submit" style="background:var(--accent); color:#F4F8F4; border:none; padding:14px 34px; border-radius:2px; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit;">שליחה לספרייה</button>
-            <span style="font-size:13px; color:#8A7C64;">* הסיפור נשלח לרונית. שום דבר לא מתפרסם באתר ללא אישורך.</span>
-          </div>
-          <div id="story-msg" style="font-size:14px; color:#8b4513;"></div>
-        </form>
-      </div>
+
     </section>
 
-    <section style="padding:clamp(40px,5vw,60px) 0 clamp(30px,5vw,48px); border-top:1px solid rgba(34,48,47,.12);">
-      <div style="text-align:center; max-width:56ch; margin:0 auto 40px;">
-        <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600;">המאמרים</div>
-        <h2 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(24px,3vw,34px); margin:12px 0 0;">רגע אחד בכל פעם</h2>
-        <p style="font-family:'Frank Ruhl Libre',serif; font-size:17px; line-height:1.9; color:#6E7C78; margin:14px 0 0;">המאמרים מתפרסמים בהדרגה, כל אחד במקביל לנושא של מפגש זום.</p>
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:20px;">
+    <section style="padding:clamp(40px,5vw,60px) 0 80px; border-top:1px solid rgba(34,48,47,.12);">
+      <style>
+        .door > summary{ list-style:none; }
+        .door > summary::-webkit-details-marker{ display:none; }
+        .door > summary::marker{ content:""; }
+        .door > summary{ cursor:pointer; display:flex; align-items:flex-start; gap:16px; justify-content:space-between; padding:clamp(24px,4vw,32px) clamp(22px,4vw,30px); transition:background .15s ease; }
+        .door > summary:hover{ background:rgba(237,167,46,.06); }
+        .door > summary:focus-visible{ outline:2px solid #EDA72E; outline-offset:-3px; }
+        .door .door-arrow{ transition:transform .25s ease; }
+        .door[open] .door-arrow{ transform:rotate(180deg); }
+      </style>
+      <div style="max-width:66ch; margin:0 auto; display:flex; flex-direction:column; gap:16px;">
+
+        <details name="library-door" class="door" style="border:1px solid rgba(34,48,47,.16); border-inline-start:4px solid #EDA72E; background:#F0F4F1; border-radius:4px;">
+          <summary>
+            <div>
+              <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:10px;">המאמרים</div>
+              <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.6vw,28px); line-height:1.32; text-wrap:balance;">למה בית הילדים מעולם לא יכול היה למלא את המטרה שלשמה נבנה?</div>
+              <div style="font-family:'Frank Ruhl Libre',serif; font-size:16px; line-height:1.7; color:#6E7C78; margin-top:10px;">תשע כניסות אל רגעי היום-יום בבית הילדים — כל מאמר לצד נושא של מפגש זום.</div>
+            </div>
+            <span class="door-arrow" style="color:var(--accent); font-size:24px; line-height:1; flex:0 0 auto; margin-top:4px;">⌄</span>
+          </summary>
+          <div style="padding:4px clamp(22px,4vw,30px) clamp(26px,4vw,32px);">
+            <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:20px;">
         <div style="border:1px solid rgba(34,48,47,.16); background:#F0F4F1; padding:26px 24px 22px;">
           <div style="font-family:'Frank Ruhl Libre',serif; font-size:26px; font-weight:700; color:color-mix(in srgb, var(--accent) 42%, #CBBE9F); line-height:1;">01</div>
           <h3 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:21px; margin:14px 0 10px;">התעוררות</h3>
@@ -195,6 +171,67 @@
           <h3 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:21px; margin:14px 0 10px;">פרידה</h3>
           <span style="font-size:13px; color:#8A9692;">בקרוב</span>
         </div>
+      </div>
+          </div>
+        </details>
+
+        <details name="library-door" class="door" style="border:1px solid rgba(34,48,47,.16); border-inline-start:4px solid #EDA72E; background:#F0F4F1; border-radius:4px;">
+          <summary>
+            <div>
+              <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:10px;">הקהילה</div>
+              <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.6vw,28px); line-height:1.32; text-wrap:balance;">הסיפורים, המחשבות והקולות שלכם</div>
+              <div style="font-family:'Frank Ruhl Libre',serif; font-size:16px; line-height:1.7; color:#6E7C78; margin-top:10px;">הספרייה נבנית גם מהחיים עצמם — קִראו את הקולות שכבר נאספו.</div>
+            </div>
+            <span class="door-arrow" style="color:var(--accent); font-size:24px; line-height:1; flex:0 0 auto; margin-top:4px;">⌄</span>
+          </summary>
+          <div style="padding:4px clamp(22px,4vw,30px) clamp(26px,4vw,32px);">
+            <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 22px; text-wrap:pretty;">לצד הניתוח התיאורטי והמאמרים, הספרייה המשותפת נבנית מהחיים עצמם.</p>
+      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 22px; text-wrap:pretty;">אני מזמינה אתכם – ילדים שהיו שם, הורים שגידלו, ובני משפחה – להפוך לחלק מהספרייה הזו, ולשלוח את הסיפורים, הזיכרונות והמחשבות שלכם.</p>
+      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 14px; text-wrap:pretty;">הספרייה פתוחה ומזמינה לקבל את כל גווני הקולות:</p>
+      <ul style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:1.9; color:#3A4744; margin:0 0 22px; padding-inline-start:1.2em; list-style:none;">
+        <li style="margin:0 0 12px; text-wrap:pretty;"><span style="color:var(--accent);">—</span>&nbsp; סיפורים המהדהדים את מה שהמאמרים מתארים, ומביאים את הזיכרונות והחוויות האישיות שלכם בתוך המבנה הזה.</li>
+        <li style="margin:0; text-wrap:pretty;"><span style="color:var(--accent);">—</span>&nbsp; סיפורים ומחשבות שמציגים זווית אחרת, קולות שונים, או חוויות נוספות שהמאמרים אינם נוגעים בהם או מפספסים אותם.</li>
+      </ul>
+      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0; text-wrap:pretty;">כי כדי להבין באמת את המציאות שגדלנו בתוכה, אנחנו זקוקים גם לתיאוריה שתמפה אותה – וגם לסיפורים ולשפה של מי שחיו אותה.</p>
+            <div id="stories-anthology"></div>
+          </div>
+        </details>
+
+      </div>
+
+      <div style="max-width:66ch; margin:34px auto 0;">
+        <div style="background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(26px,4vw,36px) clamp(22px,4vw,34px); margin:30px 0 0;">
+        <div style="font-size:13px; letter-spacing:.04em; color:var(--accent); font-weight:600; margin-bottom:16px;">שליחת סיפור, מחשבה או עמדה לספרייה המשותפת</div>
+        <form id="story-submit-form" style="display:flex; flex-direction:column; gap:14px;">
+          <div style="display:flex; flex-wrap:wrap; gap:14px;">
+            <input name="sender" type="text" placeholder="שם (לא חובה)" style="flex:1 1 180px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
+            <input name="email" type="email" placeholder="אימייל לחזרה (לא חובה)" style="flex:1 1 180px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
+          </div>
+          <input name="title" type="text" placeholder="כותרת (לא חובה)" style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
+          <textarea name="story" rows="7" placeholder="הסיפור, הזיכרון או המחשבה שלכם..." style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit; resize:vertical;"></textarea>
+          <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+            <label for="story-file" style="display:inline-flex; align-items:center; gap:8px; background:#FBF7EC; border:1px solid rgba(61,116,104,.55); color:var(--accent); padding:11px 20px; border-radius:2px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit;">צירוף קובץ</label>
+            <input id="story-file" name="file" type="file" accept=".pdf,.doc,.docx,.txt,.rtf,.odt,.jpg,.jpeg,.png,.heic,.gif" style="position:absolute; width:1px; height:1px; opacity:0; overflow:hidden;">
+            <span id="story-file-name" style="font-size:14px; color:#6E7C78;">לא נבחר קובץ</span>
+          </div>
+          <span style="font-size:12px; color:#8A9692;">מסמך או תמונה (PDF, Word, תמונה וכד׳), עד 3MB.</span>
+          <label style="display:flex; gap:10px; align-items:flex-start; font-family:'Frank Ruhl Libre',serif; font-size:15px; line-height:1.7; color:#3A4744; cursor:pointer; margin-top:6px;">
+            <input id="story-consent" name="consent" type="checkbox" value="1" style="margin-top:5px; width:17px; height:17px; accent-color:var(--accent); flex:0 0 auto;">
+            <span>אני מאשר/ת שהסיפור יצטרף לספרייה המשותפת באתר. רונית תעבור על הדברים ותבחר מה ומתי לפרסם. ללא סימון — הסיפור יישלח לרונית בלבד.</span>
+          </label>
+          <div style="font-family:'Frank Ruhl Libre',serif; font-size:14px; color:#6E7C78; margin-top:2px;">אם יפורסם — כיצד לייחס אליי?</div>
+          <div style="display:flex; flex-wrap:wrap; gap:18px;">
+            <label style="display:inline-flex; gap:7px; align-items:center; font-size:15px; color:#3A4744; cursor:pointer;"><input type="radio" name="attribution" value="full" style="accent-color:var(--accent);">בשמי המלא</label>
+            <label style="display:inline-flex; gap:7px; align-items:center; font-size:15px; color:#3A4744; cursor:pointer;"><input type="radio" name="attribution" value="first" style="accent-color:var(--accent);">בשם פרטי בלבד</label>
+            <label style="display:inline-flex; gap:7px; align-items:center; font-size:15px; color:#3A4744; cursor:pointer;"><input type="radio" name="attribution" value="anonymous" style="accent-color:var(--accent);">באופן אנונימי</label>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-top:4px;">
+            <button type="submit" style="background:var(--accent); color:#F4F8F4; border:none; padding:14px 34px; border-radius:2px; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit;">שליחה לספרייה</button>
+            <span style="font-size:13px; color:#8A7C64;">* הסיפור נשלח לרונית. שום דבר לא מתפרסם באתר ללא אישורך.</span>
+          </div>
+          <div id="story-msg" style="font-size:14px; color:#8b4513;"></div>
+        </form>
+      </div>
       </div>
     </section>
 
@@ -321,7 +358,7 @@
 <style>
   #stories-anthology .story-body{ position:relative; }
   #stories-anthology .story-clamped{ max-height:16em; overflow:hidden; }
-  #stories-anthology .story-clamped::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:5em; background:linear-gradient(to bottom, rgba(250,248,244,0), #FAF8F4); pointer-events:none; }
+  #stories-anthology .story-clamped::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:5em; background:linear-gradient(to bottom, rgba(240,244,241,0), #F0F4F1); pointer-events:none; }
 </style>
 <script>
 (function(){
