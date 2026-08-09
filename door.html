@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl" class="lang-he">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Ronit Adiv-Blanario, clinical psychologist — three reflections, and an invitation to write.">
+<meta name="description" content="רונית בלנרו-אדיב, פסיכולוגית קלינית — שלושה הרהורים והזמנה לכתוב.">
 <link rel="canonical" href="https://eyes-bigger-than-my-tummy.vercel.app/door">
-<title>Ronit Adiv-Blanario — the door</title>
+<title>רונית בלנרו-אדיב — הדלת</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600&family=Frank+Ruhl+Libre:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
     /* warm paper — light */
@@ -21,13 +24,11 @@
     --ink-mute: #8a8175;
     --ink-faint: #a49b8c;
 
-    /* terracotta — primary accent (from the ACC "warn" family) */
     --terra: #b0604a;
     --terra-deep: #8a4a32;
     --terra-soft: #f6e3db;
     --terra-tint: #e8d2c8;
 
-    /* sage — secondary accent (from the ACC "ok" family), echoes the foliage */
     --sage: #7c8a6a;
     --sage-deep: #5f6b50;
     --sage-soft: #e8ecdf;
@@ -35,7 +36,6 @@
     --gold: #c9a24a;
     --on-band: #f7efe6;
 
-    /* colored bands */
     --hero-a: #e0e5d5;
     --hero-b: #ece7de;
     --band-terra-a: #b46550;
@@ -51,45 +51,23 @@
     --sans: system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --page: #201c16;
-      --surface: #26221b;
-      --raised: #2b271f;
-      --hairline: #39332b;
-      --border: #443e33;
-
-      --ink: #ece5d7;
-      --ink-body: #ddd5c5;
-      --ink-soft: #b3aa9a;
-      --ink-mute: #948b7c;
-      --ink-faint: #776f61;
-
-      --terra: #cd8a71;
-      --terra-deep: #dd9d84;
-      --terra-soft: #3a2820;
-      --terra-tint: #4a352d;
-
-      --sage: #9aa886;
-      --sage-deep: #b0bd9c;
-      --sage-soft: #2a2e22;
-
-      --gold: #d4b06a;
-      --on-band: #f4ece2;
-
-      --hero-a: #262a1f;
-      --hero-b: #211d16;
-      --band-terra-a: #8f4c37;
-      --band-terra-b: #6f3a29;
-      --band-sage-a: #56624a;
-      --band-sage-b: #414b37;
-      --door-a: #7f4130;
-      --door-b: #5c2e20;
-
-      --shadow-card: 0 14px 40px rgba(0, 0, 0, 0.55);
-    }
+  /* Hebrew swaps the type system; layout and colour stay identical */
+  html.lang-he {
+    --serif: "Frank Ruhl Libre", "Iowan Old Style", Georgia, serif;
+    --sans: "Assistant", system-ui, -apple-system, sans-serif;
   }
 
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #201c16; --surface: #26221b; --raised: #2b271f; --hairline: #39332b; --border: #443e33;
+      --ink: #ece5d7; --ink-body: #ddd5c5; --ink-soft: #b3aa9a; --ink-mute: #948b7c; --ink-faint: #776f61;
+      --terra: #cd8a71; --terra-deep: #dd9d84; --terra-soft: #3a2820; --terra-tint: #4a352d;
+      --sage: #9aa886; --sage-deep: #b0bd9c; --sage-soft: #2a2e22; --gold: #d4b06a; --on-band: #f4ece2;
+      --hero-a: #262a1f; --hero-b: #211d16;
+      --band-terra-a: #8f4c37; --band-terra-b: #6f3a29; --band-sage-a: #56624a; --band-sage-b: #414b37;
+      --door-a: #7f4130; --door-b: #5c2e20; --shadow-card: 0 14px 40px rgba(0, 0, 0, 0.55);
+    }
+  }
   :root[data-theme="light"] {
     --page: #e7e3db; --surface: #faf9f5; --raised: #ffffff; --hairline: #d7d0c3; --border: #cdc7bb;
     --ink: #2c2820; --ink-body: #3a352d; --ink-soft: #726a5d; --ink-mute: #8a8175; --ink-faint: #a49b8c;
@@ -116,12 +94,44 @@
     background: var(--page);
     color: var(--ink-body);
     font-family: var(--serif);
-    line-height: 1.75;
+    line-height: 1.85;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+  img { max-width: 100%; display: block; }
   ::selection { background: var(--terra-tint); }
   .wrap { max-width: 40rem; margin: 0 auto; padding: 0 clamp(1.5rem, 6vw, 3rem); }
+
+  /* language visibility */
+  html.lang-he .en { display: none !important; }
+  html.lang-en .he { display: none !important; }
+
+  /* ── top bar / language toggle ────────────── */
+  .topbar { display: flex; justify-content: center; padding: 1.15rem 1.5rem 0; }
+  .langtoggle {
+    display: inline-flex;
+    gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px;
+    font-family: "Assistant", system-ui, sans-serif;
+  }
+  .langtoggle button {
+    border: none;
+    background: transparent;
+    color: var(--ink-mute);
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+    padding: 0.35rem 0.95rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .langtoggle button:hover { color: var(--ink); }
+  html.lang-he .langtoggle [data-set="he"],
+  html.lang-en .langtoggle [data-set="en"] { background: var(--terra); color: var(--on-band); }
+  .langtoggle button:focus-visible { outline: 2px solid var(--terra-deep); outline-offset: 2px; }
 
   /* ── hero banner ──────────────────────────── */
   .hero {
@@ -129,10 +139,9 @@
     overflow: hidden;
     background: linear-gradient(168deg, var(--hero-a) 0%, var(--hero-b) 62%, var(--page) 100%);
     border-bottom: 1px solid var(--hairline);
-    padding: clamp(3.5rem, 9vw, 6rem) 0 clamp(3rem, 7vw, 4.5rem);
+    padding: clamp(2.5rem, 7vw, 4.5rem) 0 clamp(3rem, 7vw, 4.5rem);
     text-align: center;
   }
-  /* soft bokeh, echoing the portrait's background */
   .hero::before {
     content: "";
     position: absolute;
@@ -157,21 +166,21 @@
     border-radius: 4px;
     box-shadow: var(--shadow-card);
   }
-  .portrait img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
 
   .name {
     font-size: clamp(2rem, 5.6vw, 2.9rem);
     font-weight: 500;
     color: var(--ink);
     letter-spacing: -0.01em;
-    line-height: 1.05;
+    line-height: 1.08;
     margin: 0;
     text-wrap: balance;
   }
   .role {
     font-family: var(--sans);
-    font-size: 0.76rem;
-    letter-spacing: 0.26em;
+    font-size: 0.8rem;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--terra-deep);
     margin: 0.85rem 0 0;
@@ -195,8 +204,8 @@
     align-items: center;
     gap: 0.7rem;
     font-family: var(--sans);
-    font-size: 0.7rem;
-    letter-spacing: 0.24em;
+    font-size: 0.74rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--terra-deep);
     margin: 0 0 1.6rem;
@@ -216,7 +225,7 @@
 
   .opening {
     font-size: clamp(2rem, 5.6vw, 3.1rem);
-    line-height: 1.16;
+    line-height: 1.18;
     font-style: italic;
     font-weight: 500;
     color: var(--terra-deep);
@@ -227,8 +236,8 @@
   .opening::before { content: "\201C"; }
   .opening::after { content: "\201D"; }
 
-  /* drop cap on each section's first body paragraph */
-  .lead::first-letter {
+  /* drop cap: English only (Hebrew type doesn't take a Latin-style drop cap) */
+  html.lang-en .lead::first-letter {
     float: left;
     font-size: 3.5em;
     line-height: 0.74;
@@ -236,36 +245,27 @@
     color: var(--terra);
     font-weight: 500;
   }
-  .reflection.sage .lead::first-letter { color: var(--sage-deep); }
+  html.lang-en .reflection.sage .lead::first-letter { color: var(--sage-deep); }
 
-  em, .book { font-style: italic; }
+  .book { font-style: italic; }
   .closing-line { font-style: italic; color: var(--ink); }
 
+  /* Hebrew: no faux-italics on the Hebrew serif */
+  html.lang-he .opening,
+  html.lang-he .banner p,
+  html.lang-he .closing-line { font-style: normal; }
+
   /* ── pull-quote banners ───────────────────── */
-  .banner {
-    text-align: center;
-    color: var(--on-band);
-    padding: clamp(2.75rem, 7vw, 4.25rem) 0;
-  }
+  .banner { text-align: center; color: var(--on-band); padding: clamp(2.75rem, 7vw, 4.25rem) 0; }
   .banner.terra { background: linear-gradient(135deg, var(--band-terra-a), var(--band-terra-b)); }
   .banner.sage  { background: linear-gradient(135deg, var(--band-sage-a), var(--band-sage-b)); }
   .banner p {
     margin: 0;
     font-style: italic;
     font-size: clamp(1.5rem, 4.4vw, 2.25rem);
-    line-height: 1.28;
+    line-height: 1.32;
     text-wrap: balance;
     color: var(--on-band);
-  }
-  .banner .attribution {
-    display: block;
-    margin-top: 1.1rem;
-    font-style: normal;
-    font-family: var(--sans);
-    font-size: 0.7rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    opacity: 0.8;
   }
 
   /* ── the door ─────────────────────────────── */
@@ -289,8 +289,8 @@
   .door .wrap { position: relative; display: flex; flex-direction: column; align-items: center; gap: 1.7rem; }
   .door-eyebrow {
     font-family: var(--sans);
-    font-size: 0.7rem;
-    letter-spacing: 0.26em;
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     opacity: 0.85;
     margin: 0;
@@ -303,9 +303,9 @@
     align-items: center;
     gap: 0.55rem;
     font-family: var(--sans);
-    font-size: 0.92rem;
-    font-weight: 500;
-    letter-spacing: 0.04em;
+    font-size: 0.98rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
     text-decoration: none;
     color: var(--terra-deep);
     background: var(--on-band);
@@ -317,19 +317,21 @@
     transition: transform 0.18s ease, box-shadow 0.18s ease;
   }
   .knock::after { content: "\2192"; transition: transform 0.22s ease; }
+  html.lang-he .knock::after { content: "\2190"; }
   .knock:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.24); }
-  .knock:hover::after { transform: translateX(3px); }
+  html.lang-en .knock:hover::after { transform: translateX(3px); }
+  html.lang-he .knock:hover::after { transform: translateX(-3px); }
   .door:hover .door-panel,
   .door.open .door-panel { transform: perspective(360px) rotateY(-36deg); }
   .door.open .knock { display: none; }
   .knock:focus-visible { outline: 2px solid var(--on-band); outline-offset: 3px; }
 
-  /* ── contact form (composes an email in the visitor's mail app) ── */
+  /* contact form */
   .form-wrap {
     width: min(30rem, 100%);
     display: grid;
     gap: 1rem;
-    text-align: left;
+    text-align: start;
     background: var(--surface);
     color: var(--ink-body);
     border-radius: 7px;
@@ -341,7 +343,7 @@
     transition: max-height 0.5s ease, opacity 0.4s ease, padding 0.4s ease, margin-top 0.4s ease;
   }
   .door.open .form-wrap {
-    max-height: 44rem;
+    max-height: 46rem;
     opacity: 1;
     margin-top: 0.3rem;
     padding-top: clamp(1.5rem, 4vw, 1.9rem);
@@ -350,15 +352,15 @@
   .field { display: grid; gap: 0.4rem; }
   .form-wrap label {
     font-family: var(--sans);
-    font-size: 0.68rem;
-    letter-spacing: 0.16em;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--terra-deep);
   }
   .form-wrap input,
   .form-wrap textarea {
     font-family: var(--sans);
-    font-size: 0.95rem;
+    font-size: 0.98rem;
     color: var(--ink);
     background: var(--raised);
     border: 1px solid var(--border);
@@ -376,39 +378,27 @@
   .send {
     justify-self: start;
     font-family: var(--sans);
-    font-weight: 500;
-    font-size: 0.9rem;
-    letter-spacing: 0.04em;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
     color: var(--on-band);
     background: var(--terra);
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    padding: 0.8rem 1.5rem;
+    padding: 0.8rem 1.6rem;
     transition: background 0.18s ease;
   }
   .send:hover { background: var(--terra-deep); }
   .send:focus-visible { outline: 2px solid var(--terra-deep); outline-offset: 3px; }
   .form-note {
     font-family: var(--sans);
-    font-size: 0.76rem;
-    line-height: 1.5;
+    font-size: 0.8rem;
+    line-height: 1.6;
     color: var(--ink-mute);
     margin: 0;
   }
   .form-note a { color: var(--terra-deep); }
-
-  .email-plain {
-    font-family: var(--sans);
-    font-size: 0.82rem;
-    letter-spacing: 0.03em;
-    color: var(--on-band);
-    opacity: 0.82;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(247, 239, 230, 0.35);
-    padding-bottom: 2px;
-  }
-  .email-plain:hover { opacity: 1; }
 
   footer {
     display: flex;
@@ -420,14 +410,14 @@
   }
   footer .grace {
     font-family: var(--sans);
-    font-size: 0.72rem;
+    font-size: 0.74rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink-faint);
   }
   .home-link {
     font-family: var(--sans);
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     letter-spacing: 0.03em;
     color: var(--ink-mute);
     text-decoration: none;
@@ -437,25 +427,46 @@
   /* ── entrance ─────────────────────────────── */
   .rise { opacity: 0; animation: rise 0.85s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
   .d1 { animation-delay: 0.05s; } .d2 { animation-delay: 0.18s; }
-  .d3 { animation-delay: 0.31s; } .d4 { animation-delay: 0.44s; }
   @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
   @media (prefers-reduced-motion: reduce) {
     .rise { animation: none; opacity: 1; transform: none; }
-    .door-panel, .knock, .knock::after, .form-wrap, .send { transition: none; }
+    .door-panel, .knock, .knock::after, .form-wrap, .send, .langtoggle button { transition: none; }
     .door:hover .door-panel { transform: none; }
   }
 </style>
+<script>
+  /* set language before paint to avoid a flash */
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search).get("lang");
+      var lang = q || localStorage.getItem("door-lang") || "he";
+      if (lang !== "en") lang = "he";
+      var el = document.documentElement;
+      el.className = "lang-" + lang;
+      el.setAttribute("lang", lang);
+      el.setAttribute("dir", lang === "he" ? "rtl" : "ltr");
+    } catch (e) {}
+  })();
+</script>
 </head>
 <body>
+
+<div class="topbar">
+  <div class="langtoggle" role="group" aria-label="Language / שפה">
+    <button type="button" data-set="he">עברית</button>
+    <button type="button" data-set="en">English</button>
+  </div>
+</div>
+
 <header class="hero">
   <div class="wrap">
     <div class="portrait rise d1">
-      <img src="assets/ronit-door.jpg" alt="Ronit Adiv-Blanario, clinical psychologist, smiling outdoors" />
+      <img src="assets/ronit-door.jpg" alt="רונית בלנרו-אדיב, פסיכולוגית קלינית / Ronit Adiv-Blanario, clinical psychologist" />
     </div>
     <div class="rise d2">
-      <h1 class="name">Ronit Adiv-Blanario</h1>
-      <p class="role">Clinical Psychologist</p>
+      <h1 class="name"><span class="he">רונית בלנרו-אדיב</span><span class="en">Ronit Adiv-Blanario</span></h1>
+      <p class="role"><span class="he">פסיכולוגית קלינית</span><span class="en">Clinical Psychologist</span></p>
     </div>
   </div>
 </header>
@@ -463,63 +474,106 @@
 <main>
   <section class="reflection">
     <div class="wrap">
-      <p class="eyebrow">From the therapy room</p>
-      <p class="opening">Where would he live now?</p>
-      <p class="lead">My breath was caught in surprise as I struggled not to disrupt the fragile moment. It was one of those moments which you strive towards, yet, when it unexpectedly arrives, you are completely unprepared.</p>
-      <p>&ldquo;Who?&rdquo;</p>
-      <p>&ldquo;Gus.&rdquo; Anna spoke quietly, as if whispering to herself. I had not heard her voice before. For the past three months, she came every week, entered the room in silence heading straight to the bookshelf and handed me over <span class="book">Ida, Always</span>. From my place on the soft rug, leaning against the beanbag, as I read Ida and Gus&rsquo; story, all I could see was Anna&rsquo;s back. She was entirely absorbed in her drawings, page after page, not allowing any contact. In the next long months, those drawings will become a &lsquo;road-map&rsquo; through which Anna and I will walk together in the uncharted territory of her agonised loss of both her parents five months ago.</p>
-      <p>Anna&rsquo;s aunt and uncle, who took her in, had brought her to me out of their utter helplessness. She attended school every day, yet had withdrawn into an unapproachable shell as she ceased speaking. I would read <span class="book">Ida, Always</span> week after week until it was no longer about the words; it became a lullaby.</p>
-      <p>She turned around facing me. &ldquo;Does he need to move out of the Zoo?&rdquo;</p>
-      <p>My heart went out to her, as this simple question unfolded the abrupt loss of the world she knew for the past eight years; her entire life. I was overwhelmed by the moment&rsquo;s unfamiliarity &mdash; she spoke; she was facing me. And she was in pain.</p>
-      <p>Ida and Gus accompanied us for months. Months of weaving together heartbreaking moments and the rediscovery of how to smile. And similarly to Gus&rsquo; heart, which kept beating in spite of Ida&rsquo;s departure, forcing Gus to stay alive, Anna&rsquo;s heart kept beating too.</p>
+      <div class="he">
+        <p class="eyebrow">מהקליניקה</p>
+        <p class="opening">איפה הוא יגור עכשיו?</p>
+        <p class="lead">הנשימה שלי נעתקה בהפתעה כשניסיתי לא להפר את הרגע השביר הזה. זה היה אחד מהרגעים שייחלתי אליהם בשלושת החודשים האחרונים, אבל עכשיו – כשהוא קורה, מצאתי עצמי לחלוטין לא מוכנה.</p>
+        <p>"מי?"</p>
+        <p>"גאס." אנה דיברה בשקט, כמעט בלחישה לעצמה. לא שמעתי את קולה מעולם. במשך שלושת החודשים האחרונים היא הגיעה מדי שבוע, נכנסה לחדר הטיפול בדממה, צעדה ישר אל מדף הספרים והושיטה לי את הספר <span class="book" dir="ltr">Ida, Always</span>. ממקומי על השטיח הרך, נשענת על הפוף, כשישבתי לקרוא את סיפורם של אידה וגאס, דובי הקוטב, כל מה שיכולתי לראות היה גבה של אנה. היא הייתה שקועה כולה בציוריה, עמוד אחר עמוד, מבלי לאפשר שום מגע. בחודשים הארוכים שנעבור ביחד אחר כך, הציורים האלה יהפכו ל'מפת דרכים' דרכה אנה ואני נצעד יחד בטריטוריה הבלתי-נודעת והכואבת של אובדן שני הוריה חמישה חודשים קודם לכן.</p>
+        <p>דודתה ודודה של אנה, שאספו אותה אליהם, הביאו אותה אליי מתוך חוסר אונים מוחלט. היא אמנם הלכה לבית הספר מדי יום, אך הסתגרה בתוך בועה שהלכה והתכווצה. היא חדלה לדבר.</p>
+        <p>הקראתי את <span class="book" dir="ltr">Ida, Always</span> שבוע אחר שבוע, עד שהמילים כבר לא היו עיקר – הקריאה הפכה לשיר ערש.</p>
+        <p>היא הסתובבה אליי. "הוא צריך לעבור מהגן חיות?"</p>
+        <p>הלב שלי יצא אליה, כשהשאלה הפשוטה הזו פתחה בבת-אחת את האובדן הפתאומי של העולם שהכירה במשך שמונה שנותיה; כל חייה. הייתי מוצפת מתוך הזרות של הרגע – היא דיברה; היא פנתה אליי. וכאב לה.</p>
+        <p>טקס אידה וגאס ליווה אותנו חודשים ארוכים. חודשים של שזירת רגעים שבורי-לב לצד גילוי מחדש את היכולת לחייך. וכמו ליבו של גאס, שהמשיך לפעום למרות לכתה של אידה ואילץ אותו להישאר בחיים – גם ליבה של אנה המשיך לפעום.</p>
+      </div>
+      <div class="en">
+        <p class="eyebrow">From the therapy room</p>
+        <p class="opening">Where would he live now?</p>
+        <p class="lead">My breath was caught in surprise as I struggled not to disrupt the fragile moment. It was one of those moments which you strive towards, yet, when it unexpectedly arrives, you are completely unprepared.</p>
+        <p>&ldquo;Who?&rdquo;</p>
+        <p>&ldquo;Gus.&rdquo; Anna spoke quietly, as if whispering to herself. I had not heard her voice before. For the past three months, she came every week, entered the room in silence heading straight to the bookshelf and handed me over <span class="book">Ida, Always</span>. From my place on the soft rug, leaning against the beanbag, as I read Ida and Gus&rsquo; story, all I could see was Anna&rsquo;s back. She was entirely absorbed in her drawings, page after page, not allowing any contact. In the next long months, those drawings will become a &lsquo;road-map&rsquo; through which Anna and I will walk together in the uncharted territory of her agonised loss of both her parents five months ago.</p>
+        <p>Anna&rsquo;s aunt and uncle, who took her in, had brought her to me out of their utter helplessness. She attended school every day, yet had withdrawn into an unapproachable shell as she ceased speaking. I would read <span class="book">Ida, Always</span> week after week until it was no longer about the words; it became a lullaby.</p>
+        <p>She turned around facing me. &ldquo;Does he need to move out of the Zoo?&rdquo;</p>
+        <p>My heart went out to her, as this simple question unfolded the abrupt loss of the world she knew for the past eight years; her entire life. I was overwhelmed by the moment&rsquo;s unfamiliarity &mdash; she spoke; she was facing me. And she was in pain.</p>
+        <p>Ida and Gus accompanied us for months. Months of weaving together heartbreaking moments and the rediscovery of how to smile. And similarly to Gus&rsquo; heart, which kept beating in spite of Ida&rsquo;s departure, forcing Gus to stay alive, Anna&rsquo;s heart kept beating too.</p>
+      </div>
     </div>
   </section>
 
   <aside class="banner terra rise">
     <div class="wrap">
-      <p>&ldquo;So much exposure, so much vulnerability, and so much courage.&rdquo;</p>
+      <p class="he">"כמה חשיפה יש בזה, כמה פגיעות, וכמה אומץ."</p>
+      <p class="en">&ldquo;So much exposure, so much vulnerability, and so much courage.&rdquo;</p>
     </div>
   </aside>
 
   <section class="reflection sage">
     <div class="wrap">
-      <p class="eyebrow">On trust</p>
-      <p class="lead">Therapy is a door. A door through which the therapist is invited to enter.</p>
-      <p>How difficult it is to let an unfamiliar person step into our realms of pain.</p>
-      <p>And every client does it. So much exposure, so much vulnerability, and so much courage.</p>
-      <p>Slowly, slowly, trust is built. The client&rsquo;s trust in me, the therapist; and my trust in them. A fragile tapestry.</p>
-      <p>And the client hurts&mdash;in their own language, in their own world. And the therapist misses, disappoints, makes mistakes.</p>
-      <p>And the client also finds calmness, and rest. And the therapist also hits the mark, and is truly present.</p>
-      <p>And between these, that same tapestry is woven&mdash;from moments of rupture and repair. Two people willing to be in this together. Committed. Honest. Trying.</p>
-      <p class="closing-line">This is therapy for me.</p>
-      <p>Therapy is a door. And the trust a client gives when opening it is something beyond value&mdash;something that evokes awe and gratitude.</p>
+      <div class="he">
+        <p class="eyebrow">על אמון</p>
+        <p class="lead">טיפול הוא דלת. דלת שדרכה מוזמן המטפל להיכנס.</p>
+        <p>כמה לא פשוט לתת לאדם לא מוכר לפסוע אל מחוזות הכאב שלנו.</p>
+        <p>וכל מטופל עושה את זה. כמה חשיפה יש בזה, כמה פגיעות, וכמה אומץ.</p>
+        <p>ולאט-לאט נבנה אמון. אמון של המטופל בי, המטפלת; ואמון שלי בו. רקמה שברירית.</p>
+        <p>והוא כואב – בשפתו, בעולמו. והמטפלת מפספסת, מאכזבת, טועה.</p>
+        <p>והוא מוצא גם רוגע, ומנוחה. והמטפלת גם קולעת, ונוכחת.</p>
+        <p>ובין אלה נטווית אותה רקמה – מתוך רגעים של שבר ותיקון. שניים שמוכנים להיות בתוך זה יחד. מחויבים. כנים. מתאמצים.</p>
+        <p class="closing-line">זהו טיפול עבורי.</p>
+        <p>טיפול הוא דלת. והאמון שנותן המטופל כשהוא פותח אותה הוא דבר יקר מאין כמוהו – דבר מעורר השתאות והכרת תודה.</p>
+      </div>
+      <div class="en">
+        <p class="eyebrow">On trust</p>
+        <p class="lead">Therapy is a door. A door through which the therapist is invited to enter.</p>
+        <p>How difficult it is to let an unfamiliar person step into our realms of pain.</p>
+        <p>And every client does it. So much exposure, so much vulnerability, and so much courage.</p>
+        <p>Slowly, slowly, trust is built. The client&rsquo;s trust in me, the therapist; and my trust in them. A fragile tapestry.</p>
+        <p>And the client hurts&mdash;in their own language, in their own world. And the therapist misses, disappoints, makes mistakes.</p>
+        <p>And the client also finds calmness, and rest. And the therapist also hits the mark, and is truly present.</p>
+        <p>And between these, that same tapestry is woven&mdash;from moments of rupture and repair. Two people willing to be in this together. Committed. Honest. Trying.</p>
+        <p class="closing-line">This is therapy for me.</p>
+        <p>Therapy is a door. And the trust a client gives when opening it is something beyond value&mdash;something that evokes awe and gratitude.</p>
+      </div>
     </div>
-  </aside>
+  </section>
 
   <aside class="banner sage rise">
     <div class="wrap">
-      <p>&ldquo;An anchor, a lighthouse &mdash; so that when this knowing is revealed, they will not be alone in it.&rdquo;</p>
+      <p class="he">"עוגן, מגדלור – כדי שכשהידיעה תיחשף, הוא לא יהיה בה לבד."</p>
+      <p class="en">&ldquo;An anchor, a lighthouse &mdash; so that when this knowing is revealed, they will not be alone in it.&rdquo;</p>
     </div>
   </aside>
 
   <section class="reflection">
     <div class="wrap">
-      <p class="eyebrow">How I practice</p>
-      <p class="lead">The therapist does not know the client better than the client knows themselves. But the therapist is not the client&mdash;and that is the source of their therapeutic power: they observe from the outside, holding a perspective that the client, simply by living their own life, does not and is not meant to have.</p>
-      <p>The therapist does not seek to be &ldquo;in the client&rsquo;s shoes.&rdquo; They seek to learn, together with the client, the client&rsquo;s own shoes.</p>
-      <p>The therapist listens. To everything. To the things that are said and the things that remain unsaid; to the strained wringing of hands or the habitually indifferent look; to the quiver in the voice or the sudden, unexpected outburst of anger. The therapist listens and thinks. Sometimes silent. Sometimes asking. Seeing.</p>
-      <p>The therapist enables the client to grow a quiet knowing within themselves. What knowing? Knowing themselves: Who are they? From what hidden places are they driven? The therapist does not bring this knowledge ready-made, for they do not know the client better than the client knows themselves. The therapist is there&mdash;an anchor, a lighthouse&mdash;so that when this knowing is revealed, when the client grasps it, they will not be alone in it.</p>
-      <p>And from here flow the tenderness, the quiet, the presence, and the security.</p>
-      <p>This is therapy for me. And this is how I practice: with children, teenagers, adults, families, and couples.</p>
-      <p>I love providing therapy. I love the responsibility.</p>
-      <p>Responsibility is a privilege. With deep gratitude to all my clients who have invited me to step through their door and walk there, together with them.</p>
+      <div class="he">
+        <p class="eyebrow">כך אני מטפלת</p>
+        <p class="lead">המטפל אינו יודע את המטופל יותר מכפי שהמטופל יודע את עצמו. אך המטפל אינו המטופל – ומכאן נובע כוחו הטיפולי: הוא מתבונן מבחוץ, ואוחז בפרספקטיבה שלמטופל, מעצם היותו חי את חייו-הוא, אין ולא אמורה להיות.</p>
+        <p>המטפל אינו מבקש להיות "בנעליו" של המטופל. הוא מבקש ללמוד, יחד איתו, את נעליו של המטופל.</p>
+        <p>המטפל מקשיב. להכול. לדברים שנאמרים ולדברים שאינם נאמרים; לפכירת האצבעות המאומצת או למבט האדיש תדיר; לרעד הקול או לכעס המתפרץ והלא-צפוי. המטפל מקשיב וחושב. לעיתים שותק. לעיתים שואל. רואה.</p>
+        <p>המטפל מאפשר למטופל לגדל בתוכו ידיעה. איזו ידיעה? את עצמו: מי הוא? מאילו מחוזות הוא מופעל? המטפל אינו מביא את הידיעה הזו מן המוכן, שהרי אינו יודע את המטופל טוב מהמטופל עצמו. המטפל נמצא שם – עוגן, מגדלור – כדי שכשהידיעה תיחשף, כשהמטופל יאחז בה, הוא לא יהיה בה לבד.</p>
+        <p>ומכאן נובעים הרוך, השקט, הנוכחות והביטחון.</p>
+        <p>זהו טיפול עבורי. וכך אני מטפלת: בילדים, בבני נוער, במבוגרים, במשפחות ובזוגות.</p>
+        <p>אני אוהבת לטפל. אני אוהבת את האחריות.</p>
+        <p>אחריות היא זכות. בתודה לכל מטופליי, שהזמינו אותי להיכנס מבעד לדלתם ולפסוע שם, יחד איתם.</p>
+      </div>
+      <div class="en">
+        <p class="eyebrow">How I practice</p>
+        <p class="lead">The therapist does not know the client better than the client knows themselves. But the therapist is not the client&mdash;and that is the source of their therapeutic power: they observe from the outside, holding a perspective that the client, simply by living their own life, does not and is not meant to have.</p>
+        <p>The therapist does not seek to be &ldquo;in the client&rsquo;s shoes.&rdquo; They seek to learn, together with the client, the client&rsquo;s own shoes.</p>
+        <p>The therapist listens. To everything. To the things that are said and the things that remain unsaid; to the strained wringing of hands or the habitually indifferent look; to the quiver in the voice or the sudden, unexpected outburst of anger. The therapist listens and thinks. Sometimes silent. Sometimes asking. Seeing.</p>
+        <p>The therapist enables the client to grow a quiet knowing within themselves. What knowing? Knowing themselves: Who are they? From what hidden places are they driven? The therapist does not bring this knowledge ready-made, for they do not know the client better than the client knows themselves. The therapist is there&mdash;an anchor, a lighthouse&mdash;so that when this knowing is revealed, when the client grasps it, they will not be alone in it.</p>
+        <p>And from here flow the tenderness, the quiet, the presence, and the security.</p>
+        <p>This is therapy for me. And this is how I practice: with children, teenagers, adults, families, and couples.</p>
+        <p>I love providing therapy. I love the responsibility.</p>
+        <p>Responsibility is a privilege. With deep gratitude to all my clients who have invited me to step through their door and walk there, together with them.</p>
+      </div>
     </div>
   </section>
 </main>
 
 <section class="door" id="door">
   <div class="wrap">
-    <p class="door-eyebrow rise">Therapy is a door</p>
+    <p class="door-eyebrow rise"><span class="he">טיפול הוא דלת</span><span class="en">Therapy is a door</span></p>
     <svg class="door-art rise" viewBox="0 0 82 108" fill="none" aria-hidden="true">
       <rect x="9" y="6" width="64" height="96" rx="1.5" stroke="currentColor" stroke-width="1.4" opacity="0.55"/>
       <line x1="2" y1="102" x2="80" y2="102" stroke="currentColor" stroke-width="1.4" opacity="0.55"/>
@@ -529,69 +583,104 @@
       </g>
     </svg>
 
-    <button type="button" class="knock rise" id="openForm" aria-expanded="false" aria-controls="contactForm">Write to me</button>
+    <button type="button" class="knock rise" id="openForm" aria-expanded="false" aria-controls="contactForm">
+      <span class="he">כתבו לי</span><span class="en">Write to me</span>
+    </button>
 
     <form class="form-wrap" id="contactForm">
       <div class="field">
-        <label for="f-name">Your name</label>
+        <label for="f-name"><span class="he">שם</span><span class="en">Your name</span></label>
         <input id="f-name" name="name" type="text" autocomplete="name" required />
       </div>
       <div class="field">
-        <label for="f-email">Your email</label>
+        <label for="f-email"><span class="he">דוא"ל</span><span class="en">Your email</span></label>
         <input id="f-email" name="email" type="email" autocomplete="email" required />
       </div>
       <div class="field">
-        <label for="f-msg">Your message</label>
+        <label for="f-msg"><span class="he">ההודעה שלך</span><span class="en">Your message</span></label>
         <textarea id="f-msg" name="message" rows="5" required></textarea>
       </div>
-      <button type="submit" class="send">Send</button>
-      <p class="form-note">This opens a message in your own email app, already addressed to me. You can also write directly to <a href="mailto:ronit.adiv@gmail.com">ronit.adiv@gmail.com</a>.</p>
+      <button type="submit" class="send"><span class="he">שליחה</span><span class="en">Send</span></button>
+      <p class="form-note">
+        <span class="he">ההודעה תיפתח באפליקציית המייל שלך, ממוענת אליי. אפשר גם לכתוב ישירות אל <a href="mailto:ronit.adiv@gmail.com">ronit.adiv@gmail.com</a>.</span>
+        <span class="en">This opens a message in your own email app, already addressed to me. You can also write directly to <a href="mailto:ronit.adiv@gmail.com">ronit.adiv@gmail.com</a>.</span>
+      </p>
     </form>
     <a id="mailto-link" hidden aria-hidden="true"></a>
   </div>
 </section>
 
+<footer>
+  <span class="grace"><span class="he">בהכרת תודה</span><span class="en">With gratitude</span></span>
+  <a class="home-link" href="/">
+    <span class="he">חזרה לאתר "עיניים גדולות זה לא טוב"</span>
+    <span class="en">&larr; Return to Bigger Eyes Than My Tummy</span>
+  </a>
+</footer>
+
 <script>
   (function () {
+    var el = document.documentElement;
+    var titles = { he: "רונית בלנרו-אדיב — הדלת", en: "Ronit Adiv-Blanario — the door" };
+    var toggles = document.querySelectorAll(".langtoggle button");
+
+    function apply(lang) {
+      lang = lang === "en" ? "en" : "he";
+      el.className = "lang-" + lang;
+      el.setAttribute("lang", lang);
+      el.setAttribute("dir", lang === "he" ? "rtl" : "ltr");
+      document.title = titles[lang];
+      try { localStorage.setItem("door-lang", lang); } catch (e) {}
+      try {
+        var u = new URL(location.href);
+        u.searchParams.set("lang", lang);
+        history.replaceState(null, "", u);
+      } catch (e) {}
+      for (var i = 0; i < toggles.length; i++) {
+        toggles[i].setAttribute("aria-pressed", toggles[i].getAttribute("data-set") === lang ? "true" : "false");
+      }
+    }
+
+    for (var i = 0; i < toggles.length; i++) {
+      toggles[i].addEventListener("click", function () { apply(this.getAttribute("data-set")); });
+    }
+    apply(el.classList.contains("lang-en") ? "en" : "he");
+
     var door = document.getElementById("door");
     var openBtn = document.getElementById("openForm");
     var form = document.getElementById("contactForm");
     var link = document.getElementById("mailto-link");
-    if (!door || !openBtn || !form || !link) return;
 
-    openBtn.addEventListener("click", function () {
-      var isOpen = door.classList.toggle("open");
-      openBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
-      if (isOpen) {
-        window.setTimeout(function () {
-          var first = document.getElementById("f-name");
-          if (first) first.focus();
-        }, 420);
-      }
-    });
+    if (openBtn && door) {
+      openBtn.addEventListener("click", function () {
+        var isOpen = door.classList.toggle("open");
+        openBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        if (isOpen) {
+          window.setTimeout(function () {
+            var f = document.getElementById("f-name");
+            if (f) f.focus();
+          }, 420);
+        }
+      });
+    }
 
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var name = document.getElementById("f-name").value.trim();
-      var email = document.getElementById("f-email").value.trim();
-      var msg = document.getElementById("f-msg").value.trim();
-      var subject = "A message through your door — " + name;
-      var body = msg + "\n\n— " + name + "\n" + email;
-      link.setAttribute(
-        "href",
-        "mailto:ronit.adiv@gmail.com?subject=" +
-          encodeURIComponent(subject) +
-          "&body=" +
-          encodeURIComponent(body)
-      );
-      link.click();
-    });
+    if (form && link) {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var lang = el.classList.contains("lang-en") ? "en" : "he";
+        var name = document.getElementById("f-name").value.trim();
+        var email = document.getElementById("f-email").value.trim();
+        var msg = document.getElementById("f-msg").value.trim();
+        var subject = (lang === "en" ? "A message through your door — " : "פנייה דרך הדלת — ") + name;
+        var body = msg + "\n\n— " + name + "\n" + email;
+        link.setAttribute(
+          "href",
+          "mailto:ronit.adiv@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body)
+        );
+        link.click();
+      });
+    }
   })();
 </script>
-
-<footer>
-  <span class="grace">With gratitude</span>
-  <a class="home-link" href="/">&larr; Return to Bigger Eyes Than My Tummy</a>
-</footer>
 </body>
 </html>
