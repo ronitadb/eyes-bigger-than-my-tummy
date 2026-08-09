@@ -399,6 +399,15 @@
     margin: 0;
   }
   .form-note a { color: var(--terra-deep); }
+  .form-status {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin: 0.1rem 0 0;
+  }
+  .form-status.ok { color: var(--sage-deep); }
+  .form-status.err { color: var(--terra-deep); }
+  .send:disabled { opacity: 0.6; cursor: default; }
 
   footer {
     display: flex;
@@ -601,6 +610,7 @@
         <textarea id="f-msg" name="message" rows="5" required></textarea>
       </div>
       <button type="submit" class="send"><span class="he">שליחה</span><span class="en">Send</span></button>
+      <p class="form-status" id="formStatus" role="status" aria-live="polite" hidden></p>
       <p class="form-note">
         <span class="he">ההודעה תיפתח באפליקציית המייל שלך, ממוענת אליי. אפשר גם לכתוב ישירות אל <a href="mailto:ronit.adiv@gmail.com">ronit.adiv@gmail.com</a>.</span>
         <span class="en">This opens a message in your own email app, already addressed to me. You can also write directly to <a href="mailto:ronit.adiv@gmail.com">ronit.adiv@gmail.com</a>.</span>
@@ -649,7 +659,6 @@
     var door = document.getElementById("door");
     var openBtn = document.getElementById("openForm");
     var form = document.getElementById("contactForm");
-    var link = document.getElementById("mailto-link");
 
     if (openBtn && door) {
       openBtn.addEventListener("click", function () {
@@ -664,20 +673,68 @@
       });
     }
 
-    if (form && link) {
+    if (form) {
+      var statusEl = document.getElementById("formStatus");
+      var sendBtn = form.querySelector(".send");
+      var STRINGS = {
+        he: {
+          sending: "שולח…",
+          ok: "תודה. ההודעה נשלחה.",
+          empty: "נא לכתוב הודעה לפני השליחה.",
+          bad_email: 'כתובת הדוא"ל אינה תקינה.',
+          fail: "השליחה נכשלה. אפשר לכתוב לי ישירות אל ronit.adiv@gmail.com"
+        },
+        en: {
+          sending: "Sending…",
+          ok: "Thank you. Your message has been sent.",
+          empty: "Please write a message before sending.",
+          bad_email: "That email address doesn't look right.",
+          fail: "Something went wrong. You can also write to me directly at ronit.adiv@gmail.com"
+        }
+      };
+      function setStatus(kind, text) {
+        if (!statusEl) return;
+        statusEl.textContent = text;
+        statusEl.className = "form-status" + (kind === "ok" ? " ok" : kind === "err" ? " err" : "");
+        statusEl.hidden = false;
+      }
+
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         var lang = el.classList.contains("lang-en") ? "en" : "he";
+        var S = STRINGS[lang];
         var name = document.getElementById("f-name").value.trim();
         var email = document.getElementById("f-email").value.trim();
         var msg = document.getElementById("f-msg").value.trim();
-        var subject = (lang === "en" ? "A message through your door — " : "פנייה דרך הדלת — ") + name;
-        var body = msg + "\n\n— " + name + "\n" + email;
-        link.setAttribute(
-          "href",
-          "mailto:ronit.adiv@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body)
-        );
-        link.click();
+
+        if (!msg) { setStatus("err", S.empty); return; }
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setStatus("err", S.bad_email); return; }
+
+        if (sendBtn) sendBtn.disabled = true;
+        setStatus("info", S.sending);
+
+        fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: name, email: email, message: msg, target: "door", lang: lang })
+        })
+          .then(function (r) {
+            return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; });
+          })
+          .then(function (res) {
+            if (res.ok && res.d && res.d.ok) {
+              setStatus("ok", S.ok);
+              form.reset();
+            } else if (res.d && res.d.error === "empty") {
+              setStatus("err", S.empty);
+            } else if (res.d && res.d.error === "bad_email") {
+              setStatus("err", S.bad_email);
+            } else {
+              setStatus("err", S.fail);
+            }
+          })
+          .catch(function () { setStatus("err", S.fail); })
+          .then(function () { if (sendBtn) sendBtn.disabled = false; });
       });
     }
   })();
