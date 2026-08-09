@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{if(sessionStorage.getItem("cms-auth"))document.documentElement.setAttribute("data-authing","");}catch(e){}</script>
 <meta name="robots" content="noindex, nofollow">
 <title>מרכז הניהול</title>
 <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -10,6 +11,7 @@
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Assistant',sans-serif;background:#f5f5f0;color:#22302F;min-height:100vh}
   .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+  html[data-authing] #login{display:none}
   .login-box{background:#fff;border:1px solid #ddd;border-radius:6px;padding:40px;max-width:360px;width:100%;text-align:center}
   .login-box h1{font-size:22px;color:#3D7468;margin-bottom:8px}
   .login-box p{font-size:14px;color:#6E7C78;margin-bottom:24px}
@@ -84,8 +86,8 @@ function doLogout(){
   if(!s)return;
   PW=s;
   fetch(VALIDATE,{headers:{'x-admin-password':PW}})
-    .then(function(r){if(r.ok){show();}else{sessionStorage.removeItem('cms-auth');}})
-    .catch(function(){});
+    .then(function(r){if(r.ok){show();}else{sessionStorage.removeItem('cms-auth');document.documentElement.removeAttribute('data-authing');}})
+    .catch(function(){document.documentElement.removeAttribute('data-authing');});
 })();
 document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 </script>

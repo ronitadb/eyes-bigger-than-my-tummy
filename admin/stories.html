@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{if(sessionStorage.getItem("cms-auth"))document.documentElement.setAttribute("data-authing","");}catch(e){}</script>
 <meta name="robots" content="noindex, nofollow">
 <title>ניהול הספרייה המשותפת</title>
 <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -10,6 +11,7 @@
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Assistant',sans-serif;background:#f5f5f0;color:#22302F;min-height:100vh}
   .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+  html[data-authing] #login{display:none}
   .login-box{background:#fff;border:1px solid #ddd;border-radius:6px;padding:40px;max-width:360px;width:100%;text-align:center}
   .login-box h1{font-size:22px;color:#3D7468;margin-bottom:24px}
   .login-box input{width:100%;padding:12px;border:1px solid #ccc;border-radius:4px;font-size:16px;font-family:inherit;margin-bottom:14px}
@@ -151,7 +153,7 @@ function doLogin(){
     .catch(function(){document.getElementById('loginErr').textContent='שגיאת חיבור'});
 }
 function doLogout(){PW='';sessionStorage.removeItem('cms-auth');document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex';document.getElementById('pw').value=''}
-(function(){var s=sessionStorage.getItem('cms-auth');if(!s)return;PW=s;fetch(API+'/admin/stories',{headers:{'x-admin-password':PW}}).then(function(r){if(r.status===401){sessionStorage.removeItem('cms-auth');PW='';return}enterApp();}).catch(function(){});})();
+(function(){var s=sessionStorage.getItem('cms-auth');if(!s)return;PW=s;fetch(API+'/admin/stories',{headers:{'x-admin-password':PW}}).then(function(r){if(r.status===401){sessionStorage.removeItem('cms-auth');PW='';document.documentElement.removeAttribute('data-authing');return}enterApp();}).catch(function(){document.documentElement.removeAttribute('data-authing');});})();
 document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
 
 function load(){
