@@ -88,7 +88,8 @@ var PAGES=[
   {slug:'zoom',     url:'/zoom',      name:'מפגשי זום'},
   {slug:'materials',url:'/materials', name:'הספרייה המשותפת'},
   {slug:'media',    url:'/media',     name:'תקשורת וביקורות'},
-  {slug:'contact',  url:'/contact',   name:'צור קשר'}
+  {slug:'contact',  url:'/contact',   name:'צור קשר'},
+  {slug:'door',     url:'/door',      name:'הדלת — הקליניקה (עברית + English)'}
 ];
 
 var LABELS={
@@ -102,7 +103,8 @@ var LABELS={
   'body-paragraph-1':'פסקה ראשונה','body-paragraph-2':'פסקה שנייה','body-paragraph-3':'פסקה שלישית',
   'body-closing-quote':'ציטוט סיום','form-description':'תיאור טופס ההרשמה'
 };
-function labelFor(id){ return LABELS[id] || id.replace(/-/g,' '); }
+function preview(t){ t=String(t==null?'':t).replace(/\s+/g,' ').trim(); return t ? (t.length>52 ? t.slice(0,52)+'…' : t) : '(ריק)'; }
+function labelFor(id,val){ return LABELS[id] || preview(val); }
 
 function headers(){return{'Content-Type':'application/json','x-admin-password':PW}}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
@@ -191,7 +193,7 @@ function renderPages(){
       var edited=(k in overrides);
       var val=currentValue(k);
       html+='<div class="block-card" id="card-'+page.slug+'-'+id+'">';
-      html+='<label>'+esc(labelFor(id))+'</label>';
+      html+='<label>'+esc(labelFor(id,val))+'</label>';
       html+='<textarea id="txt-'+page.slug+'-'+id+'" data-key="'+k+'">'+esc(val)+'</textarea>';
       html+='<div class="block-actions">';
       html+='<button class="btn btn-small" onclick="saveBlock(\''+page.slug+'\',\''+id+'\')">שמירה</button>';
