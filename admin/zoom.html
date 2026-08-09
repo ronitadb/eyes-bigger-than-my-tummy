@@ -97,10 +97,13 @@
 <div id="app" class="app">
   <div class="header">
     <h1>ניהול מפגשי זום</h1>
-    <div style="display:flex;gap:16px;align-items:center">
-      <a href="/admin/content" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">עריכת תוכן</a>
+    <nav style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <a href="/admin" style="font-size:13px;color:#8A9692;text-decoration:none;font-weight:600">מרכז</a>
+      <a href="/admin/content" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">תוכן</a>
+      <a href="/admin/stories" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">ספרייה</a>
+      <a href="/admin/zoom" style="font-size:14px;color:#2F5248;text-decoration:none;font-weight:700;border-bottom:2px solid #3D7468;padding-bottom:2px">מפגשים</a>
       <button class="btn-small btn-secondary" style="border:1px solid #ccc;background:none;color:#666" onclick="doLogout()">יציאה</button>
-    </div>
+    </nav>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="showTab('dashboard')">סקירה</button>
@@ -334,18 +337,23 @@ function csSetValue(id,val){
 })();
 
 // Auth
+function enterApp(){
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='block';
+  loadAll();
+}
 function doLogin(){
   PW=document.getElementById('pw').value;
   fetch(API+'/admin/meetings',{headers:{'x-admin-password':PW}})
     .then(function(r){
       if(r.status===401){document.getElementById('loginErr').textContent='סיסמה שגויה';PW='';return}
-      document.getElementById('login').style.display='none';
-      document.getElementById('app').style.display='block';
-      loadAll();
+      sessionStorage.setItem('cms-auth',PW);
+      enterApp();
     })
     .catch(function(){document.getElementById('loginErr').textContent='שגיאת חיבור'});
 }
-function doLogout(){PW='';document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex';document.getElementById('pw').value=''}
+function doLogout(){PW='';sessionStorage.removeItem('cms-auth');document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex';document.getElementById('pw').value=''}
+(function(){var s=sessionStorage.getItem('cms-auth');if(!s)return;PW=s;fetch(API+'/admin/meetings',{headers:{'x-admin-password':PW}}).then(function(r){if(r.status===401){sessionStorage.removeItem('cms-auth');PW='';return}enterApp();}).catch(function(){});})();
 document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
 
 function showMsg(t,ok){var el=document.getElementById('msg');el.className='msg '+(ok?'msg-ok':'msg-err');el.textContent=t;setTimeout(function(){el.className='';el.textContent=''},5000)}

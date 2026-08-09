@@ -69,7 +69,13 @@
 <div id="app" class="app">
   <div class="header">
     <h1>הספרייה המשותפת — סיפורים</h1>
-    <a href="/admin/zoom">← לניהול מפגשי הזום</a>
+    <nav style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <a href="/admin" style="font-size:13px;color:#8A9692;text-decoration:none;font-weight:600">מרכז</a>
+      <a href="/admin/content" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">תוכן</a>
+      <a href="/admin/stories" style="font-size:14px;color:#2F5248;text-decoration:none;font-weight:700;border-bottom:2px solid #3D7468;padding-bottom:2px">ספרייה</a>
+      <a href="/admin/zoom" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">מפגשים</a>
+      <button type="button" onclick="doLogout()" style="border:1px solid #ccc;background:none;color:#666;padding:6px 14px;border-radius:4px;font-family:inherit;font-size:13px;cursor:pointer">יציאה</button>
+    </nav>
   </div>
 
   <div id="msg"></div>
@@ -129,18 +135,23 @@ function headers(){return{'Content-Type':'application/json','x-admin-password':P
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function fmtDate(d){if(!d)return '';var x=new Date(d);if(isNaN(x))return '';return x.toLocaleDateString('he-IL')+' '+x.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}
 
+function enterApp(){
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='block';
+  load();
+}
 function doLogin(){
   PW=document.getElementById('pw').value;
   fetch(API+'/admin/stories',{headers:{'x-admin-password':PW}})
     .then(function(r){
-      if(r.status===401){document.getElementById('loginErr').textContent='סיסמה שגויה';PW='';return null}
-      document.getElementById('login').style.display='none';
-      document.getElementById('app').style.display='block';
-      return r.json();
+      if(r.status===401){document.getElementById('loginErr').textContent='סיסמה שגויה';PW='';return}
+      sessionStorage.setItem('cms-auth',PW);
+      enterApp();
     })
-    .then(function(d){if(d&&d.ok){STORIES=d.stories||[];render()}})
     .catch(function(){document.getElementById('loginErr').textContent='שגיאת חיבור'});
 }
+function doLogout(){PW='';sessionStorage.removeItem('cms-auth');document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex';document.getElementById('pw').value=''}
+(function(){var s=sessionStorage.getItem('cms-auth');if(!s)return;PW=s;fetch(API+'/admin/stories',{headers:{'x-admin-password':PW}}).then(function(r){if(r.status===401){sessionStorage.removeItem('cms-auth');PW='';return}enterApp();}).catch(function(){});})();
 document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
 
 function load(){

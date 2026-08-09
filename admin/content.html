@@ -60,10 +60,13 @@
 <div id="app" class="app">
   <div class="header">
     <h1>עריכת תוכן האתר</h1>
-    <div class="header-links">
-      <a href="/admin/zoom">ניהול מפגשים</a>
+    <nav class="header-links" style="flex-wrap:wrap">
+      <a href="/admin" style="color:#8A9692;font-size:13px">מרכז</a>
+      <a href="/admin/content" style="color:#2F5248;font-weight:700;border-bottom:2px solid #3D7468;padding-bottom:2px">תוכן</a>
+      <a href="/admin/stories">ספרייה</a>
+      <a href="/admin/zoom">מפגשים</a>
       <button class="btn-small btn-reset" onclick="doLogout()">יציאה</button>
-    </div>
+    </nav>
   </div>
   <div id="msgArea"></div>
   <div id="pages"></div>
@@ -136,6 +139,16 @@ function showMsg(text,ok){
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
+function enterApp(data){
+  savedBlocks={};
+  data.blocks.forEach(function(b){
+    savedBlocks[b.page_slug+'/'+b.block_id]=b.content;
+  });
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='block';
+  renderPages();
+}
+
 function doLogin(){
   PW=document.getElementById('pw').value;
   fetch(API,{headers:headers()})
@@ -144,13 +157,8 @@ function doLogin(){
       return r.json();
     })
     .then(function(data){
-      savedBlocks={};
-      data.blocks.forEach(function(b){
-        savedBlocks[b.page_slug+'/'+b.block_id]=b.content;
-      });
-      document.getElementById('login').style.display='none';
-      document.getElementById('app').style.display='block';
-      renderPages();
+      sessionStorage.setItem('cms-auth',PW);
+      enterApp(data);
     })
     .catch(function(){
       document.getElementById('loginErr').textContent='סיסמה שגויה';
@@ -160,11 +168,22 @@ function doLogin(){
 function doLogout(){
   PW='';
   savedBlocks={};
+  sessionStorage.removeItem('cms-auth');
   document.getElementById('app').style.display='none';
   document.getElementById('login').style.display='flex';
   document.getElementById('pw').value='';
   document.getElementById('loginErr').textContent='';
 }
+
+(function(){
+  var s=sessionStorage.getItem('cms-auth');
+  if(!s)return;
+  PW=s;
+  fetch(API,{headers:headers()})
+    .then(function(r){if(!r.ok)throw new Error('x');return r.json();})
+    .then(function(data){enterApp(data);})
+    .catch(function(){PW='';sessionStorage.removeItem('cms-auth');});
+})();
 
 function renderPages(){
   var container=document.getElementById('pages');

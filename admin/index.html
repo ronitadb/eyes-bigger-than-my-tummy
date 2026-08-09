@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>מרכז הניהול</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Assistant',sans-serif;background:#f5f5f0;color:#22302F;min-height:100vh}
+  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+  .login-box{background:#fff;border:1px solid #ddd;border-radius:6px;padding:40px;max-width:360px;width:100%;text-align:center}
+  .login-box h1{font-size:22px;color:#3D7468;margin-bottom:8px}
+  .login-box p{font-size:14px;color:#6E7C78;margin-bottom:24px}
+  .login-box input{width:100%;padding:12px;border:1px solid #ccc;border-radius:4px;font-size:16px;font-family:inherit;margin-bottom:14px}
+  .login-box button{width:100%;padding:12px;background:#3D7468;color:#fff;border:none;border-radius:4px;font-size:16px;font-family:inherit;font-weight:600;cursor:pointer}
+  .login-box .err{color:#c44;font-size:14px;margin-top:10px}
+  .hub{display:none;max-width:760px;margin:0 auto;padding:48px 20px}
+  .hub .top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:10px}
+  .hub h1{font-size:24px;color:#3D7468}
+  .hub .sub{color:#6E7C78;font-size:15px;margin-bottom:30px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+  .card{display:block;background:#fff;border:1px solid #ddd;border-radius:8px;padding:24px;text-decoration:none;color:inherit;transition:box-shadow .15s ease,transform .15s ease}
+  .card:hover{box-shadow:0 10px 28px rgba(34,48,47,.10);transform:translateY(-2px);border-color:#c8d4cf}
+  .card .ico{font-size:26px;line-height:1}
+  .card h2{font-size:18px;color:#2F5248;margin:12px 0 6px}
+  .card p{font-size:13px;color:#6E7C78;line-height:1.6}
+  .logout{background:none;border:1px solid #ddd;color:#999;padding:8px 16px;border-radius:4px;font-family:inherit;font-size:13px;cursor:pointer}
+  .logout:hover{background:#eee}
+</style>
+</head>
+<body>
+
+<div id="login" class="login-wrap">
+  <div class="login-box">
+    <h1>מרכז הניהול</h1>
+    <p>עיניים גדולות זה לא טוב</p>
+    <input type="password" id="pw" placeholder="סיסמת ניהול" autocomplete="current-password">
+    <button onclick="doLogin()">כניסה</button>
+    <div id="loginErr" class="err"></div>
+  </div>
+</div>
+
+<div id="hub" class="hub">
+  <div class="top">
+    <h1>מרכז הניהול</h1>
+    <button class="logout" onclick="doLogout()">יציאה</button>
+  </div>
+  <div class="sub">בחרו מסך לניהול. הכניסה נשמרת — לא צריך להזין סיסמה שוב במעבר בין המסכים.</div>
+  <div class="cards">
+    <a class="card" href="/admin/content"><div class="ico">📝</div><h2>עריכת תוכן</h2><p>הטקסטים בעמודי האתר</p></a>
+    <a class="card" href="/admin/stories"><div class="ico">📖</div><h2>הספרייה — סיפורים</h2><p>אישור ופרסום סיפורים שנשלחו</p></a>
+    <a class="card" href="/admin/zoom"><div class="ico">🎦</div><h2>מפגשי זום</h2><p>מפגשים, משתתפים ותבניות אימייל</p></a>
+  </div>
+</div>
+
+<script>
+// Validates against a lightweight admin endpoint; the shared password is kept
+// in sessionStorage so every admin screen opens without re-login this session.
+var VALIDATE='/api/admin/content';
+var PW='';
+
+function show(){document.getElementById('login').style.display='none';document.getElementById('hub').style.display='block';}
+function doLogin(){
+  PW=document.getElementById('pw').value;
+  fetch(VALIDATE,{headers:{'x-admin-password':PW}})
+    .then(function(r){
+      if(!r.ok)throw new Error('wrong');
+      sessionStorage.setItem('cms-auth',PW);
+      show();
+    })
+    .catch(function(){document.getElementById('loginErr').textContent='סיסמה שגויה';});
+}
+function doLogout(){
+  sessionStorage.removeItem('cms-auth');PW='';
+  document.getElementById('hub').style.display='none';
+  document.getElementById('login').style.display='flex';
+  document.getElementById('pw').value='';
+  document.getElementById('loginErr').textContent='';
+}
+(function(){
+  var s=sessionStorage.getItem('cms-auth');
+  if(!s)return;
+  PW=s;
+  fetch(VALIDATE,{headers:{'x-admin-password':PW}})
+    .then(function(r){if(r.ok){show();}else{sessionStorage.removeItem('cms-auth');}})
+    .catch(function(){});
+})();
+document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+</script>
+</body>
+</html>
