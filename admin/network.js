@@ -107,6 +107,15 @@ function askConfirm(title, text, go) {
   btn.onclick = function () { closeModal('confirmOverlay'); go(); };
   openModal('confirmOverlay');
 }
+// Turns a failed response into something readable. The migration case is worth
+// naming explicitly — it is the state the tool ships in until the SQL is run.
+function errText(d, fallback) {
+  if (d && d.error === 'migration_needed') {
+    $('migrationWarn').style.display = 'block';
+    return 'לא נשמר — מסד הנתונים עדיין לא הוכן. יש להריץ את קובץ המיגרציה בקונסולת Neon.';
+  }
+  return fallback;
+}
 function jget(url) {
   return fetch(url, { headers: authHeader() }).then(function (r) { return r.json(); });
 }
@@ -524,7 +533,7 @@ function saveAdd(confirmDup) {
       return;
     }
     if (d && d.error === 'duplicates') { showDuplicates(d.duplicates); return; }
-    showMsg('שגיאה בשמירה.', false);
+    showMsg(errText(d, 'שגיאה בשמירה.'), false);
   }).catch(function () { $('aSave').disabled = false; showMsg('שגיאת חיבור.', false); });
 }
 function showDuplicates(dups) {
@@ -695,7 +704,7 @@ function saveContact(id) {
   if (!b.name) { showMsg('צריך שם.', false); return; }
   jsend(API + '/contacts', 'PUT', b).then(function (d) {
     if (d && d.ok) { showMsg('נשמר.', true); loadNetwork(); openContact(id); }
-    else showMsg('שגיאה בשמירה.', false);
+    else showMsg(errText(d, 'שגיאה בשמירה.'), false);
   }).catch(function () { showMsg('שגיאת חיבור.', false); });
 }
 
@@ -703,7 +712,7 @@ function deleteContact(id) {
   askConfirm('מחיקת רשומה', 'למחוק את הרשומה לצמיתות, יחד עם ההיסטוריה שלה? לא ניתן לשחזר.', function () {
     jsend(API + '/contacts', 'DELETE', { id: id }).then(function (d) {
       if (d && d.ok) { closeModal('contactOverlay'); showMsg('נמחק.', true); loadNetwork(); loadDashboard(); }
-      else showMsg('שגיאה במחיקה.', false);
+      else showMsg(errText(d, 'שגיאה במחיקה.'), false);
     });
   });
 }
@@ -712,7 +721,7 @@ function setCampaignStatus(campaignId, contactId, status) {
   jsend(API + '/campaigns', 'POST', { action: 'set_status', campaign_id: campaignId, contact_id: contactId, status: status })
     .then(function (d) {
       if (d && d.ok) { showMsg('הסטטוס עודכן.', true); loadNetwork(); loadDashboard(); }
-      else showMsg('שגיאה בעדכון.', false);
+      else showMsg(errText(d, 'שגיאה בעדכון.'), false);
     });
 }
 function setCampaignFollowUp(campaignId, contactId, date) {
@@ -727,7 +736,7 @@ function setCampaignFollowUp(campaignId, contactId, date) {
     status: current || 'not_contacted', next_follow_up_date: date
   }).then(function (d) {
     if (d && d.ok) { showMsg('תאריך המעקב נשמר.', true); loadNetwork(); loadDashboard(); }
-    else showMsg('שגיאה בעדכון.', false);
+    else showMsg(errText(d, 'שגיאה בעדכון.'), false);
   });
 }
 function addToCampaign(contactId) {
@@ -736,7 +745,7 @@ function addToCampaign(contactId) {
   jsend(API + '/campaigns', 'POST', { action: 'add', campaign_id: cid, contact_ids: [contactId] })
     .then(function (d) {
       if (d && d.ok) { showMsg('נוסף לקמפיין.', true); loadNetwork(); openContact(contactId); }
-      else showMsg('שגיאה בהוספה.', false);
+      else showMsg(errText(d, 'שגיאה בהוספה.'), false);
     });
 }
 function removeFromCampaign(campaignId, contactId) {
@@ -786,7 +795,7 @@ function saveActivity() {
       showMsg('הפנייה נרשמה.', true);
       loadNetwork(); loadDashboard();
       if (openContactId) openContact(openContactId);
-    } else showMsg('שגיאה בשמירה.', false);
+    } else showMsg(errText(d, 'שגיאה בשמירה.'), false);
   }).catch(function () { showMsg('שגיאת חיבור.', false); });
 }
 function deleteActivity(id, contactId) {
@@ -918,7 +927,7 @@ function saveCampaign() {
   if (editCampaignId) b.id = editCampaignId;
   jsend(API + '/campaigns', editCampaignId ? 'PUT' : 'POST', b).then(function (d) {
     if (d && d.ok) { closeModal('campaignOverlay'); showMsg('נשמר.', true); loadCampaigns(); loadNetwork(); }
-    else showMsg('שגיאה בשמירה.', false);
+    else showMsg(errText(d, 'שגיאה בשמירה.'), false);
   });
 }
 function deleteCampaign(id) {
@@ -971,7 +980,7 @@ function confirmPick() {
       if (d && d.ok) {
         showMsg('נוספו ' + d.added + ' אנשי קשר.', true);
         loadNetwork(); loadDashboard(); openCampaignDetail(PICK.campaignId);
-      } else showMsg('שגיאה בהוספה.', false);
+      } else showMsg(errText(d, 'שגיאה בהוספה.'), false);
     });
 }
 
@@ -1018,7 +1027,7 @@ function saveTemplate() {
   if (editTemplateId) b.id = editTemplateId;
   jsend(API + '/outreach-templates', editTemplateId ? 'PUT' : 'POST', b).then(function (d) {
     if (d && d.ok) { closeModal('templateOverlay'); showMsg('נשמר.', true); loadTemplates(); }
-    else showMsg('שגיאה בשמירה.', false);
+    else showMsg(errText(d, 'שגיאה בשמירה.'), false);
   });
 }
 function deleteTemplate() {
@@ -1055,7 +1064,7 @@ function addTag() {
   if (!name) return;
   jsend(API + '/tags', 'POST', { name: name }).then(function (d) {
     if (d && d.ok) { $('newTag').value = ''; openTags(); loadNetwork(); }
-    else showMsg('שגיאה בהוספה.', false);
+    else showMsg(errText(d, 'שגיאה בהוספה.'), false);
   });
 }
 function renameTag(id) {
@@ -1063,7 +1072,7 @@ function renameTag(id) {
   if (!name) return;
   jsend(API + '/tags', 'PUT', { id: id, name: name }).then(function (d) {
     if (d && d.ok) { showMsg('נשמר.', true); openTags(); loadNetwork(); }
-    else showMsg(d && d.error === 'duplicate_name' ? 'כבר קיימת תגית בשם הזה.' : 'שגיאה בשמירה.', false);
+    else showMsg(d && d.error === 'duplicate_name' ? 'כבר קיימת תגית בשם הזה.' : errText(d, 'שגיאה בשמירה.'), false);
   });
 }
 function deleteTag(id) {
