@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{if(sessionStorage.getItem("cms-auth"))document.documentElement.setAttribute("data-authing","");}catch(e){}</script>
+<meta name="robots" content="noindex, nofollow">
+<title>רשת ההפצה</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Assistant',sans-serif;background:#f5f5f0;color:#22302F;min-height:100vh}
+  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+  html[data-authing] #login{display:none}
+  .login-box{background:#fff;border:1px solid #ddd;border-radius:6px;padding:40px;max-width:360px;width:100%;text-align:center}
+  .login-box h1{font-size:22px;color:#3D7468;margin-bottom:24px}
+  .login-box input{width:100%;padding:12px;border:1px solid #ccc;border-radius:4px;font-size:16px;font-family:inherit;margin-bottom:14px}
+  .login-box button{width:100%;padding:12px;background:#3D7468;color:#fff;border:none;border-radius:4px;font-size:16px;font-family:inherit;font-weight:600;cursor:pointer}
+  .login-box .err{color:#c44;font-size:14px;margin-top:10px}
+
+  .app{display:none;max-width:1180px;margin:0 auto;padding:20px}
+  .header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #ddd;gap:12px;flex-wrap:wrap}
+  .header h1{font-size:22px;color:#3D7468}
+  .tabs{display:flex;gap:0;border-bottom:2px solid #ddd;margin-bottom:24px;flex-wrap:wrap}
+  .tab{padding:12px 18px;cursor:pointer;font-size:15px;font-weight:600;color:#6E7C78;border-bottom:2px solid transparent;margin-bottom:-2px;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit}
+  .tab.active{color:#3D7468;border-bottom-color:#3D7468}
+  .panel{display:none}.panel.active{display:block}
+
+  .btn{display:inline-block;padding:10px 20px;background:#3D7468;color:#fff;border:none;border-radius:4px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer}
+  .btn-secondary{background:#6E7C78}
+  .btn-ghost{background:none;color:#3D7468;border:1px solid #c8d4cf}
+  .btn-small{padding:6px 14px;font-size:13px}
+  .btn-tiny{padding:4px 10px;font-size:12px}
+  .btn-danger{background:#c44}
+  .btn:disabled{opacity:.5;cursor:default}
+
+  .card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:20px;margin-bottom:16px}
+  .card h3{font-size:18px;color:#2F5248;margin-bottom:8px}
+  .card .meta{font-size:14px;color:#6E7C78;margin-bottom:12px;line-height:1.7}
+  .card .actions{display:flex;gap:8px;flex-wrap:wrap}
+
+  .section-title{font-size:15px;font-weight:700;color:#2F5248;margin:0 0 10px}
+  .muted{color:#8A9692}
+  .empty{text-align:center;color:#8A9692;padding:44px 20px;font-size:16px}
+  .msg{padding:12px 16px;border-radius:4px;margin-bottom:16px;font-size:14px}
+  .msg-ok{background:#d4edda;color:#155724}
+  .msg-err{background:#f8d7da;color:#721c24}
+  .warn-bar{display:none;background:#fff3cd;color:#856404;border:1px solid #f2e3b3;border-radius:6px;padding:14px 16px;margin-bottom:18px;font-size:14px;line-height:1.7}
+  .warn-bar code{background:rgba(0,0,0,.06);padding:1px 6px;border-radius:3px;font-size:13px}
+
+  /* dashboard */
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:22px}
+  .stat-card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:18px;text-align:center}
+  .stat-card .num{font-size:30px;font-weight:700;color:#3D7468;line-height:1.2}
+  .stat-card .label{font-size:13px;color:#6E7C78;margin-top:4px}
+  .next-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:22px}
+  .next-card{background:#fff;border:1px solid #ddd;border-top:3px solid #3D7468;border-radius:6px;padding:18px}
+  .next-card.amber{border-top-color:#d9a441}
+  .next-card.blue{border-top-color:#4a7fa5}
+  .next-card .n{font-size:26px;font-weight:700;color:#2F5248}
+  .next-card .t{font-size:14px;font-weight:600;color:#3A4744;margin-bottom:10px}
+  .next-list{list-style:none;font-size:14px;line-height:1.9;max-height:210px;overflow-y:auto}
+  .next-list li{border-bottom:1px solid #f0efea;padding:3px 0}
+  .next-list a{color:#3D7468;text-decoration:none;font-weight:600;cursor:pointer}
+  .next-list a:hover{text-decoration:underline}
+  .bars{list-style:none;font-size:14px}
+  .bars li{display:flex;align-items:center;gap:10px;padding:4px 0}
+  .bars .bl{flex:0 0 190px;color:#3A4744}
+  .bars .bb{flex:1;height:8px;background:#eee;border-radius:5px;overflow:hidden}
+  .bars .bb span{display:block;height:100%;background:#3D7468}
+  .bars .bn{flex:0 0 34px;text-align:left;color:#6E7C78;font-weight:600}
+
+  /* toolbar + filters */
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+  .search{flex:1;min-width:220px;padding:10px 14px;border:1px solid #ccc;border-radius:6px;font-size:15px;font-family:inherit;background:#fff}
+  .views{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+  .view{padding:6px 14px;cursor:pointer;font-size:13px;font-weight:600;color:#6E7C78;background:#fff;border:1px solid #ddd;border-radius:20px;font-family:inherit}
+  .view.active{color:#fff;background:#3D7468;border-color:#3D7468}
+  .filters{display:none;background:#fff;border:1px solid #ddd;border-radius:6px;padding:16px;margin-bottom:14px}
+  .filters.open{display:block}
+  .filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .filter-grid label{display:block;font-size:12px;font-weight:600;color:#6E7C78;margin-bottom:4px}
+  .filter-grid select,.filter-grid input{width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;font-family:inherit;background:#fff}
+  .count-line{font-size:13px;color:#6E7C78;margin-bottom:10px}
+
+  /* tables */
+  .table-wrap{background:#fff;border:1px solid #ddd;border-radius:6px;overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:9px 12px;text-align:right;border-bottom:1px solid #eee;vertical-align:top}
+  th{font-weight:600;color:#3A4744;background:#f9f9f7;white-space:nowrap;position:sticky;top:0;z-index:1}
+  tbody tr:hover{background:#fafaf7}
+  td.name{font-weight:600;color:#2F5248;cursor:pointer}
+  td.name:hover{color:#3D7468;text-decoration:underline}
+  .sub{display:block;font-size:12px;color:#8A9692;font-weight:400}
+
+  .chip{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:600;background:#eef2f0;color:#3A4744;margin:1px 0 1px 4px;white-space:nowrap}
+  .chip-tag{background:#e3f0ea;color:#2F5248}
+  .status{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;white-space:nowrap}
+  .st-not_contacted{background:#eee;color:#777}
+  .st-ready{background:#dbe9e3;color:#2F5248}
+  .st-contacted{background:#d9e6f2;color:#2b5675}
+  .st-follow_up_needed{background:#fbeccc;color:#8a6416}
+  .st-replied{background:#d1ecf1;color:#0c5460}
+  .st-agreed_to_share{background:#d4edda;color:#155724}
+  .st-shared{background:#3D7468;color:#fff}
+  .st-declined{background:#f6e0e0;color:#a33}
+  .st-no_response{background:#f0efea;color:#999}
+  .st-not_relevant{background:#f0efea;color:#999}
+  .st-do_not_contact{background:#5a5a5a;color:#fff}
+
+  /* modals */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(34,48,47,.42);z-index:100;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto}
+  .modal-overlay.active{display:flex}
+  .modal{background:#fff;border-radius:8px;padding:26px;max-width:560px;width:100%;margin:auto}
+  .modal.wide{max-width:820px}
+  .modal h2{font-size:20px;color:#2F5248;margin-bottom:6px}
+  .modal .modal-sub{font-size:13px;color:#8A9692;margin-bottom:18px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:13px;font-weight:600;color:#3A4744;margin-bottom:5px}
+  .field input,.field select,.field textarea{width:100%;padding:9px 10px;border:1px solid #ccc;border-radius:4px;font-size:15px;font-family:inherit;background:#fff}
+  .field textarea{min-height:80px;resize:vertical;line-height:1.7}
+  .field .hint{font-size:12px;color:#8A9692;margin-top:4px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  @media(max-width:620px){.grid2{grid-template-columns:1fr}}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+  .more-toggle{background:none;border:none;color:#3D7468;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:6px 0;margin-bottom:8px}
+  .more{display:none}.more.open{display:block}
+  .fieldset{border:1px solid #eee;border-radius:6px;padding:14px;margin-bottom:14px}
+  .fieldset > .legend{font-size:13px;font-weight:700;color:#6E7C78;margin-bottom:10px}
+
+  .history{list-style:none;max-height:280px;overflow-y:auto}
+  .history li{border-right:2px solid #dbe4e0;padding:6px 12px 10px;margin-bottom:8px}
+  .history .h-top{font-size:13px;color:#6E7C78}
+  .history .h-note{font-size:14px;color:#3A4744;line-height:1.7;white-space:pre-wrap}
+  .dup-item{border:1px solid #f2e3b3;background:#fffdf6;border-radius:6px;padding:12px;margin-bottom:10px;font-size:14px;line-height:1.7}
+  .tmpl-body{font-size:14px;line-height:1.85;color:#3A4744;white-space:pre-wrap;background:#fafaf7;border:1px solid #eee;border-radius:4px;padding:14px 16px;max-height:340px;overflow-y:auto}
+  .map-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center;margin-bottom:8px}
+  .map-row .src{font-size:14px;color:#3A4744;background:#fafaf7;border:1px solid #eee;border-radius:4px;padding:8px 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .map-row select{padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;font-family:inherit;background:#fff;width:100%}
+  .drop{border:2px dashed #c8d4cf;border-radius:8px;padding:28px;text-align:center;color:#6E7C78;font-size:15px;background:#fff}
+</style>
+</head>
+<body>
+
+<div id="login" class="login-wrap">
+  <div class="login-box">
+    <h1>רשת ההפצה</h1>
+    <input type="password" id="pw" placeholder="סיסמת ניהול" autocomplete="current-password">
+    <button onclick="doLogin()">כניסה</button>
+    <div id="loginErr" class="err"></div>
+  </div>
+</div>
+
+<div id="app" class="app">
+  <div class="header">
+    <h1>רשת ההפצה</h1>
+    <nav style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <a href="/admin" style="font-size:13px;color:#8A9692;text-decoration:none;font-weight:600">מרכז</a>
+      <a href="/admin/content" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">תוכן</a>
+      <a href="/admin/stories" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">ספרייה</a>
+      <a href="/admin/zoom" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">מפגשים</a>
+      <a href="/admin/network" style="font-size:14px;color:#2F5248;text-decoration:none;font-weight:700;border-bottom:2px solid #3D7468;padding-bottom:2px">הפצה</a>
+      <button class="btn-small btn-secondary" style="border:1px solid #ccc;background:none;color:#666;border-radius:4px;font-family:inherit;cursor:pointer;padding:6px 14px" onclick="doLogout()">יציאה</button>
+    </nav>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="dashboard" onclick="showTab('dashboard')">מה הלאה</button>
+    <button class="tab" data-tab="network" onclick="showTab('network')">רשת ההפצה</button>
+    <button class="tab" data-tab="campaigns" onclick="showTab('campaigns')">קמפיינים</button>
+    <button class="tab" data-tab="templates" onclick="showTab('templates')">נוסחי פנייה</button>
+    <button class="tab" data-tab="io" onclick="showTab('io')">ייבוא וייצוא</button>
+  </div>
+
+  <div id="migrationWarn" class="warn-bar">
+    <strong>מסד הנתונים עדיין לא הוכן.</strong><br>
+    יש להריץ פעם אחת את הקובץ <code>api/db/migrate-distribution.sql</code> בקונסולת ה‑SQL של Neon
+    (console.neon.tech ← SQL Editor). עד אז המסך יעבוד אבל יישאר ריק.
+  </div>
+  <div id="msg"></div>
+
+  <!-- ============================================ מה הלאה -->
+  <div id="panel-dashboard" class="panel active">
+    <div id="dashBody"><div class="empty">טוען…</div></div>
+  </div>
+
+  <!-- ============================================ רשת ההפצה -->
+  <div id="panel-network" class="panel">
+    <div class="toolbar">
+      <input id="q" class="search" type="search" placeholder="חיפוש בשם, ארגון, קיבוץ, הערות, רלוונטיות, תגיות…">
+      <button class="btn" onclick="openAdd()">+ איש קשר חדש</button>
+      <button class="btn btn-ghost btn-small" onclick="toggleFilters()">סינון מתקדם</button>
+      <button class="btn btn-ghost btn-small" onclick="openTags()">תגיות</button>
+    </div>
+
+    <div class="views" id="views"></div>
+
+    <div id="filters" class="filters">
+      <div class="filter-grid">
+        <div><label>קטגוריה</label><select id="fCategory"></select></div>
+        <div><label>תת‑קטגוריה / תפקיד</label><select id="fSub"></select></div>
+        <div><label>סוג רשומה</label><select id="fType"></select></div>
+        <div><label>מדינה</label><select id="fCountry"></select></div>
+        <div><label>אזור / עיר</label><select id="fRegion"></select></div>
+        <div><label>קיבוץ</label><select id="fKibbutz"></select></div>
+        <div><label>תגית</label><select id="fTag"></select></div>
+        <div><label>דרך פנייה מועדפת</label><select id="fMethod"></select></div>
+        <div><label>קמפיין</label><select id="fCampaign"></select></div>
+        <div><label>סטטוס בקמפיין</label><select id="fStatus"></select></div>
+        <div><label>לא נוצר קשר מאז</label><input id="fLastBefore" type="date"></div>
+        <div style="display:flex;align-items:flex-end;gap:8px;padding-bottom:2px">
+          <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#3A4744;font-weight:600;margin:0">
+            <input id="fFollowUp" type="checkbox" style="width:auto"> צריך מעקב
+          </label>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn btn-small btn-secondary" onclick="clearFilters()">ניקוי סינון</button>
+      </div>
+    </div>
+
+    <div class="count-line" id="countLine"></div>
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>שם</th><th>סוג</th><th>קטגוריה</th><th>מקום</th>
+        <th>דרך פנייה</th><th>תגיות</th><th>בקמפיין</th><th>פעילות אחרונה</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+    <div id="emptyRows"></div>
+  </div>
+
+  <!-- ============================================ קמפיינים -->
+  <div id="panel-campaigns" class="panel">
+    <div id="campaignsList"></div>
+    <div id="campaignDetail" style="display:none"></div>
+  </div>
+
+  <!-- ============================================ נוסחי פנייה -->
+  <div id="panel-templates" class="panel">
+    <div class="toolbar" style="justify-content:space-between">
+      <div class="muted" style="font-size:14px">נוסחים להעתקה והתאמה. שום דבר כאן לא נשלח אוטומטית.</div>
+      <button class="btn btn-small" onclick="openTemplate(null)">+ נוסח חדש</button>
+    </div>
+    <div id="templatesList"></div>
+  </div>
+
+  <!-- ============================================ ייבוא וייצוא -->
+  <div id="panel-io" class="panel">
+    <div class="card">
+      <h3>ייצוא</h3>
+      <div class="meta">קובץ CSV עם כל אנשי הקשר, התגיות והסטטוסים בקמפיינים. נפתח כראוי ב‑Excel בעברית.</div>
+      <div class="actions"><button class="btn btn-small" onclick="exportCsv()">הורדת CSV</button></div>
+    </div>
+
+    <div class="card">
+      <h3>ייבוא מקובץ CSV</h3>
+      <div class="meta">
+        שלב 1 — בחירת קובץ · שלב 2 — התאמת עמודות · שלב 3 — בדיקת כפילויות · שלב 4 — ייבוא.<br>
+        קבצים גדולים נשלחים באצוות אוטומטית, כך שאין הגבלת גודל מעשית.
+      </div>
+      <div class="drop" id="drop">
+        <input type="file" id="csvFile" accept=".csv,text/csv" style="font-family:inherit">
+        <div class="muted" style="font-size:13px;margin-top:8px">אפשר גם לגרור קובץ לכאן</div>
+      </div>
+      <div id="importArea" style="margin-top:18px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ modals ============ -->
+
+<div id="addOverlay" class="modal-overlay">
+  <div class="modal">
+    <h2>איש קשר חדש</h2>
+    <div class="modal-sub">רק השם חובה. כל השאר אפשר להשלים אחר כך.</div>
+    <div class="field">
+      <label>שם *</label>
+      <input id="aName" type="text" placeholder="שם אדם, קבוצה, ארגון או ערוץ">
+    </div>
+    <div class="grid2">
+      <div class="field"><label>סוג רשומה</label><select id="aType"></select></div>
+      <div class="field"><label>קטגוריה</label><input id="aCategory" type="text" list="dlCategory"></div>
+      <div class="field"><label>ארגון</label><input id="aOrg" type="text"></div>
+      <div class="field"><label>קיבוץ</label><input id="aKibbutz" type="text" list="dlKibbutz"></div>
+    </div>
+    <div class="field"><label>למה זה רלוונטי</label><textarea id="aRelevance" style="min-height:60px" placeholder="מה גורם לחשוב שהחומר הזה עשוי לדבר אליהם"></textarea></div>
+    <button class="more-toggle" onclick="toggleMore('addMore',this)">עוד שדות ▾</button>
+    <div id="addMore" class="more">
+      <div class="grid2">
+        <div class="field"><label>תת‑קטגוריה / תפקיד</label><input id="aSub" type="text" list="dlSub"></div>
+        <div class="field"><label>דרך פנייה מועדפת</label><input id="aMethod" type="text" list="dlMethod"></div>
+        <div class="field"><label>מדינה</label><input id="aCountry" type="text" list="dlCountry"></div>
+        <div class="field"><label>אזור / עיר</label><input id="aRegion" type="text"></div>
+        <div class="field"><label>איש הקשר בשער (גייטקיפר)</label><input id="aGkName" type="text" placeholder="מי שולט בקבוצה / בערוץ"></div>
+        <div class="field"><label>תפקיד הגייטקיפר</label><input id="aGkPos" type="text"></div>
+        <div class="field"><label>אימייל</label><input id="aEmail" type="text"></div>
+        <div class="field"><label>טלפון</label><input id="aPhone" type="text"></div>
+        <div class="field"><label>וואטסאפ</label><input id="aWhatsapp" type="text"></div>
+        <div class="field"><label>אתר</label><input id="aWebsite" type="text"></div>
+        <div class="field"><label>פייסבוק</label><input id="aFacebook" type="text"></div>
+        <div class="field"><label>אינסטגרם</label><input id="aInstagram" type="text"></div>
+        <div class="field"><label>קישור נוסף</label><input id="aOther" type="text"></div>
+        <div class="field"><label>מקור</label><input id="aSource" type="text" list="dlSource"></div>
+      </div>
+      <div class="field"><label>תגיות</label><input id="aTags" type="text" placeholder="מופרדות בפסיק"><div class="hint">לדוגמה: זיקים, ועדת תרבות, דחוף</div></div>
+      <div class="field"><label>הערות פרטיות</label><textarea id="aNotes" style="min-height:60px"></textarea></div>
+      <div class="field"><label>הוספה לקמפיין</label><select id="aCampaign"></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('addOverlay')">ביטול</button>
+      <button class="btn" id="aSave" onclick="saveAdd(false)">שמירה</button>
+    </div>
+  </div>
+</div>
+
+<div id="dupOverlay" class="modal-overlay">
+  <div class="modal">
+    <h2>יש כבר רשומות דומות</h2>
+    <div class="modal-sub">שום דבר לא אוחד ולא נמחק. אפשר לפתוח את הרשומה הקיימת, או להוסיף בכל זאת רשומה חדשה.</div>
+    <div id="dupList"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('dupOverlay')">ביטול</button>
+      <button class="btn" onclick="saveAdd(true)">להוסיף בכל זאת</button>
+    </div>
+  </div>
+</div>
+
+<div id="contactOverlay" class="modal-overlay">
+  <div class="modal wide"><div id="contactBody"></div></div>
+</div>
+
+<div id="activityOverlay" class="modal-overlay">
+  <div class="modal">
+    <h2 id="actTitle">רישום פנייה</h2>
+    <div class="modal-sub">כל פנייה נשמרת בהיסטוריה — לא רק הסטטוס האחרון.</div>
+    <div class="grid2">
+      <div class="field"><label>תאריך</label><input id="actDate" type="date"></div>
+      <div class="field"><label>סוג</label><input id="actType" type="text" list="dlActType"></div>
+    </div>
+    <div class="field"><label>קמפיין</label><select id="actCampaign"></select></div>
+    <div class="field"><label>מה קרה</label><textarea id="actNote"></textarea></div>
+    <div class="grid2">
+      <div class="field"><label>עדכון סטטוס בקמפיין</label><select id="actStatus"></select></div>
+      <div class="field"><label>תזכורת למעקב בתאריך</label><input id="actFollow" type="date"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('activityOverlay')">ביטול</button>
+      <button class="btn" onclick="saveActivity()">שמירה</button>
+    </div>
+  </div>
+</div>
+
+<div id="campaignOverlay" class="modal-overlay">
+  <div class="modal">
+    <h2 id="campTitle">קמפיין חדש</h2>
+    <div class="field"><label>שם *</label><input id="cName" type="text"></div>
+    <div class="field"><label>תיאור</label><textarea id="cDescription" style="min-height:60px"></textarea></div>
+    <div class="grid2">
+      <div class="field"><label>תאריך התחלה</label><input id="cStart" type="date"></div>
+      <div class="field"><label>תאריך סיום</label><input id="cEnd" type="date"></div>
+    </div>
+    <div class="field"><label>קהל היעד</label><textarea id="cAudience" style="min-height:50px"></textarea></div>
+    <div class="grid2">
+      <div class="field"><label>קישור ראשי</label><input id="cLink" type="text"></div>
+      <div class="field"><label>העלון / חומר מצורף</label><input id="cFlyer" type="text"></div>
+    </div>
+    <div class="field"><label>הערות</label><textarea id="cNotes" style="min-height:50px"></textarea></div>
+    <div class="field"><label>מצב</label><select id="cStatus"><option value="active">פעיל</option><option value="archived">בארכיון</option></select></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('campaignOverlay')">ביטול</button>
+      <button class="btn" onclick="saveCampaign()">שמירה</button>
+    </div>
+  </div>
+</div>
+
+<div id="templateOverlay" class="modal-overlay">
+  <div class="modal wide">
+    <h2 id="tmplTitle">נוסח חדש</h2>
+    <div class="modal-sub">אפשר להשתמש ב‑<code>{{name}}</code> — הוא יוחלף בשם בעת ההעתקה מתוך כרטיס איש קשר.</div>
+    <div class="grid2">
+      <div class="field"><label>שם הנוסח *</label><input id="tName" type="text"></div>
+      <div class="field"><label>סוג</label><input id="tType" type="text" placeholder="kibbutz / facebook / whatsapp…"></div>
+    </div>
+    <div class="field"><label>הטקסט</label><textarea id="tBody" style="min-height:300px"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-small" id="tDelete" onclick="deleteTemplate()">מחיקה</button>
+      <span style="flex:1"></span>
+      <button class="btn btn-secondary" onclick="closeModal('templateOverlay')">ביטול</button>
+      <button class="btn" onclick="saveTemplate()">שמירה</button>
+    </div>
+  </div>
+</div>
+
+<div id="tagsOverlay" class="modal-overlay">
+  <div class="modal">
+    <h2>תגיות</h2>
+    <div class="modal-sub">שינוי שם תגית משנה אותה בכל אנשי הקשר. מחיקה מסירה את התגית בלבד — אנשי הקשר נשארים.</div>
+    <div class="field" style="display:flex;gap:8px">
+      <input id="newTag" type="text" placeholder="תגית חדשה">
+      <button class="btn btn-small" onclick="addTag()">הוספה</button>
+    </div>
+    <div id="tagsList"></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('tagsOverlay')">סגירה</button></div>
+  </div>
+</div>
+
+<div id="pickOverlay" class="modal-overlay">
+  <div class="modal wide">
+    <h2>הוספת אנשי קשר לקמפיין</h2>
+    <div class="modal-sub" id="pickSub"></div>
+    <input id="pickSearch" class="search" type="search" placeholder="חיפוש…" style="width:100%;margin-bottom:12px">
+    <div id="pickList" style="max-height:380px;overflow-y:auto;border:1px solid #eee;border-radius:6px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('pickOverlay')">ביטול</button>
+      <button class="btn" onclick="confirmPick()">הוספה (<span id="pickCount">0</span>)</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirmOverlay" class="modal-overlay">
+  <div class="modal" style="max-width:400px">
+    <h2 id="confirmTitle">אישור</h2>
+    <div id="confirmText" style="font-size:15px;line-height:1.7;color:#3A4744;margin-bottom:8px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('confirmOverlay')">ביטול</button>
+      <button class="btn btn-danger" id="confirmGo">אישור</button>
+    </div>
+  </div>
+</div>
+
+<datalist id="dlCategory"></datalist>
+<datalist id="dlSub"></datalist>
+<datalist id="dlCountry"></datalist>
+<datalist id="dlKibbutz"></datalist>
+<datalist id="dlMethod"></datalist>
+<datalist id="dlSource"></datalist>
+<datalist id="dlActType"></datalist>
+<datalist id="dlTags"></datalist>
+
+<script src="/admin/network.js"></script>
+</body>
+</html>

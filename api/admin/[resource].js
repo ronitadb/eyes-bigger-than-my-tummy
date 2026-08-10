@@ -11,6 +11,14 @@ const handlers = {
   'send-email': require('../../lib/admin/send-email'),
   'stories': require('../../lib/admin/stories'),
   'templates': require('../../lib/admin/templates'),
+  // Distribution & outreach network (/admin/network)
+  'contacts': require('../../lib/admin/contacts'),
+  'tags': require('../../lib/admin/tags'),
+  'campaigns': require('../../lib/admin/campaigns'),
+  'activities': require('../../lib/admin/activities'),
+  'outreach-templates': require('../../lib/admin/outreach-templates'),
+  'dashboard': require('../../lib/admin/dashboard'),
+  'import': require('../../lib/admin/import'),
 };
 
 module.exports = async (req, res) => {
