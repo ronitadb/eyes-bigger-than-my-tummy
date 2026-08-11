@@ -20,7 +20,11 @@
         '#top.mnav-open nav{display:flex !important}' +
         '#top nav a{padding:14px 24px !important;font-size:17px !important}' +
         '#top nav .mnav-yael{display:block !important}' +
-      '}';
+      '}' +
+      // On phones the "text overlaps side image" sections stack into one column,
+      // so their desktop overhang (negative margin-inline + paper text-shadow halo)
+      // just pushes RTL line-ends off the left edge. Neutralize it under 768px.
+      '@media(max-width:768px){[style*="clamp(-150px,"]{margin-inline-start:0 !important;margin-inline-end:0 !important;text-shadow:none !important}}';
     document.head.appendChild(s);
   }
 
