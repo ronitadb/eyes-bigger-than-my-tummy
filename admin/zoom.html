@@ -491,7 +491,7 @@ function loadParticipants(){
       renderParticipants();
     });
 }
-function seriesLabel(t){if(!t)return '<span style="color:#8A9692">—</span>';if(t.indexOf('להורים')>-1)return 'הורים';if(t.indexOf('לילדי')>-1||t.indexOf('ביתלדים')>-1)return 'ילדים';return esc(t);}
+function seriesLabel(t){if(!t)return '<span style="color:#8A9692">—</span>';if(t.indexOf('שתי הקבוצות')>-1)return 'שתי הקבוצות';if(t.indexOf('להורים')>-1)return 'הורים';if(t.indexOf('לילדי')>-1||t.indexOf('ביתלדים')>-1)return 'ילדים';return esc(t);}
 function renderParticipants(){
   var el=document.getElementById('participantsList');
   if(!allParticipants.length){el.innerHTML='<p style="color:#6E7C78">אין משתתפים.</p>';return}

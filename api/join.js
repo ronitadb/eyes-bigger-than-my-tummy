@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
 
   const email = String(body.email || '').trim().toLowerCase();
   const name = String(body.name || '').trim();
-  const ALLOWED_TYPES = ['מפגש זום ראשון ושני - להורים', 'מפגש זום ראשון ושני - לילדי ביתלדים'];
+  const ALLOWED_TYPES = ['מפגש זום ראשון ושני - להורים', 'מפגש זום ראשון ושני - לילדי ביתלדים', 'אבקש להצטרף למפגשים של שתי הקבוצות'];
   const participantTypeRaw = String(body.participant_type || '').trim();
   const participantType = ALLOWED_TYPES.indexOf(participantTypeRaw) > -1 ? participantTypeRaw : null;
 
