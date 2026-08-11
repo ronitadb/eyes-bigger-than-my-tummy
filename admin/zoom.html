@@ -208,9 +208,10 @@
     <div class="field">
       <label>סוג הודעה</label>
       <div class="custom-select" id="sendTypeWrap" data-value="meeting_reminder">
-        <button type="button" class="custom-select-trigger" style="width:100%;justify-content:space-between"><span class="custom-select-label">תזכורת לפני מפגש</span><span class="custom-select-arrow">▾</span></button>
+        <button type="button" class="custom-select-trigger" style="width:100%;justify-content:space-between"><span class="custom-select-label">תזכורת ראשונה (5 ימים לפני)</span><span class="custom-select-arrow">▾</span></button>
         <div class="custom-select-menu" style="left:0;right:0">
-          <div class="custom-select-option selected" data-value="meeting_reminder">תזכורת לפני מפגש</div>
+          <div class="custom-select-option selected" data-value="meeting_reminder">תזכורת ראשונה (5 ימים לפני)</div>
+          <div class="custom-select-option" data-value="meeting_reminder_1d">תזכורת שנייה (יום לפני)</div>
           <div class="custom-select-option" data-value="meeting_followup">הודעה לאחר מפגש</div>
         </div>
       </div>
@@ -468,7 +469,7 @@ function closeSendModal(){document.getElementById('sendModal').classList.remove(
 async function doSendEmail(){
   if(!sendMeetingId)return;
   var type=csGetValue('sendTypeWrap');
-  var typeHe=type==='meeting_reminder'?'תזכורת':'הודעת מעקב';
+  var typeHe=(type==='meeting_reminder'||type==='meeting_reminder_1d')?'תזכורת':'הודעת מעקב';
   var ok=await confirmDialog({title:'שליחת '+typeHe,message:'לשלוח '+typeHe+' לכל המשתתפים הפעילים?',confirmText:'שלח',cancelText:'חזרה'});
   if(!ok)return;
   document.getElementById('sendBtn').disabled=true;
@@ -529,7 +530,7 @@ function loadTemplates(){
       renderTemplates();
     });
 }
-var TPL_NAMES={join_confirmation:'אישור הצטרפות',meeting_reminder:'תזכורת לפני מפגש',meeting_followup:'הודעה לאחר מפגש'};
+var TPL_NAMES={join_confirmation:'אישור הצטרפות',meeting_reminder:'תזכורת ראשונה (5 ימים לפני)',meeting_reminder_1d:'תזכורת שנייה (יום לפני)',meeting_followup:'הודעה לאחר מפגש'};
 function renderTemplates(){
   var el=document.getElementById('templatesList');
   el.innerHTML=allTemplates.map(function(t){

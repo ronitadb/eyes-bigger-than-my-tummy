@@ -7,10 +7,12 @@ const { sql } = require('../lib/db');
 const { getRecipients } = require('../lib/admin/send-email');
 const { sendEmail, unsubscribeUrl, formatDate, formatTime, renderTemplate } = require('../lib/email');
 
-// One row per lead-time. Same template for both; the log type keeps them distinct.
+// One row per lead-time. Each has its own template wording; the log type keeps
+// them distinct. If a lead-time's template doesn't exist, we fall back to the
+// generic 'meeting_reminder' so reminders still go out.
 const OFFSETS = [
-  { days: 5, type: 'reminder_5d' },
-  { days: 1, type: 'reminder_1d' },
+  { days: 5, type: 'reminder_5d', template: 'meeting_reminder' },
+  { days: 1, type: 'reminder_1d', template: 'meeting_reminder_1d' },
 ];
 
 // Today's calendar date in Israel (meetings are stored in Asia/Jerusalem).
@@ -33,14 +35,6 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { rows: templates } = await sql`
-      SELECT subject, body FROM email_templates WHERE template_type = 'meeting_reminder'
-    `;
-    if (!templates.length) {
-      return res.status(200).json({ ok: true, note: 'no meeting_reminder template' });
-    }
-    const template = templates[0];
-
     const today = israelToday();
     const summary = [];
 
@@ -50,6 +44,20 @@ module.exports = async (req, res) => {
         SELECT * FROM zoom_meetings
         WHERE meeting_date = ${target} AND status IN ('draft', 'open')
       `;
+      if (!meetings.length) continue;
+
+      // This lead-time's own wording; fall back to the generic reminder
+      // template if the lead-time-specific one hasn't been created yet.
+      let { rows: tmpls } = await sql`
+        SELECT subject, body FROM email_templates WHERE template_type = ${off.template}
+      `;
+      if (!tmpls.length) {
+        ({ rows: tmpls } = await sql`
+          SELECT subject, body FROM email_templates WHERE template_type = 'meeting_reminder'
+        `);
+      }
+      if (!tmpls.length) { summary.push({ type: off.type, skipped: 'no_template' }); continue; }
+      const template = tmpls[0];
 
       for (const meeting of meetings) {
         // Already sent this lead-time for this meeting? (safety against double runs)

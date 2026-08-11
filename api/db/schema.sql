@@ -105,6 +105,20 @@ VALUES (
 
 INSERT INTO email_templates (template_type, subject, body)
 VALUES (
+  'meeting_reminder_1d',
+  'נתראה מחר — {{title}}',
+  'שלום {{name}},
+
+עוד תזכורת קטנה — המפגש שלנו מתקיים מחר:
+
+הקישור לזום מופיע למעלה, ואפשר פשוט להצטרף בזמן. אין צורך להתכונן — אפשר להגיע כמו שאתם.
+
+נתראה מחר,
+רונית'
+) ON CONFLICT (template_type) DO NOTHING;
+
+INSERT INTO email_templates (template_type, subject, body)
+VALUES (
   'meeting_followup',
   'תודה שהייתם איתנו',
   'שלום {{name}},
