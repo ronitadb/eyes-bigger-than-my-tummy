@@ -197,17 +197,9 @@
 
     <div id="filters" class="filters">
       <div class="filter-grid">
-        <div><label>קטגוריה</label><select id="fCategory"></select></div>
-        <div><label>תת‑קטגוריה / תפקיד</label><select id="fSub"></select></div>
-        <div><label>סוג רשומה</label><select id="fType"></select></div>
-        <div><label>מדינה</label><select id="fCountry"></select></div>
-        <div><label>אזור / עיר</label><select id="fRegion"></select></div>
-        <div><label>קיבוץ</label><select id="fKibbutz"></select></div>
         <div><label>תגית</label><select id="fTag"></select></div>
-        <div><label>דרך פנייה מועדפת</label><select id="fMethod"></select></div>
         <div><label>קמפיין</label><select id="fCampaign"></select></div>
         <div><label>סטטוס בקמפיין</label><select id="fStatus"></select></div>
-        <div><label>לא נוצר קשר מאז</label><input id="fLastBefore" type="date"></div>
         <div style="display:flex;align-items:flex-end;gap:8px;padding-bottom:2px">
           <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#3A4744;font-weight:600;margin:0">
             <input id="fFollowUp" type="checkbox" style="width:auto"> צריך מעקב
@@ -222,8 +214,8 @@
     <div class="count-line" id="countLine"></div>
     <div class="table-wrap"><table>
       <thead><tr>
-        <th>שם</th><th>סוג</th><th>קטגוריה</th><th>מקום</th>
-        <th>דרך פנייה</th><th>תגיות</th><th>בקמפיין</th><th>פעילות אחרונה</th>
+        <th>כותרת</th><th>איש קשר</th><th>אימייל</th><th>וואטסאפ</th>
+        <th>בקמפיין</th><th>פעילות אחרונה</th>
       </tr></thead>
       <tbody id="rows"></tbody>
     </table></div>
@@ -273,40 +265,21 @@
 <div id="addOverlay" class="modal-overlay">
   <div class="modal">
     <h2>איש קשר חדש</h2>
-    <div class="modal-sub">רק השם חובה. כל השאר אפשר להשלים אחר כך.</div>
+    <div class="modal-sub">רק הכותרת חובה.</div>
     <div class="field">
-      <label>שם *</label>
-      <input id="aName" type="text" placeholder="שם אדם, קבוצה, ארגון או ערוץ">
+      <label>כותרת *</label>
+      <input id="aName" type="text" placeholder="שם קיבוץ, קבוצה, ארגון או אדם">
+    </div>
+    <div class="field">
+      <label>איש קשר</label>
+      <input id="aContact" type="text" placeholder="השם של מי שפונים אליו">
     </div>
     <div class="grid2">
-      <div class="field"><label>סוג רשומה</label><select id="aType"></select></div>
-      <div class="field"><label>קטגוריה</label><input id="aCategory" type="text" list="dlCategory"></div>
-      <div class="field"><label>ארגון</label><input id="aOrg" type="text"></div>
-      <div class="field"><label>קיבוץ</label><input id="aKibbutz" type="text" list="dlKibbutz"></div>
+      <div class="field"><label>אימייל</label><input id="aEmail" type="text"></div>
+      <div class="field"><label>וואטסאפ</label><input id="aWhatsapp" type="text"></div>
     </div>
-    <div class="field"><label>למה זה רלוונטי</label><textarea id="aRelevance" style="min-height:60px" placeholder="מה גורם לחשוב שהחומר הזה עשוי לדבר אליהם"></textarea></div>
-    <button class="more-toggle" onclick="toggleMore('addMore',this)">עוד שדות ▾</button>
-    <div id="addMore" class="more">
-      <div class="grid2">
-        <div class="field"><label>תת‑קטגוריה / תפקיד</label><input id="aSub" type="text" list="dlSub"></div>
-        <div class="field"><label>דרך פנייה מועדפת</label><input id="aMethod" type="text" list="dlMethod"></div>
-        <div class="field"><label>מדינה</label><input id="aCountry" type="text" list="dlCountry"></div>
-        <div class="field"><label>אזור / עיר</label><input id="aRegion" type="text"></div>
-        <div class="field"><label>איש הקשר בשער (גייטקיפר)</label><input id="aGkName" type="text" placeholder="מי שולט בקבוצה / בערוץ"></div>
-        <div class="field"><label>תפקיד הגייטקיפר</label><input id="aGkPos" type="text"></div>
-        <div class="field"><label>אימייל</label><input id="aEmail" type="text"></div>
-        <div class="field"><label>טלפון</label><input id="aPhone" type="text"></div>
-        <div class="field"><label>וואטסאפ</label><input id="aWhatsapp" type="text"></div>
-        <div class="field"><label>אתר</label><input id="aWebsite" type="text"></div>
-        <div class="field"><label>פייסבוק</label><input id="aFacebook" type="text"></div>
-        <div class="field"><label>אינסטגרם</label><input id="aInstagram" type="text"></div>
-        <div class="field"><label>קישור נוסף</label><input id="aOther" type="text"></div>
-        <div class="field"><label>מקור</label><input id="aSource" type="text" list="dlSource"></div>
-      </div>
-      <div class="field"><label>תגיות</label><input id="aTags" type="text" placeholder="מופרדות בפסיק"><div class="hint">לדוגמה: זיקים, ועדת תרבות, דחוף</div></div>
-      <div class="field"><label>הערות פרטיות</label><textarea id="aNotes" style="min-height:60px"></textarea></div>
-      <div class="field"><label>הוספה לקמפיין</label><select id="aCampaign"></select></div>
-    </div>
+    <div class="field"><label>הערות</label><textarea id="aNotes" style="min-height:90px"></textarea></div>
+    <div class="field"><label>הוספה לקמפיין</label><select id="aCampaign"></select></div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('addOverlay')">ביטול</button>
       <button class="btn" id="aSave" onclick="saveAdd(false)">שמירה</button>
@@ -429,12 +402,6 @@
   </div>
 </div>
 
-<datalist id="dlCategory"></datalist>
-<datalist id="dlSub"></datalist>
-<datalist id="dlCountry"></datalist>
-<datalist id="dlKibbutz"></datalist>
-<datalist id="dlMethod"></datalist>
-<datalist id="dlSource"></datalist>
 <datalist id="dlActType"></datalist>
 <datalist id="dlTags"></datalist>
 

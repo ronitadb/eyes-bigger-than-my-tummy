@@ -265,14 +265,11 @@ function renderDashboard(d) {
     h += '</div>';
   }
 
-  h += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">';
-  h += '<div class="card"><h3>לפי קטגוריה</h3>' + barList(d.by_category) + '</div>';
-  h += '<div class="card"><h3>לפי סוג רשומה</h3>' +
-       barList((d.by_record_type || []).map(function (r) { return { label: RT[r.label] || r.label, n: r.n }; })) + '</div>';
-  if ((d.by_country || []).length) {
-    h += '<div class="card"><h3>לפי מדינה</h3>' + barList(d.by_country) + '</div>';
+  // Only the category breakdown survives: record type and country are no longer
+  // asked for, so charting them would just draw one meaningless bar.
+  if ((d.by_category || []).length > 1) {
+    h += '<div class="card"><h3>לפי קטגוריה</h3>' + barList(d.by_category) + '</div>';
   }
-  h += '</div>';
 
   if ((d.recent || []).length) {
     h += '<div class="card"><h3>נרשם לאחרונה</h3><ul class="next-list">';
@@ -330,28 +327,13 @@ function loadNetwork() {
 }
 
 function buildVocabUI() {
-  fillDatalist('dlCategory', vocab('category'));
-  fillDatalist('dlSub', vocab('subcategory_role'));
-  fillDatalist('dlCountry', vocab('country'));
-  fillDatalist('dlKibbutz', vocab('kibbutz'));
-  fillDatalist('dlMethod', vocab('preferred_method'));
-  fillDatalist('dlSource', vocab('source'));
   fillDatalist('dlActType', SUGGEST.act_type);
   fillDatalist('dlTags', TAGS.map(function (t) { return t.name; }));
 
-  var pairs = function (list) { return list.map(function (v) { return [v, v]; }); };
-  fillSelect('fCategory', pairs(vocab('category')), FILTERS.category, 'הכל');
-  fillSelect('fSub', pairs(vocab('subcategory_role')), FILTERS.subcategory_role, 'הכל');
-  fillSelect('fType', RECORD_TYPES, FILTERS.record_type, 'הכל');
-  fillSelect('fCountry', pairs(vocab('country')), FILTERS.country, 'הכל');
-  fillSelect('fRegion', pairs(vocab('city_region')), FILTERS.city_region, 'הכל');
-  fillSelect('fKibbutz', pairs(vocab('kibbutz')), FILTERS.kibbutz, 'הכל');
-  fillSelect('fMethod', pairs(vocab('preferred_method')), FILTERS.preferred_method, 'הכל');
   fillSelect('fTag', TAGS.map(function (t) { return [t.name, t.name]; }), FILTERS.tag, 'הכל');
   fillSelect('fCampaign', CAMPAIGNS.map(function (c) { return [c.id, c.name]; }), FILTERS.campaign, 'הכל');
   fillSelect('fStatus', STATUSES, FILTERS.status, 'הכל');
 
-  fillSelect('aType', RECORD_TYPES, 'person', null);
   fillSelect('aCampaign', CAMPAIGNS.map(function (c) { return [c.id, c.name]; }), '', '— ללא —');
   fillSelect('actStatus', STATUSES, '', '— ללא שינוי —');
   fillSelect('actCampaign', CAMPAIGNS.map(function (c) { return [c.id, c.name]; }), '', '— ללא —');
@@ -360,24 +342,19 @@ function buildVocabUI() {
 /* Saved views. Each is a predicate over a contact, so a view can express things
  * a single column filter can't (e.g. "abroad" = has a country that isn't Israel).
  */
+// Saved views, pared back to the ones that still mean something now that a
+// contact is five fields: what needs doing, and who has a way to be reached.
 var VIEWS = [
   ['all', 'הכל', function () { return true; }],
-  ['kibbutzim', 'קיבוצים', function (c) { return !!c.kibbutz || c.category === 'קיבוצים' || c.record_type === 'kibbutz_role'; }],
-  ['abroad', 'ישראלים בחו״ל', function (c) {
-    var co = (c.country || '').trim();
-    return (co && co !== 'ישראל' && co.toLowerCase() !== 'israel') || /חו״ל|חו"ל/.test(c.category || '');
-  }],
-  ['facebook', 'קבוצות פייסבוק', function (c) { return !!c.facebook_url || /פייסבוק/.test(c.subcategory_role || '') || /פייסבוק/.test(c.preferred_method || ''); }],
-  ['whatsapp', 'וואטסאפ וקהילה', function (c) { return !!c.whatsapp || /וואטסאפ/.test(c.subcategory_role || '') || c.record_type === 'group'; }],
-  ['organisations', 'ארגונים', function (c) { return c.record_type === 'organisation' || c.category === 'ארגונים ומוסדות'; }],
-  ['media', 'מדיה', function (c) { return c.record_type === 'publication' || c.category === 'מדיה ותוכן'; }],
-  ['people', 'אנשים', function (c) { return c.record_type === 'person'; }],
   ['followup', 'צריך מעקב', function (c) { return needsFollowUp(c); }],
   ['campaign', 'הקמפיין הנוכחי', function (c) {
     if (!CAMPAIGNS.length) return false;
     var id = CAMPAIGNS[0].id;
     return (c.campaigns || []).some(function (x) { return x.campaign_id === id; });
-  }]
+  }],
+  ['hasEmail', 'עם אימייל', function (c) { return !!c.email; }],
+  ['hasWhatsapp', 'עם וואטסאפ', function (c) { return !!c.whatsapp; }],
+  ['noContact', 'בלי דרך פנייה', function (c) { return !c.email && !c.whatsapp && !c.phone; }]
 ];
 
 function needsFollowUp(c) {
@@ -396,8 +373,7 @@ function renderViews() {
 function setView(v) { VIEW = v; renderViews(); renderTable(); }
 function toggleFilters() { $('filters').classList.toggle('open'); }
 function clearFilters() {
-  ['fCategory', 'fSub', 'fType', 'fCountry', 'fRegion', 'fKibbutz', 'fTag', 'fMethod', 'fCampaign', 'fStatus', 'fLastBefore']
-    .forEach(function (id) { if ($(id)) $(id).value = ''; });
+  ['fTag', 'fCampaign', 'fStatus'].forEach(function (id) { if ($(id)) $(id).value = ''; });
   $('fFollowUp').checked = false;
   $('q').value = '';
   readFilters();
@@ -406,15 +382,11 @@ function clearFilters() {
 function readFilters() {
   FILTERS = {
     q: val('q').toLowerCase(),
-    category: val('fCategory'), subcategory_role: val('fSub'), record_type: val('fType'),
-    country: val('fCountry'), city_region: val('fRegion'), kibbutz: val('fKibbutz'),
-    tag: val('fTag'), preferred_method: val('fMethod'),
-    campaign: val('fCampaign'), status: val('fStatus'),
-    lastBefore: val('fLastBefore'), followUp: $('fFollowUp').checked
+    tag: val('fTag'), campaign: val('fCampaign'), status: val('fStatus'),
+    followUp: $('fFollowUp').checked
   };
 }
-['q', 'fCategory', 'fSub', 'fType', 'fCountry', 'fRegion', 'fKibbutz', 'fTag', 'fMethod',
- 'fCampaign', 'fStatus', 'fLastBefore', 'fFollowUp'].forEach(function (id) {
+['q', 'fTag', 'fCampaign', 'fStatus', 'fFollowUp'].forEach(function (id) {
   var el = $(id);
   if (el) el.addEventListener(el.tagName === 'INPUT' && el.type !== 'checkbox' ? 'input' : 'change',
     function () { readFilters(); renderTable(); });
@@ -429,13 +401,6 @@ function matches(c) {
     var hay = SEARCH_FIELDS.map(function (k) { return c[k] || ''; }).join(' ') + ' ' + (c.tags || []).join(' ');
     if (hay.toLowerCase().indexOf(f.q) < 0) return false;
   }
-  if (f.category && c.category !== f.category) return false;
-  if (f.subcategory_role && c.subcategory_role !== f.subcategory_role) return false;
-  if (f.record_type && c.record_type !== f.record_type) return false;
-  if (f.country && c.country !== f.country) return false;
-  if (f.city_region && c.city_region !== f.city_region) return false;
-  if (f.kibbutz && c.kibbutz !== f.kibbutz) return false;
-  if (f.preferred_method && c.preferred_method !== f.preferred_method) return false;
   if (f.tag && (c.tags || []).indexOf(f.tag) < 0) return false;
   if (f.campaign) {
     var link = (c.campaigns || []).filter(function (x) { return String(x.campaign_id) === String(f.campaign); })[0];
@@ -445,10 +410,6 @@ function matches(c) {
     if (!(c.campaigns || []).some(function (x) { return x.status === f.status; })) return false;
   }
   if (f.followUp && !needsFollowUp(c)) return false;
-  if (f.lastBefore) {
-    var la = c.last_activity ? String(c.last_activity).slice(0, 10) : '';
-    if (la && la >= f.lastBefore) return false;
-  }
   var view = VIEWS.filter(function (v) { return v[0] === VIEW; })[0];
   if (view && !view[2](c)) return false;
   return true;
@@ -470,22 +431,19 @@ function renderTable() {
 
   var html = '';
   items.forEach(function (c) {
-    var place = [c.kibbutz, c.city_region, c.country].filter(Boolean).join(' · ');
-    var tags = (c.tags || []).map(function (t) { return '<span class="chip chip-tag">' + esc(t) + '</span>'; }).join('');
     var camps = (c.campaigns || []).map(function (x) {
       return '<span class="status st-' + esc(x.status) + '" title="' + esc(x.campaign_name) + '">' + esc(ST[x.status] || x.status) + '</span>';
     }).join(' ');
-    var contactBits = [c.preferred_method, c.email, c.phone || c.whatsapp].filter(Boolean)[0] || '';
+    // Anything the record carries beyond the five fields (from an import) is
+    // shown quietly under the title rather than given a column of its own.
+    var extra = [c.city_region, c.phone].filter(Boolean).join(' · ');
 
     html += '<tr>' +
       '<td class="name" onclick="openContact(' + c.id + ')">' + esc(c.name) +
-        (c.organisation ? '<span class="sub">' + esc(c.organisation) + '</span>' : '') +
-        (c.gatekeeper_name ? '<span class="sub">גייטקיפר: ' + esc(c.gatekeeper_name) + '</span>' : '') + '</td>' +
-      '<td>' + esc(RT[c.record_type] || c.record_type || '') + '</td>' +
-      '<td>' + esc(c.category || '') + (c.subcategory_role ? '<span class="sub">' + esc(c.subcategory_role) + '</span>' : '') + '</td>' +
-      '<td>' + esc(place) + '</td>' +
-      '<td>' + esc(contactBits) + '</td>' +
-      '<td>' + (tags || '') + '</td>' +
+        (extra ? '<span class="sub">' + esc(extra) + '</span>' : '') + '</td>' +
+      '<td>' + esc(c.gatekeeper_name || '') + '</td>' +
+      '<td>' + esc(c.email || '') + '</td>' +
+      '<td>' + esc(c.whatsapp || '') + '</td>' +
       '<td>' + (camps || '<span class="muted">—</span>') + '</td>' +
       '<td>' + (c.last_activity ? esc(fmtDate(c.last_activity)) : '<span class="muted">—</span>') + '</td>' +
       '</tr>';
@@ -494,28 +452,22 @@ function renderTable() {
 }
 
 /* ------------------------------------------------------------- add contact -- */
+// Adding a contact is deliberately five fields. Everything else the schema can
+// hold is still there for imported records, but it is never asked for here.
 var ADD_FIELDS = {
-  aName: 'name', aType: 'record_type', aCategory: 'category', aOrg: 'organisation',
-  aKibbutz: 'kibbutz', aRelevance: 'relevance', aSub: 'subcategory_role',
-  aMethod: 'preferred_method', aCountry: 'country', aRegion: 'city_region',
-  aGkName: 'gatekeeper_name', aGkPos: 'gatekeeper_position', aEmail: 'email',
-  aPhone: 'phone', aWhatsapp: 'whatsapp', aWebsite: 'website', aFacebook: 'facebook_url',
-  aInstagram: 'instagram_url', aOther: 'other_url', aSource: 'source', aNotes: 'notes'
+  aName: 'name', aContact: 'gatekeeper_name', aEmail: 'email',
+  aWhatsapp: 'whatsapp', aNotes: 'notes'
 };
 
 function openAdd() {
   Object.keys(ADD_FIELDS).forEach(function (id) { if ($(id)) $(id).value = ''; });
-  $('aTags').value = '';
-  $('aType').value = 'person';
   $('aCampaign').value = CAMPAIGNS.length ? CAMPAIGNS[0].id : '';
-  $('addMore').classList.remove('open');
   openModal('addOverlay');
   setTimeout(function () { $('aName').focus(); }, 60);
 }
 function addPayload() {
   var b = {};
   Object.keys(ADD_FIELDS).forEach(function (id) { b[ADD_FIELDS[id]] = val(id); });
-  b.tags = val('aTags').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
   if (val('aCampaign')) b.campaign_id = val('aCampaign');
   return b;
 }
@@ -577,42 +529,16 @@ function renderContact(c, activities) {
     '</div></div>' +
     '<div class="modal-sub">נוסף ' + esc(fmtDate(c.created_at)) + ' · עודכן ' + esc(fmtDate(c.updated_at)) + '</div>';
 
-  h += '<div class="fieldset"><div class="legend">זהות</div><div class="grid2">' +
-    fieldInput('dName', 'שם *', c.name) +
-    '<div class="field"><label>סוג רשומה</label><select id="dType">' +
-      RECORD_TYPES.map(function (p) { return '<option value="' + p[0] + '"' + (c.record_type === p[0] ? ' selected' : '') + '>' + esc(p[1]) + '</option>'; }).join('') +
-    '</select></div>' +
-    fieldInput('dOrg', 'ארגון', c.organisation) +
-    fieldInput('dCategory', 'קטגוריה', c.category, 'dlCategory') +
-    fieldInput('dSub', 'תת‑קטגוריה / תפקיד', c.subcategory_role, 'dlSub') +
-    fieldInput('dKibbutz', 'קיבוץ', c.kibbutz, 'dlKibbutz') +
-    fieldInput('dCountry', 'מדינה', c.country, 'dlCountry') +
-    fieldInput('dRegion', 'אזור / עיר', c.city_region) +
-    fieldInput('dGkName', 'גייטקיפר (מי שולט בערוץ)', c.gatekeeper_name) +
-    fieldInput('dGkPos', 'תפקיד הגייטקיפר', c.gatekeeper_position) +
-    '</div></div>';
-
-  h += '<div class="fieldset"><div class="legend">דרכי פנייה</div><div class="grid2">' +
-    fieldInput('dEmail', 'אימייל', c.email) +
-    fieldInput('dPhone', 'טלפון', c.phone) +
-    fieldInput('dWhatsapp', 'וואטסאפ', c.whatsapp) +
-    fieldInput('dMethod', 'דרך מועדפת', c.preferred_method, 'dlMethod') +
-    fieldInput('dWebsite', 'אתר', c.website) +
-    fieldInput('dFacebook', 'פייסבוק', c.facebook_url) +
-    fieldInput('dInstagram', 'אינסטגרם', c.instagram_url) +
-    fieldInput('dOther', 'קישור נוסף', c.other_url) +
-    '</div>' + linkRow(c) + '</div>';
-
-  h += '<div class="fieldset"><div class="legend">למה זה רלוונטי</div>' +
-    '<div class="field"><textarea id="dRelevance" style="min-height:70px">' + esc(c.relevance || '') + '</textarea></div>' +
-    '<div class="field"><label>תגיות</label><input id="dTags" type="text" list="dlTags" value="' + esc((c.tags || []).join(', ')) + '"><div class="hint">מופרדות בפסיק</div></div>' +
+  h += '<div class="fieldset"><div class="legend">פרטים</div>' +
+    fieldInput('dName', 'כותרת *', c.name) +
+    fieldInput('dContact', 'איש קשר', c.gatekeeper_name) +
     '<div class="grid2">' +
-      fieldInput('dSource', 'מקור', c.source, 'dlSource') +
-      fieldInput('dSourceUrl', 'קישור למקור', c.source_url) +
+      fieldInput('dEmail', 'אימייל', c.email) +
+      fieldInput('dWhatsapp', 'וואטסאפ', c.whatsapp) +
     '</div>' +
-    '<div class="field"><label>הערות על המקור</label><textarea id="dSourceNotes" style="min-height:50px">' + esc(c.source_notes || '') + '</textarea></div>' +
-    '<div class="field"><label>הערות פרטיות</label><textarea id="dNotes" style="min-height:70px">' + esc(c.notes || '') + '</textarea></div>' +
-    '</div>';
+    '<div class="field"><label>הערות</label><textarea id="dNotes" style="min-height:90px">' + esc(c.notes || '') + '</textarea></div>' +
+    '<div class="field"><label>תגיות</label><input id="dTags" type="text" list="dlTags" value="' + esc((c.tags || []).join(', ')) + '"><div class="hint">מופרדות בפסיק</div></div>' +
+    linkRow(c) + extraInfo(c) + '</div>';
 
   // campaigns — per-campaign state, never written back onto the contact record
   h += '<div class="fieldset"><div class="legend">קמפיינים</div>';
@@ -687,14 +613,29 @@ function linkRow(c) {
 }
 function withProto(u) { return /^https?:\/\//i.test(u) ? u : 'https://' + u; }
 
+// Read-only footnote for data that arrived via CSV import. The simplified form
+// never asks for these, but they are real and worth seeing — a PUT that omits
+// them leaves them untouched server-side, so nothing here is ever lost.
+var EXTRA_LABELS = [
+  ['phone', 'טלפון'], ['city_region', 'אזור'], ['kibbutz', 'קיבוץ'],
+  ['organisation', 'ארגון'], ['category', 'קטגוריה'], ['subcategory_role', 'תפקיד'],
+  ['country', 'מדינה'], ['preferred_method', 'דרך פנייה'], ['relevance', 'רלוונטיות'],
+  ['source', 'מקור']
+];
+function extraInfo(c) {
+  var bits = EXTRA_LABELS
+    .filter(function (p) { return c[p[0]]; })
+    .map(function (p) { return esc(p[1]) + ': ' + esc(c[p[0]]); });
+  if (!bits.length) return '';
+  return '<div class="hint" style="margin-top:10px;line-height:1.9;border-top:1px solid #f0efea;padding-top:10px">' +
+    bits.join(' · ') +
+    (c.source_url ? ' · <a href="' + esc(withProto(c.source_url)) + '" target="_blank" rel="noopener" style="color:#3D7468">מקור</a>' : '') +
+    '</div>';
+}
+
 var DETAIL_FIELDS = {
-  dName: 'name', dType: 'record_type', dOrg: 'organisation', dCategory: 'category',
-  dSub: 'subcategory_role', dKibbutz: 'kibbutz', dCountry: 'country', dRegion: 'city_region',
-  dGkName: 'gatekeeper_name', dGkPos: 'gatekeeper_position', dEmail: 'email', dPhone: 'phone',
-  dWhatsapp: 'whatsapp', dMethod: 'preferred_method', dWebsite: 'website',
-  dFacebook: 'facebook_url', dInstagram: 'instagram_url', dOther: 'other_url',
-  dRelevance: 'relevance', dSource: 'source', dSourceUrl: 'source_url',
-  dSourceNotes: 'source_notes', dNotes: 'notes'
+  dName: 'name', dContact: 'gatekeeper_name', dEmail: 'email',
+  dWhatsapp: 'whatsapp', dNotes: 'notes'
 };
 
 function saveContact(id) {
