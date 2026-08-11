@@ -9,7 +9,7 @@
 
 // Recipient is resolved from the target KEY only — a client-supplied email is never used here.
 const RECIPIENTS = {
-  door: 'ronit.adiv@gmail.com',
+  door: 'ronit@beityeladim.co.il',
   default: 'ronit@beityeladim.co.il',
 };
 
