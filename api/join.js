@@ -1,5 +1,5 @@
 const { sql } = require('../lib/db');
-const { sendEmail, unsubscribeUrl, renderTemplate, renderSeriesScheduleBlock } = require('../lib/email');
+const { sendEmail, unsubscribeUrl, renderTemplate } = require('../lib/email');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -66,41 +66,9 @@ module.exports = async (req, res) => {
         SELECT subject, body FROM email_templates WHERE template_type = 'join_confirmation'
       `;
       if (templates.length) {
-        // Show only this person's own series in the welcome email
-        // (parents see parents + joint; children see children + joint).
-        let upcoming = [];
-        try {
-          if (participantType === 'מפגש זום ראשון ושני - להורים') {
-            ({ rows: upcoming } = await sql`
-              SELECT title, meeting_date, meeting_time FROM zoom_meetings
-              WHERE status IN ('draft','open') AND audience IN ('parents','all')
-              ORDER BY meeting_date ASC, meeting_time ASC LIMIT 4
-            `);
-          } else if (participantType === 'מפגש זום ראשון ושני - לילדי ביתלדים') {
-            ({ rows: upcoming } = await sql`
-              SELECT title, meeting_date, meeting_time FROM zoom_meetings
-              WHERE status IN ('draft','open') AND audience IN ('children','all')
-              ORDER BY meeting_date ASC, meeting_time ASC LIMIT 4
-            `);
-          } else {
-            ({ rows: upcoming } = await sql`
-              SELECT title, meeting_date, meeting_time FROM zoom_meetings
-              WHERE status IN ('draft','open')
-              ORDER BY meeting_date ASC, meeting_time ASC LIMIT 4
-            `);
-          }
-        } catch (audErr) {
-          // audience column may not exist yet — fall back to the full list
-          ({ rows: upcoming } = await sql`
-            SELECT title, meeting_date, meeting_time FROM zoom_meetings
-            WHERE status IN ('draft','open')
-            ORDER BY meeting_date ASC, meeting_time ASC LIMIT 4
-          `);
-        }
         const vars = {
           name,
           unsubscribe_url: unsubscribeUrl(email),
-          scheduleBlock: renderSeriesScheduleBlock(upcoming),
         };
         const { subject, html } = renderTemplate(templates[0].body, templates[0].subject, vars);
         await sendEmail({ to: email, subject, html });
