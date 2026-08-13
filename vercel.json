@@ -9,6 +9,33 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/k/:slug",
+      "destination": "/?utm_source=kibbutz&utm_medium=outreach&utm_campaign=:slug",
+      "permanent": false
+    },
+    {
+      "source": "/k",
+      "destination": "/?utm_source=kibbutz&utm_medium=outreach&utm_campaign=general",
+      "permanent": false
+    },
+    {
+      "source": "/fb",
+      "destination": "/?utm_source=facebook&utm_medium=social&utm_campaign=zoom2026",
+      "permanent": false
+    },
+    {
+      "source": "/wa",
+      "destination": "/?utm_source=whatsapp&utm_medium=forward&utm_campaign=zoom2026",
+      "permanent": false
+    },
+    {
+      "source": "/f",
+      "destination": "/?utm_source=flyer&utm_medium=print&utm_campaign=zoom2026",
+      "permanent": false
+    }
+  ],
   "crons": [
     { "path": "/api/reminders", "schedule": "0 6 * * *" }
   ]
