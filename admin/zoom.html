@@ -256,6 +256,9 @@
 <script>
 var PW='', API='/api';
 var allMeetings=[], allParticipants=[], allTemplates=[];
+// Active participants only, kept separate from the participants tab's list
+// (which can be filtered to unsubscribed) and used for the registration counts.
+var activeParticipants=[];
 var sendMeetingId=null;
 
 function confirmDialog(opts){
@@ -385,28 +388,54 @@ function loadAll(){
     renderMeetings();
   });
   fetch(API+'/admin/participants?status=active',{headers:{'x-admin-password':PW}}).then(function(r){return r.json()}).then(function(data){
-    if(data.ok)renderDashboardParticipants(data.participants.length);
+    if(!data.ok)return;
+    activeParticipants=data.participants||[];
+    renderDashboard();
+    renderMeetings();
   });
+}
+
+// Registered participants for a meeting's audience — the same rule the server
+// uses in getRecipients(): people who asked to join both groups count for both.
+function registeredFor(audience){
+  if(!activeParticipants.length)return 0;
+  if(audience!=='parents'&&audience!=='children')return activeParticipants.length;
+  var own=audience==='parents'?'להורים':'לילדי';
+  return activeParticipants.filter(function(p){
+    var t=p.participant_type||'';
+    return t.indexOf(own)>-1||t.indexOf('שתי הקבוצות')>-1;
+  }).length;
+}
+function registeredLabel(m){
+  if(!activeParticipants.length)return '';
+  return ' | '+registeredFor(m.audience)+' רשומים';
 }
 
 function renderDashboard(){
   var upcoming=allMeetings.filter(function(m){return m.status==='open'||m.status==='draft'});
   document.getElementById('upcomingList').innerHTML=upcoming.length?upcoming.slice(0,5).map(function(m){
-    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:start"><h3>'+esc(m.title)+'</h3><span class="status status-'+m.status+'">'+STATUS_HE[m.status]+'</span></div><div class="meta">'+fmtDate(m.meeting_date)+' | '+(m.meeting_time||'').slice(0,5)+'</div></div>'
+    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:start"><h3>'+esc(m.title)+'</h3><span class="status status-'+m.status+'">'+STATUS_HE[m.status]+'</span></div><div class="meta">'+fmtDate(m.meeting_date)+' | '+(m.meeting_time||'').slice(0,5)+' | קהל: '+audienceLabel(m.audience)+registeredLabel(m)+'</div></div>'
   }).join(''):'<p style="color:#6E7C78">אין מפגשים קרובים.</p>';
 
-  var totalMeetings=allMeetings.length;
-  var openMeetings=allMeetings.filter(function(m){return m.status==='open'}).length;
-  updateStats({meetings:totalMeetings,open:openMeetings});
+  updateStats({
+    meetings:allMeetings.length,
+    open:allMeetings.filter(function(m){return m.status==='open'}).length
+  });
 }
 
+// Reads the participant count from state rather than writing it into the DOM
+// separately: the two fetches race, and re-rendering the grid used to wipe
+// whichever number had already landed.
 function updateStats(s){
-  var grid=document.getElementById('statsGrid');
-  grid.innerHTML='<div class="stat-card"><div class="num" id="statPart">—</div><div class="label">משתתפים פעילים</div></div>'+
+  var parents=registeredFor('parents'), children=registeredFor('children');
+  var partCell=activeParticipants.length
+    ? activeParticipants.length+'<div style="font-size:13px;font-weight:400;color:#6E7C78;margin-top:6px">'+parents+' הורים · '+children+' ילדים</div>'
+    : '0';
+  document.getElementById('statsGrid').innerHTML=
+    '<div class="stat-card"><div class="num">'+partCell+'</div><div class="label">משתתפים פעילים</div></div>'+
     '<div class="stat-card"><div class="num">'+s.meetings+'</div><div class="label">סה״כ מפגשים</div></div>'+
     '<div class="stat-card"><div class="num">'+s.open+'</div><div class="label">מפגשים פתוחים</div></div>';
 }
-function renderDashboardParticipants(n){var el=document.getElementById('statPart');if(el)el.textContent=n}
 
 // Meetings
 function audienceLabel(a){return a==='parents'?'הורים':a==='children'?'ילדים':'כולם';}
@@ -416,6 +445,7 @@ function renderMeetings(){
   el.innerHTML=allMeetings.map(function(m){
     return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:start"><h3>'+esc(m.title)+'</h3><span class="status status-'+m.status+'">'+STATUS_HE[m.status]+'</span></div>'+
       '<div class="meta">'+fmtDate(m.meeting_date)+' | '+(m.meeting_time||'').slice(0,5)+' | קהל: '+audienceLabel(m.audience)+
+      registeredLabel(m)+
       (m.reminders_sent?' | '+m.reminders_sent+' תזכורות נשלחו':'')+
       (m.followups_sent?' | '+m.followups_sent+' הודעות מעקב':'')+'</div>'+
       (m.description?'<p style="font-size:14px;color:#3A4744;margin-bottom:12px;overflow-wrap:break-word;word-break:break-word">'+esc(m.description)+'</p>':'')+
