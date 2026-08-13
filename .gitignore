@@ -1,0 +1,17 @@
+# Everything committed here is published at https://www.beityeladim.co.il/<path>.
+# Files listed below stay on this machine and can never be deployed by accident.
+
+# Contact lists and exports — these hold other people's email addresses and
+# phone numbers and must never become a public URL.
+*.csv
+kibbutz-list.html
+
+# macOS clutter
+.DS_Store
+**/.DS_Store
+
+# Local tooling
+node_modules/
+.vercel
+.env
+.env.*
