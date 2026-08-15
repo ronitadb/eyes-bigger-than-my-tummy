@@ -15,3 +15,7 @@ node_modules/
 .vercel
 .env
 .env.*
+
+# Large source/originals kept locally but never deployed
+assets/*.pdf
+assets/Ronit-Adiv_portrait_*.jpeg
