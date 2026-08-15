@@ -27,6 +27,10 @@
       'text-decoration:none;padding:12px 24px;border-radius:999px;box-shadow:0 8px 24px rgba(34,48,47,.28);' +
       'transform:translate(-50%,-200%);transition:transform .28s ease;white-space:nowrap;cursor:pointer;' +
       '-webkit-tap-highlight-color:transparent}' +
+      // Arriving via a #join-form / #story-submit-form link (e.g. from /f) would
+      // otherwise land the form flush against the top edge; this gives it the
+      // same breathing room the in-page button uses, with no JS involved.
+      '#join-form,#story-submit-form{scroll-margin-top:80px}' +
       '#form-cta.show{transform:translate(-50%,0)}' +
       // On a phone the top-centre position covers the line being read and sits
       // outside the thumb's reach, so it moves to the bottom edge instead.
