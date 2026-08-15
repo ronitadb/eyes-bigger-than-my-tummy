@@ -63,9 +63,11 @@
   }
 
   // Also drives the inline button near the top of the page, so both routes to
-  // the form scroll smoothly and land with the first field focused.
+  // the form scroll smoothly and land with the first field focused. Any
+  // [data-cta] element works — it targets whichever known form the page has,
+  // so /zoom and /materials share one implementation.
   document.addEventListener('click', function (e) {
-    var a = e.target.closest && e.target.closest('#form-cta, [data-cta="join"]');
+    var a = e.target.closest && e.target.closest('#form-cta, [data-cta]');
     if (!a) return;
     e.preventDefault();
     var t = target();
