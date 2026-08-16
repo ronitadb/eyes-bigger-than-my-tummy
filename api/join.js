@@ -1,5 +1,6 @@
 const { sql } = require('../lib/db');
 const { sendEmail, unsubscribeUrl, renderTemplate } = require('../lib/email');
+const { isValidType } = require('../lib/participant-types');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -18,9 +19,8 @@ module.exports = async (req, res) => {
 
   const email = String(body.email || '').trim().toLowerCase();
   const name = String(body.name || '').trim();
-  const ALLOWED_TYPES = ['מפגש זום ראשון ושני - להורים', 'מפגש זום ראשון ושני - לילדי ביתלדים', 'אבקש להצטרף למפגשים של שתי הקבוצות'];
   const participantTypeRaw = String(body.participant_type || '').trim();
-  const participantType = ALLOWED_TYPES.indexOf(participantTypeRaw) > -1 ? participantTypeRaw : null;
+  const participantType = isValidType(participantTypeRaw) ? participantTypeRaw : null;
 
   if (!name || name.length < 2) {
     return res.status(400).json({ ok: false, error: 'invalid_name', message: 'נא להזין שם' });

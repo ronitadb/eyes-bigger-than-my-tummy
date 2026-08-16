@@ -525,6 +525,41 @@ function loadParticipants(){
     });
 }
 function seriesLabel(t){if(!t)return '<span style="color:#8A9692">—</span>';if(t.indexOf('שתי הקבוצות')>-1)return 'שתי הקבוצות';if(t.indexOf('להורים')>-1)return 'הורים';if(t.indexOf('לילדי')>-1||t.indexOf('ביתלדים')>-1)return 'ילדים';return esc(t);}
+
+// The three values must match lib/participant-types.js exactly — they decide
+// which reminder emails this person receives.
+var PARTICIPANT_TYPES=[
+  ['מפגש זום ראשון ושני - להורים','הורים'],
+  ['מפגש זום ראשון ושני - לילדי ביתלדים','ילדים'],
+  ['אבקש להצטרף למפגשים של שתי הקבוצות','שתי הקבוצות']
+];
+function groupSelect(p){
+  var cur=p.participant_type||'';
+  var known=PARTICIPANT_TYPES.some(function(t){return t[0]===cur});
+  var opts=PARTICIPANT_TYPES.map(function(t){
+    return '<option value="'+esc(t[0])+'"'+(cur===t[0]?' selected':'')+'>'+esc(t[1])+'</option>';
+  }).join('');
+  // Anything unrecognised (or blank) stays selectable so it is visible rather
+  // than silently rewritten to a group the person never chose.
+  if(!known)opts='<option value="" selected>'+(cur?esc(cur):'—')+'</option>'+opts;
+  return '<select onchange="changeParticipantGroup('+p.id+',this)" data-prev="'+esc(cur)+'" '+
+    'style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-family:inherit;font-size:13px;background:#fff">'+opts+'</select>';
+}
+function changeParticipantGroup(id,sel){
+  var val=sel.value;
+  if(!val){sel.value='';return}
+  var prev=sel.getAttribute('data-prev')||'';
+  sel.disabled=true;
+  fetch(API+'/admin/participants',{method:'PUT',headers:{'Content-Type':'application/json','x-admin-password':PW},
+    body:JSON.stringify({id:id,participant_type:val})})
+    .then(function(r){return r.json()})
+    .then(function(d){
+      sel.disabled=false;
+      if(d&&d.ok){showMsg('הקבוצה עודכנה. לא נשלח מייל למשתתף.',true);loadParticipants();}
+      else{showMsg('שגיאה בעדכון הקבוצה.',false);if(prev)sel.value=prev;}
+    })
+    .catch(function(){sel.disabled=false;showMsg('שגיאת חיבור.',false);if(prev)sel.value=prev;});
+}
 function renderParticipants(){
   var el=document.getElementById('participantsList');
   if(!allParticipants.length){el.innerHTML='<p style="color:#6E7C78">אין משתתפים.</p>';return}
@@ -533,7 +568,7 @@ function renderParticipants(){
       var actionBtn=p.status==='active'
         ? '<button class="btn btn-small btn-secondary" onclick="changeParticipantStatus('+p.id+',\'unsubscribed\')">בטל הרשמה</button>'
         : '<button class="btn btn-small" onclick="changeParticipantStatus('+p.id+',\'active\')">הפעל מחדש</button>';
-      return '<tr><td>'+esc(p.name)+'</td><td>'+esc(p.email)+'</td><td>'+seriesLabel(p.participant_type)+'</td><td><span class="status status-'+p.status+'">'+(p.status==='active'?'פעיל':'הוסר')+'</span></td><td>'+fmtDate(p.joined_at)+'</td><td>'+actionBtn+'</td></tr>'
+      return '<tr><td>'+esc(p.name)+'</td><td>'+esc(p.email)+'</td><td>'+groupSelect(p)+'</td><td><span class="status status-'+p.status+'">'+(p.status==='active'?'פעיל':'הוסר')+'</span></td><td>'+fmtDate(p.joined_at)+'</td><td>'+actionBtn+'</td></tr>'
     }).join('')+'</tbody></table>';
 }
 async function changeParticipantStatus(id,status){
