@@ -50,6 +50,22 @@ module.exports = async (req, res) => {
       `;
     }
 
+    // Derive the first name used in email greetings. Wrapped like the group
+    // below so a missing column can never break a sign-up, and COALESCE so a
+    // correction Ronit made by hand in the admin is never overwritten.
+    try {
+      const firstName = name.split(/\s+/)[0] || null;
+      if (firstName) {
+        await sql`
+          UPDATE zoom_participants
+          SET first_name = COALESCE(first_name, ${firstName})
+          WHERE email = ${email}
+        `;
+      }
+    } catch (fnErr) {
+      console.error('first_name set skipped (column may not exist yet):', fnErr.message);
+    }
+
     // Store "who am I?" group. Wrapped so a missing column can't break signup
     // (before the participant_type migration has been run on the database).
     if (participantType) {

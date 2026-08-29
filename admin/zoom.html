@@ -526,6 +526,33 @@ function loadParticipants(){
 }
 function seriesLabel(t){if(!t)return '<span style="color:#8A9692">—</span>';if(t.indexOf('שתי הקבוצות')>-1)return 'שתי הקבוצות';if(t.indexOf('להורים')>-1)return 'הורים';if(t.indexOf('לילדי')>-1||t.indexOf('ביתלדים')>-1)return 'ילדים';return esc(t);}
 
+// The name used to open an email. Derived from the first word on sign-up, but
+// editable here because that guess breaks on names like "אור לי" or "בת שבע".
+function firstNameCell(p){
+  var v=p.first_name||'';
+  return '<div style="margin-top:4px;display:flex;align-items:center;gap:6px">'+
+    '<span style="font-size:11px;color:#8A9692">במייל:</span>'+
+    '<input type="text" value="'+esc(v)+'" placeholder="'+esc((p.name||'').split(/\s+/)[0]||'')+'" '+
+      'data-prev="'+esc(v)+'" onchange="changeFirstName('+p.id+',this)" '+
+      'style="width:90px;padding:3px 6px;border:1px solid #ddd;border-radius:4px;font-family:inherit;font-size:12px">'+
+    '</div>';
+}
+function changeFirstName(id,input){
+  var val=input.value.trim();
+  var prev=input.getAttribute('data-prev')||'';
+  if(val===prev)return;
+  input.disabled=true;
+  fetch(API+'/admin/participants',{method:'PUT',headers:{'Content-Type':'application/json','x-admin-password':PW},
+    body:JSON.stringify({id:id,first_name:val})})
+    .then(function(r){return r.json()})
+    .then(function(d){
+      input.disabled=false;
+      if(d&&d.ok){input.setAttribute('data-prev',val);showMsg('השם למייל עודכן.',true);}
+      else{input.value=prev;showMsg('שגיאה בעדכון השם.',false);}
+    })
+    .catch(function(){input.disabled=false;input.value=prev;showMsg('שגיאת חיבור.',false);});
+}
+
 // The three values must match lib/participant-types.js exactly — they decide
 // which reminder emails this person receives.
 var PARTICIPANT_TYPES=[
@@ -568,7 +595,7 @@ function renderParticipants(){
       var actionBtn=p.status==='active'
         ? '<button class="btn btn-small btn-secondary" onclick="changeParticipantStatus('+p.id+',\'unsubscribed\')">בטל הרשמה</button>'
         : '<button class="btn btn-small" onclick="changeParticipantStatus('+p.id+',\'active\')">הפעל מחדש</button>';
-      return '<tr><td>'+esc(p.name)+'</td><td>'+esc(p.email)+'</td><td>'+groupSelect(p)+'</td><td><span class="status status-'+p.status+'">'+(p.status==='active'?'פעיל':'הוסר')+'</span></td><td>'+fmtDate(p.joined_at)+'</td><td>'+actionBtn+'</td></tr>'
+      return '<tr><td>'+esc(p.name)+firstNameCell(p)+'</td><td>'+esc(p.email)+'</td><td>'+groupSelect(p)+'</td><td><span class="status status-'+p.status+'">'+(p.status==='active'?'פעיל':'הוסר')+'</span></td><td>'+fmtDate(p.joined_at)+'</td><td>'+actionBtn+'</td></tr>'
     }).join('')+'</tbody></table>';
 }
 async function changeParticipantStatus(id,status){

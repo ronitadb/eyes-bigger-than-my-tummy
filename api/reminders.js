@@ -77,6 +77,7 @@ module.exports = async (req, res) => {
           try {
             const vars = {
               name: p.name,
+              first_name: p.first_name || p.name,
               title: meeting.title,
               date: formatDate(meeting.meeting_date),
               time: formatTime(meeting.meeting_time),
