@@ -5,13 +5,19 @@
     {
       "source": "/admin/(.*)",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
       ]
     },
     {
       "source": "/maamar.pdf",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
       ]
     }
   ],
@@ -28,7 +34,7 @@
     },
     {
       "source": "/m",
-      "destination": "/maamar?utm_source=share&utm_medium=forward&utm_campaign=maamar",
+      "destination": "/maamar.pdf",
       "permanent": false
     },
     {
@@ -43,6 +49,9 @@
     }
   ],
   "crons": [
-    { "path": "/api/reminders", "schedule": "0 6 * * *" }
+    {
+      "path": "/api/reminders",
+      "schedule": "0 6 * * *"
+    }
   ]
 }
