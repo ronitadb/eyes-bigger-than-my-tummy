@@ -21,6 +21,11 @@
       "permanent": false
     },
     {
+      "source": "/m",
+      "destination": "/maamar?utm_source=share&utm_medium=forward&utm_campaign=maamar",
+      "permanent": false
+    },
+    {
       "source": "/fb",
       "destination": "/?utm_source=facebook&utm_medium=social&utm_campaign=zoom2026",
       "permanent": false
