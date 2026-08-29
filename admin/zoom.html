@@ -629,10 +629,44 @@ var TPL_NAMES={join_confirmation:'אישור הצטרפות',meeting_reminder:'�
 function renderTemplates(){
   var el=document.getElementById('templatesList');
   el.innerHTML=allTemplates.map(function(t){
-    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h3>'+(TPL_NAMES[t.template_type]||t.template_type)+'</h3><button class="btn btn-small" onclick="editTemplate('+t.id+')">עריכה</button></div>'+
+    // Only a template with no meeting placeholders can go to everyone at once;
+    // the rest are meaningless without a specific meeting behind them.
+    var standalone=!/\{\{\s*(title|date|time|zoom_link)\s*\}\}/.test((t.body||'')+(t.subject||''));
+    var sendBtn=standalone
+      ? '<button class="btn btn-small btn-secondary" onclick="sendUpdateToAll('+t.id+')">שליחה לכל הנרשמים</button>'
+      : '';
+    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3>'+(TPL_NAMES[t.template_type]||t.template_type)+'</h3>'+
+      '<div style="display:flex;gap:8px">'+sendBtn+'<button class="btn btn-small" onclick="editTemplate('+t.id+')">עריכה</button></div></div>'+
       '<div class="meta">נושא: '+esc(t.subject)+'</div>'+
       '<div class="meta">עודכן: '+fmtDate(t.updated_at)+'</div></div>'
   }).join('');
+}
+
+// A standalone update: no meeting, every active participant, optionally with
+// the article PDF attached. Behind a typed confirmation because this is the one
+// control here that mails real people and cannot be taken back.
+function sendUpdateToAll(id){
+  var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
+  var attach=window.confirm('לצרף את קובץ הכתבה (maamar.pdf)?\n\nאישור = עם הקובץ · ביטול = בלי.');
+  var typed=window.prompt(
+    'שליחה לכל הנרשמים הפעילים.\n\n'+
+    'נושא: '+t.subject+'\n'+
+    (attach?'כולל קובץ מצורף.':'בלי קובץ מצורף.')+'\n\n'+
+    'נשלחים מיילים אמיתיים ואי אפשר לבטל.\n'+
+    'להמשך הקלידי:  שלח');
+  if(typed===null)return;
+  if(typed.trim()!=='שלח'){showMsg('בוטל — לא נשלח דבר.',false);return}
+  var payload={template_type:t.template_type};
+  if(attach)payload.attachments=[{filename:'לחזור לביתלדים — זמן קיבוץ.pdf',
+                                  path:'https://www.beityeladim.co.il/maamar.pdf'}];
+  showMsg('שולח…',true);
+  fetch(API+'/admin/send-email',{method:'POST',headers:headers(),body:JSON.stringify(payload)})
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if(d&&d.ok)showMsg('נשלח ל-'+d.sent+' נרשמים'+(d.failed?' · '+d.failed+' נכשלו':'')+'.',true);
+      else showMsg((d&&d.message)||'שגיאה בשליחה.',false);
+    })
+    .catch(function(){showMsg('שגיאת חיבור.',false)});
 }
 function editTemplate(id){
   var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
