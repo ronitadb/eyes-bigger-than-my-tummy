@@ -9,7 +9,6 @@
       ]
     },
     {
-      "comment": "The article PDF is hosted so it can be linked and so Resend can attach it — but like /maamar it should not compete in search with the magazine that published the piece first.",
       "source": "/maamar.pdf",
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex" }
