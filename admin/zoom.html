@@ -598,7 +598,7 @@ function loadTemplates(){
       renderTemplates();
     });
 }
-var TPL_NAMES={join_confirmation:'אישור הצטרפות',meeting_reminder:'תזכורת ראשונה (5 ימים לפני)',meeting_reminder_1d:'תזכורת שנייה (יום לפני)',meeting_followup:'הודעה לאחר מפגש'};
+var TPL_NAMES={join_confirmation:'אישור הצטרפות',meeting_reminder:'תזכורת ראשונה (5 ימים לפני)',meeting_reminder_1d:'תזכורת שנייה (יום לפני)',meeting_followup:'הודעה לאחר מפגש',update:'עדכון לנרשמים (לא קשור למפגש)'};
 function renderTemplates(){
   var el=document.getElementById('templatesList');
   el.innerHTML=allTemplates.map(function(t){
