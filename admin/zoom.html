@@ -643,14 +643,36 @@ function renderTemplates(){
     // Only a template with no meeting placeholders can go to everyone at once;
     // the rest are meaningless without a specific meeting behind them.
     var standalone=!/\{\{\s*(title|date|time|zoom_link)\s*\}\}/.test((t.body||'')+(t.subject||''));
+    // Test first, and make it the obvious button. The real send is the one
+    // that cannot be undone, so it is the quieter of the two.
     var sendBtn=standalone
-      ? '<button class="btn btn-small btn-secondary" onclick="sendUpdateToAll('+t.id+')">שליחה לכל הנרשמים</button>'
+      ? '<button class="btn btn-small" onclick="sendTestEmail('+t.id+')">שליחת בדיקה אליי</button>'+
+        '<button class="btn btn-small btn-danger" onclick="sendUpdateToAll('+t.id+')">שליחה לכל הנרשמים</button>'
       : '';
     return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3>'+(TPL_NAMES[t.template_type]||t.template_type)+'</h3>'+
       '<div style="display:flex;gap:8px">'+sendBtn+'<button class="btn btn-small" onclick="editTemplate('+t.id+')">עריכה</button></div></div>'+
       '<div class="meta">נושא: '+esc(t.subject)+'</div>'+
       '<div class="meta">עודכן: '+fmtDate(t.updated_at)+'</div></div>'
   }).join('');
+}
+
+// One email, to one address, logged nowhere. Nobody on the list is touched
+// even if the address happens to belong to a registrant.
+function sendTestEmail(id){
+  var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
+  var to=window.prompt('שליחת בדיקה — כתובת אחת בלבד.\n\nאף אחד מהנרשמים לא יקבל דבר.','ronit@beityeladim.co.il');
+  if(to===null)return;
+  to=to.trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){showMsg('כתובת לא תקינה — לא נשלח דבר.',false);return}
+  showMsg('שולח בדיקה…',true);
+  fetch(API+'/admin/send-email',{method:'POST',headers:headers(),
+    body:JSON.stringify({template_type:t.template_type,test_to:to})})
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if(d&&d.ok)showMsg('נשלחה בדיקה אחת אל '+to+'. לא נשלח לאיש מהנרשמים.',true);
+      else showMsg((d&&d.message)||'שגיאה בשליחת הבדיקה.',false);
+    })
+    .catch(function(){showMsg('שגיאת חיבור.',false)});
 }
 
 // A standalone update: no meeting, every active participant, optionally with
@@ -660,7 +682,7 @@ function sendUpdateToAll(id){
   var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
   var attach=window.confirm('לצרף את קובץ הכתבה (maamar.pdf)?\n\nאישור = עם הקובץ · ביטול = בלי.');
   var typed=window.prompt(
-    'שליחה לכל הנרשמים הפעילים.\n\n'+
+    'שליחה לכל '+(allParticipants.filter(function(p){return p.status==="active"}).length)+' הנרשמים הפעילים.\n\n'+
     'נושא: '+t.subject+'\n'+
     (attach?'כולל קובץ מצורף.':'בלי קובץ מצורף.')+'\n\n'+
     'נשלחים מיילים אמיתיים ואי אפשר לבטל.\n'+
