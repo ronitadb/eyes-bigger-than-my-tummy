@@ -32,16 +32,30 @@ function displayName(sender, attribution) {
   return 'אנונימי';
 }
 
-// GET /api/story — public feed: published, consented stories, newest first.
+// GET /api/story            — the community anthology on /materials
+// GET /api/story?article_id=N — הדים: responses published under one article
+//
+// The two feeds are kept apart. A response written to a particular article
+// belongs in that article's context; letting it drift into the general
+// anthology would strip the thing it was answering.
+//
 // Emails are never exposed. Returns [] gracefully if the table isn't migrated.
 async function listPublished(req, res) {
+  const articleId = parseInt(req.query.article_id, 10);
   try {
-    const { rows } = await sql`
-      SELECT id, sender, title, body, attribution, published_at, created_at
-      FROM stories
-      WHERE status = 'published' AND consent = true
-      ORDER BY COALESCE(published_at, created_at) DESC
-    `;
+    const { rows } = articleId
+      ? await sql`
+          SELECT id, sender, title, body, attribution, published_at, created_at
+          FROM stories
+          WHERE status = 'published' AND consent = true AND article_id = ${articleId}
+          ORDER BY COALESCE(published_at, created_at) ASC
+        `
+      : await sql`
+          SELECT id, sender, title, body, attribution, published_at, created_at
+          FROM stories
+          WHERE status = 'published' AND consent = true AND article_id IS NULL
+          ORDER BY COALESCE(published_at, created_at) DESC
+        `;
     const stories = rows.map(function (r) {
       return {
         id: r.id,
@@ -82,6 +96,9 @@ module.exports = async (req, res) => {
     const consent = body.consent === true || body.consent === 'true' || body.consent === 1 || body.consent === '1';
     const attribution = ATTRIBUTIONS.indexOf(body.attribution) > -1 ? body.attribution : 'anonymous';
     const file = body.file && body.file.data ? body.file : null;
+    // Present when this was written at the foot of an article (הדים).
+    const articleId = Number.isInteger(parseInt(body.article_id, 10))
+      ? parseInt(body.article_id, 10) : null;
 
     if (!story && !file) {
       res.status(400).json({ error: 'empty' });
@@ -100,11 +117,20 @@ module.exports = async (req, res) => {
     //    break submission before the stories migration has been run.
     let dbOk = false;
     try {
-      await sql`
-        INSERT INTO stories (sender, email, title, body, attribution, consent, status, has_file, file_name)
-        VALUES (${sender || null}, ${email || null}, ${title || null}, ${story || null},
-                ${attribution}, ${consent}, 'pending', ${!!file}, ${file ? (file.name || null) : null})
-      `;
+      if (articleId) {
+        await sql`
+          INSERT INTO stories (sender, email, title, body, attribution, consent, status, has_file, file_name, article_id)
+          VALUES (${sender || null}, ${email || null}, ${title || null}, ${story || null},
+                  ${attribution}, ${consent}, 'pending', ${!!file}, ${file ? (file.name || null) : null},
+                  ${articleId})
+        `;
+      } else {
+        await sql`
+          INSERT INTO stories (sender, email, title, body, attribution, consent, status, has_file, file_name)
+          VALUES (${sender || null}, ${email || null}, ${title || null}, ${story || null},
+                  ${attribution}, ${consent}, 'pending', ${!!file}, ${file ? (file.name || null) : null})
+        `;
+      }
       dbOk = true;
     } catch (dbErr) {
       console.error('stories insert skipped (table may not exist yet):', dbErr.message);
@@ -116,11 +142,13 @@ module.exports = async (req, res) => {
     if (apiKey) {
       try {
         const from = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-        const subject = 'סיפור לספרייה המשותפת' +
+        const subject = (articleId ? 'הד למאמר' : 'סיפור לספרייה המשותפת') +
           (title ? ' – ' + title : '') +
           (sender ? ' | ' + sender : '');
 
         const metaRows = [];
+        if (articleId) metaRows.push('<div><strong>נכתב בתגובה למאמר:</strong> ' +
+          '<a href="https://www.beityeladim.co.il/admin/articles">מספר ' + articleId + '</a></div>');
         if (sender) metaRows.push('<div><strong>שם:</strong> ' + esc(sender) + '</div>');
         if (email) metaRows.push('<div><strong>מייל לחזרה:</strong> ' + esc(email) + '</div>');
         if (title) metaRows.push('<div><strong>כותרת:</strong> ' + esc(title) + '</div>');
@@ -146,7 +174,8 @@ module.exports = async (req, res) => {
           '<body style="font-family:-apple-system,sans-serif; color:#22302F; background:#FAF8F4; margin:0; padding:40px 20px; direction:rtl; text-align:right;">\n' +
           '<div dir="rtl" style="max-width:560px; margin:0 auto; direction:rtl; text-align:right;">\n' +
           '<div style="font-size:13px; letter-spacing:.04em; color:#3D7468; font-weight:600; margin-bottom:6px;">הספרייה המשותפת</div>\n' +
-          '<div style="font-size:20px; font-weight:700; color:#2F5248; margin-bottom:22px;">סיפור חדש נשלח מהאתר</div>\n' +
+          '<div style="font-size:20px; font-weight:700; color:#2F5248; margin-bottom:22px;">' +
+          (articleId ? 'הד חדש נשלח מהאתר' : 'סיפור חדש נשלח מהאתר') + '</div>\n' +
           metaBlock + storyBlock + note +
           '</div></body></html>';
 

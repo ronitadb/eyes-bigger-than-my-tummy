@@ -77,13 +77,35 @@ async function page(slug, res) {
     console.error('related articles lookup failed:', err.message);
   }
 
-  return html(res, 200, articlePage(article, related));
+  // הדים — responses Ronit has chosen to publish under this article.
+  let echoes = [];
+  try {
+    const { rows } = await sql`
+      SELECT sender, body, attribution, published_at, created_at
+      FROM stories
+      WHERE article_id = ${article.id} AND status = 'published' AND consent = true
+      ORDER BY COALESCE(published_at, created_at) ASC
+    `;
+    echoes = rows;
+  } catch (err) {
+    console.error('echoes lookup failed:', err.message);
+  }
+
+  return html(res, 200, articlePage(article, related, echoes));
 }
 
 function html(res, code, body) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   if (code === 200) res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=600');
   res.status(code).send(body);
+}
+
+// The sender chooses how they are named; nothing else about them is shown.
+function displayName(sender, attribution) {
+  const t = (sender || '').trim();
+  if (attribution === 'full') return t || 'אנונימי';
+  if (attribution === 'first') return t ? t.split(/\s+/)[0] : 'אנונימי';
+  return 'אנונימי';
 }
 
 function titleText(a) {
@@ -115,7 +137,7 @@ function shell(title, description, canonical, image, body) {
     '</style>\n</head>\n<body>\n' + body + '\n</body>\n</html>';
 }
 
-function articlePage(a, related) {
+function articlePage(a, related, echoes) {
   const canonical = SITE + '/library/' + a.slug;
   const description = a.summary || a.title_topic || '';
   const image = a.hero_image
@@ -139,6 +161,22 @@ function articlePage(a, related) {
 
   // The landing. When the last domino falls the reader should feel it land, and
   // then the apparatus arrives as a distinctly separate zone.
+  // ── הדים ──────────────────────────────────────────────────────────────────
+  // Visitors see only what has been published, and cannot reply to each other.
+  // A collection of voices, not a conversation between strangers — which is
+  // what makes a pile-on structurally impossible rather than merely discouraged.
+  if (Array.isArray(echoes) && echoes.length) {
+    body += '<section class="a-echoes"><h2>הדים</h2>' +
+      echoes.map(function (e) {
+        return '<article class="a-echo">' +
+          renderBlocks([{ type: 'text', body: e.body || '' }]) +
+          '<div class="a-echo-by">' +
+          esc(displayName(e.sender, e.attribution)) + '</div></article>';
+      }).join('') + '</section>\n';
+  }
+
+  body += echoForm(a.id);
+
   const pubs = Array.isArray(a.external_pubs) ? a.external_pubs : [];
   let landing = '';
   if (a.term_name) {
@@ -165,6 +203,47 @@ function articlePage(a, related) {
   }
 
   return shell(titleText(a), description, canonical, image, body);
+}
+
+// The invitation shapes what arrives more than any rule enforced afterwards,
+// so the question is "מה זה עורר בך?" and never "הוסף תגובה".
+function echoForm(id) {
+  return '<section class="a-echo-form no-print" id="echo">' +
+    '<h2>מה זה עורר בך?</h2>' +
+    '<p class="a-echo-why">התגובות כאן עוברות דרכי. אני קוראת כל מה שנשלח ובוחרת מה ומתי לפרסם — ' +
+    'לא כדי לסנן דעות, אלא כדי שיהיה אפשר לומר כאן דברים אישיים בלי להיחשף יותר ממה שרצית. ' +
+    'שיחה ישירה בין המשתתפים מתקיימת ב<a href="/zoom">מפגשי הזום</a>.</p>' +
+    '<form id="echoForm">' +
+    '<div class="a-echo-two">' +
+      '<input type="text" name="sender" placeholder="שם (לא חובה)">' +
+      '<input type="email" name="email" placeholder="אימייל לחזרה (לא חובה)">' +
+    '</div>' +
+    '<textarea name="story" rows="6" placeholder="מה עלה בך כשקראת?"></textarea>' +
+    '<label class="a-echo-consent">' +
+      '<input type="checkbox" name="consent" value="1">' +
+      '<span>אני מאשר/ת שהדברים יצטרפו לספרייה. ללא סימון — הם יגיעו לרונית בלבד.</span>' +
+    '</label>' +
+    '<div class="a-echo-attr">אם יפורסם — כיצד לייחס אליי?' +
+      ['<label><input type="radio" name="attribution" value="full"> בשמי המלא</label>',
+       '<label><input type="radio" name="attribution" value="first"> בשם פרטי בלבד</label>',
+       '<label><input type="radio" name="attribution" value="anonymous" checked> באופן אנונימי</label>'
+      ].join('') + '</div>' +
+    '<button type="submit">שליחה</button>' +
+    '<div id="echoMsg"></div>' +
+    '<p class="a-echo-note">תגובות מתפרסמות כמה ימים לאחר קבלתן — יש זמן לחשוב שוב. ' +
+    'אפשר לבטל בכל רגע, גם אחרי הפרסום, בלי צורך בהסבר.</p>' +
+    '</form></section>\n' +
+    '<script>(function(){var f=document.getElementById("echoForm");if(!f)return;' +
+    'f.addEventListener("submit",function(e){e.preventDefault();' +
+    'var d=new FormData(f),m=document.getElementById("echoMsg");' +
+    'if(!String(d.get("story")||"").trim()){m.textContent="עוד לא נכתב דבר.";return}' +
+    'm.textContent="שולח…";' +
+    'fetch("/api/story",{method:"POST",headers:{"Content-Type":"application/json"},' +
+    'body:JSON.stringify({article_id:' + id + ',sender:d.get("sender"),email:d.get("email"),' +
+    'story:d.get("story"),consent:d.get("consent")==="1",attribution:d.get("attribution")})})' +
+    '.then(function(r){return r.json()}).then(function(){' +
+    'f.innerHTML="<p class=\'a-echo-thanks\'>הדברים הגיעו לרונית. תודה.</p>"})' +
+    '.catch(function(){m.textContent="השליחה נכשלה. אפשר לנסות שוב."})});})();<\/script>';
 }
 
 function errorPage(message) {

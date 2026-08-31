@@ -178,3 +178,58 @@
   .a-landing,.no-print{display:none !important}
   .a-footnotes{break-before:auto}
 }
+
+/* ── הדים ─────────────────────────────────────────────────────────────────────
+   Published responses, and the invitation to write one. Visitors see only what
+   Ronit chose to publish, and cannot reply to one another — a collection of
+   voices, not a conversation between strangers. Absence is invisible: nobody
+   can tell how many arrived or that theirs was not among them. */
+.a-echoes,.a-echo-form{
+  max-width:34em; margin:44px auto 0;
+  padding:0 clamp(20px,5vw,32px);
+  direction:rtl; text-align:right;
+  font-family:'Frank Ruhl Libre',serif; color:#3E4B47;
+}
+.a-echoes h2,.a-echo-form h2{
+  font-family:'Assistant',sans-serif; font-size:13px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase; color:#EDA72E; margin:0 0 18px;
+}
+.a-echo{border-top:1px solid #EAE4D6; padding:20px 0 4px}
+.a-echo:first-of-type{border-top:0; padding-top:0}
+.a-echo p{font-size:17px; line-height:1.9; margin:0 0 .8em}
+.a-echo-by{
+  font-family:'Assistant',sans-serif; font-size:13px; color:#8A9490; margin:0 0 4px;
+}
+.a-echo-form{
+  background:rgba(61,116,104,.06); border:1px solid rgba(47,82,72,.18);
+  border-radius:3px; padding:clamp(22px,4vw,30px); margin-top:44px;
+}
+.a-echo-why{font-size:15px; line-height:1.75; color:#5E706B; margin:0 0 18px}
+.a-echo-why a{color:#2F5248}
+.a-echo-form input[type=text],.a-echo-form input[type=email],.a-echo-form textarea{
+  width:100%; font-family:inherit; font-size:16px; padding:12px 14px;
+  border:1px solid rgba(34,48,47,.2); border-radius:2px;
+  background:#FBF7EC; color:#22302F; margin:0 0 10px;
+}
+.a-echo-form textarea{line-height:1.7; resize:vertical}
+.a-echo-two{display:flex; gap:10px; flex-wrap:wrap}
+.a-echo-two>*{flex:1 1 180px}
+.a-echo-consent{
+  display:flex; gap:10px; align-items:flex-start; font-size:15px;
+  line-height:1.6; color:#3E4B47; margin:6px 0 14px;
+}
+.a-echo-consent input{margin-top:5px; width:17px; height:17px; accent-color:#EDA72E; flex:0 0 auto}
+.a-echo-attr{
+  font-family:'Assistant',sans-serif; font-size:14px; color:#5E706B;
+  display:flex; gap:16px; flex-wrap:wrap; align-items:center; margin:0 0 16px;
+}
+.a-echo-attr label{display:flex; gap:6px; align-items:center}
+.a-echo-form button{
+  font-family:'Assistant',sans-serif; font-size:16px; font-weight:600;
+  background:#2F5248; color:#fff; border:0; border-radius:2px;
+  padding:12px 26px; cursor:pointer;
+}
+.a-echo-form button:hover{background:#3D7468}
+.a-echo-note{font-size:13px; line-height:1.7; color:#8A9490; margin:16px 0 0}
+.a-echo-thanks{font-size:17px; line-height:1.8; color:#2F5248; margin:0}
+#echoMsg{font-size:14px; color:#2F5248; margin-top:10px}
