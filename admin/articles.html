@@ -118,6 +118,20 @@ html[data-authing] .login{display:none}
             <textarea id="notes" style="min-height:70px"></textarea></div>
         </div>
 
+        <div class="card priv">
+          <h2>כרטיס מאמר — מסמך העבודה</h2>
+          <p class="note">הקנבס שעליו נעשית עבודת הכתיבה. נשמר <b>כמו שהוא</b> —
+            לא סיכום, לא מקוצר, לא מסודר מחדש. אף מילה מכאן לא מגיעה לעמוד המתפרסם.</p>
+          <div class="f" style="margin-top:12px"><label>קישור למקור (גוגל דוקס, PDF וכד׳)</label>
+            <input type="text" id="canvas_link" placeholder="https://…"></div>
+          <div class="f"><label>המסמך</label>
+            <textarea id="canvas" style="min-height:260px;font-size:14px;line-height:1.75"></textarea></div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <button onclick="toggleCanvas()" id="canvasBtn">הרחבה</button>
+            <span class="note" id="canvasStat" style="margin:0"></span>
+          </div>
+        </div>
+
         <div class="card">
           <h2>גוף המאמר</h2>
           <div id="blocks"></div>
@@ -221,8 +235,9 @@ function openArticle(id){
     state.chain=Array.isArray(a.chain)?a.chain:[];
     state.pubs=Array.isArray(a.external_pubs)?a.external_pubs:[];
     state.related=Array.isArray(a.related_ids)?a.related_ids:[];
-    ['title_lead','title_topic','summary','slug','sort_order','notes','term_name','status']
-      .forEach(function(f){el(f).value=a[f]==null?'':a[f]});
+    ['title_lead','title_topic','summary','slug','sort_order','notes','term_name','status',
+     'canvas','canvas_link'].forEach(function(f){el(f).value=a[f]==null?'':a[f]});
+    canvasStat();
     el('listView').classList.add('hide');el('editView').classList.remove('hide');
     el('btnBack').classList.remove('hide');el('btnSave').classList.remove('hide');el('btnNew').classList.add('hide');
     el('ctx').textContent='/library/'+a.slug;
@@ -326,7 +341,8 @@ function save(){
   if(!state.cur)return;
   var body={id:state.cur.id,blocks:state.blocks,chain:state.chain.filter(function(c){return c.trim()}),
     external_pubs:state.pubs.filter(function(p){return p.name||p.url}),related_ids:state.related};
-  ['title_lead','title_topic','summary','slug','notes','term_name','status'].forEach(function(f){body[f]=el(f).value});
+  ['title_lead','title_topic','summary','slug','notes','term_name','status',
+    'canvas','canvas_link'].forEach(function(f){body[f]=el(f).value});
   body.sort_order=el('sort_order').value;
   msg('שומר…');
   fetch(API,{method:'PUT',headers:headers(),body:JSON.stringify(body)})
@@ -350,6 +366,15 @@ function del(){
   fetch(API,{method:'DELETE',headers:headers(),body:JSON.stringify({id:state.cur.id})})
     .then(function(){showList()});
 }
+var canvasBig=false;
+function toggleCanvas(){canvasBig=!canvasBig;
+  el('canvas').style.minHeight=canvasBig?'70vh':'260px';
+  el('canvasBtn').textContent=canvasBig?'כיווץ':'הרחבה';}
+function canvasStat(){
+  var t=el('canvas').value||'';
+  var w=t.trim()?t.trim().split(/\s+/).length:0;
+  el('canvasStat').textContent=w?(w.toLocaleString('he-IL')+' מילים'):'ריק';}
+document.addEventListener('input',function(e){if(e.target&&e.target.id==='canvas')canvasStat()});
 function openLive(){if(state.cur)window.open('/library/'+el('slug').value,'_blank')}
 </script>
 </body>
