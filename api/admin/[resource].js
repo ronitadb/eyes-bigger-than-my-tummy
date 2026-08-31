@@ -5,6 +5,7 @@
 // as functions) and are unchanged — each still does its own auth check.
 
 const handlers = {
+  'articles': require('../../lib/admin/articles'),
   'content': require('../../lib/admin/content'),
   'meetings': require('../../lib/admin/meetings'),
   'participants': require('../../lib/admin/participants'),

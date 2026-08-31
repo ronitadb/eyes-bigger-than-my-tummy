@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>הספרייה — מאמרים</title>
+<script>try{if(sessionStorage.getItem("cms-auth"))document.documentElement.setAttribute("data-authing","");}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/article.css">
+<style>
+:root{--edge:#DCE6E0;--head:#2F5248;--gold:#EDA72E;--muted:#8A9490;--paper:#FAF8F4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:#22302F;font-family:'Assistant',sans-serif;font-size:15px}
+a{color:var(--head)}
+.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px clamp(16px,3vw,28px);border-bottom:1px solid var(--edge);background:#fff}
+.bar h1{font-size:19px;margin:0;font-weight:700;color:var(--head)}
+.bar .sp{flex:1 1 auto}
+button{font-family:inherit;font-size:14px;padding:8px 14px;border:1px solid var(--edge);background:#fff;border-radius:3px;cursor:pointer;color:#22302F}
+button:hover{border-color:var(--head)}
+button.pri{background:var(--head);color:#fff;border-color:var(--head);font-weight:600}
+button.warn{color:#9B3B2F;border-color:#E2C6C0}
+.wrap{padding:clamp(16px,3vw,28px);max-width:1500px;margin:0 auto}
+.hide{display:none !important}
+/* ── list ── */
+.rows{background:#fff;border:1px solid var(--edge);border-radius:4px;overflow:hidden}
+.row{display:flex;gap:14px;align-items:center;padding:13px 16px;border-top:1px solid #EEF2F0;cursor:pointer}
+.row:first-child{border-top:0}
+.row:hover{background:#FBFAF7}
+.row .n{width:26px;color:var(--muted);font-variant-numeric:tabular-nums}
+.row .t{flex:1 1 auto;min-width:0}
+.row .t b{display:block;font-weight:600;color:var(--head)}
+.row .t small{color:var(--muted)}
+.pill{font-size:12px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.p-planned{background:#F3F0E6;color:#8A7B4E}
+.p-draft{background:#EEF2F0;color:#5E706B}
+.p-published{background:#E6F0EA;color:#2F5248}
+.p-hidden{background:#F3EDEC;color:#8A6560}
+/* ── editor ── */
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media(max-width:1100px){.cols{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--edge);border-radius:4px;padding:16px 18px;margin-bottom:16px}
+.card>h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:0 0 14px;font-weight:700}
+label{display:block;font-size:13px;color:var(--muted);margin:0 0 4px}
+input[type=text],textarea,select{width:100%;font-family:inherit;font-size:15px;padding:9px 11px;border:1px solid var(--edge);border-radius:3px;background:#FDFCFA;color:#22302F}
+textarea{line-height:1.7;resize:vertical;min-height:90px}
+.f{margin-bottom:12px}
+.two{display:flex;gap:12px;flex-wrap:wrap}
+.two>*{flex:1 1 180px}
+/* ── blocks ── */
+.blk{border:1px solid var(--edge);border-inline-start:3px solid var(--gold);border-radius:3px;background:#FDFCFA;padding:12px 14px;margin-bottom:12px}
+.blk-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.blk-h .ty{font-weight:700;color:var(--head);font-size:14px;flex:1 1 auto}
+.blk-h button{padding:3px 9px;font-size:13px}
+.chain li{margin-bottom:8px;display:flex;gap:8px;align-items:center}
+.chain input{flex:1 1 auto}
+.note{font-size:13px;color:var(--muted);line-height:1.65;margin:8px 0 0}
+.priv{background:#FFF9EC;border-color:#EADFC2;border-inline-start-color:#C8A548}
+/* ── preview ── */
+.pv{background:var(--paper);border:1px solid var(--edge);border-radius:4px;padding:26px 0;position:sticky;top:16px;max-height:calc(100vh - 40px);overflow:auto}
+.pv .a-article{font-size:17px}
+#msg{font-size:14px;padding:8px 0;color:var(--head)}
+#msg.bad{color:#9B3B2F}
+/* ── login ── */
+.login{max-width:340px;margin:16vh auto;background:#fff;border:1px solid var(--edge);border-radius:4px;padding:26px}
+html[data-authing] .login{display:none}
+.err{color:#9B3B2F;font-size:13px;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div id="login" class="login">
+  <h1 style="font-size:17px;margin:0 0 14px;color:var(--head)">הספרייה — מאמרים</h1>
+  <input type="password" id="pw" placeholder="סיסמת ניהול" autocomplete="current-password">
+  <button class="pri" style="margin-top:10px;width:100%" onclick="doLogin()">כניסה</button>
+  <div id="loginErr" class="err"></div>
+</div>
+
+<div id="app" class="hide">
+  <div class="bar">
+    <h1>הספרייה — מאמרים</h1>
+    <a href="/admin" style="font-size:14px">← מרכז הניהול</a>
+    <div class="sp"></div>
+    <span id="ctx" style="color:var(--muted);font-size:14px"></span>
+    <button id="btnNew" onclick="newArticle()">מאמר חדש</button>
+    <button id="btnBack" class="hide" onclick="showList()">← לרשימה</button>
+    <button id="btnSave" class="pri hide" onclick="save()">שמירה</button>
+  </div>
+  <div class="wrap">
+    <div id="msg"></div>
+    <div id="listView"><div class="rows" id="rows"></div></div>
+    <div id="editView" class="hide cols">
+      <div>
+        <div class="card">
+          <h2>כותרת</h2>
+          <div class="f"><label>כותרת ראשית — ספרותית, ציטוט, פתגם</label>
+            <input type="text" id="title_lead" placeholder="אם אין אני לי, מי לי?"></div>
+          <div class="f"><label>כותרת משנית — שם הנושא במדויק</label>
+            <input type="text" id="title_topic"></div>
+          <div class="f"><label>תקציר — לכרטיס בספרייה ולתצוגה בוואטסאפ</label>
+            <textarea id="summary" style="min-height:60px"></textarea></div>
+          <div class="two">
+            <div class="f"><label>כתובת (לטינית)</label><input type="text" id="slug"></div>
+            <div class="f"><label>סדר</label><input type="text" id="sort_order"></div>
+          </div>
+        </div>
+
+        <div class="card priv">
+          <h2>מאחורי הקלעים — לא מתפרסם</h2>
+          <p class="note">שרשרת הדומינו. כל אבן נכתבת כ<b>אמירה</b>, לא כתווית —
+            ״המילה ׳אני׳ נעלמה מהמשפט״, לא ״מה קרה למילה אני״. האמירות האלה הן
+            הכותרות של הקטעים. כתבי אותן ראשונות, בדקי שהשרשרת נופלת, ורק אז כתבי.</p>
+          <ol class="chain" id="chain" style="padding-inline-start:1.2em;margin:12px 0"></ol>
+          <button onclick="addChain()">+ אבן דומינו</button>
+          <div class="f" style="margin-top:14px"><label>הערות פרטיות</label>
+            <textarea id="notes" style="min-height:70px"></textarea></div>
+        </div>
+
+        <div class="card">
+          <h2>גוף המאמר</h2>
+          <div id="blocks"></div>
+          <div class="two" style="margin-top:6px">
+            <select id="newType">
+              <option value="opening">פתיחה</option>
+              <option value="domino">קטע (אבן דומינו)</option>
+              <option value="text">טקסט</option>
+              <option value="subheading">תת-כותרת</option>
+              <option value="quote">ציטוט</option>
+              <option value="term">תיבת מונח</option>
+              <option value="fact">תיבת עובדה</option>
+              <option value="list">רשימה</option>
+              <option value="image">תמונה</option>
+              <option value="divider">מפריד</option>
+              <option value="footnotes">הערות שוליים</option>
+            </select>
+            <button onclick="addBlock()">+ הוספת בלוק</button>
+          </div>
+          <p class="note">בתוך טקסט: שורה ריקה מפרידה פסקאות ·
+            <code>[טקסט](כתובת)</code> לקישור · <code>*נטוי*</code> להדגשה ·
+            <code>[^1]</code> להערת שוליים. מודגש שמור לתת-כותרות.</p>
+        </div>
+
+        <div class="card">
+          <h2>הנחיתה</h2>
+          <div class="f"><label>המונח שהמאמר תורם למילון</label>
+            <input type="text" id="term_name" placeholder="שיקוף · mirroring"></div>
+          <div class="f"><label>לקריאה נוספת — מאמרים קשורים</label>
+            <div id="related" style="max-height:150px;overflow:auto;border:1px solid var(--edge);border-radius:3px;padding:8px"></div></div>
+          <div class="f"><label>פורסם גם ב־</label><div id="pubs"></div>
+            <button onclick="addPub()">+ פרסום חיצוני</button></div>
+        </div>
+
+        <div class="card">
+          <h2>פרסום</h2>
+          <div class="two">
+            <div class="f"><label>מצב</label><select id="status">
+              <option value="planned">בתכנון — הכותרת מופיעה בספרייה כ״בקרוב״</option>
+              <option value="draft">טיוטה — לא מופיע בכלל</option>
+              <option value="published">מפורסם</option>
+              <option value="hidden">מוסתר</option>
+            </select></div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+            <button class="pri" onclick="save()">שמירה</button>
+            <button onclick="openLive()">צפייה בעמוד ↗</button>
+            <button class="warn" onclick="del()">מחיקה</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pv"><div id="preview"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var API='/api/admin/articles', PW='', state={list:[],cur:null,blocks:[],chain:[],pubs:[],related:[]};
+function headers(){return{'Content-Type':'application/json','x-admin-password':PW}}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function el(id){return document.getElementById(id)}
+function msg(t,bad){el('msg').textContent=t||'';el('msg').className=bad?'bad':''}
+
+function doLogin(){
+  PW=el('pw').value;
+  fetch(API,{headers:headers()}).then(function(r){if(!r.ok)throw 0;return r.json()})
+    .then(function(d){sessionStorage.setItem('cms-auth',PW);enter(d)})
+    .catch(function(){el('loginErr').textContent='סיסמה שגויה'});
+}
+(function(){var s=sessionStorage.getItem('cms-auth');if(!s)return;PW=s;
+  fetch(API,{headers:headers()}).then(function(r){if(!r.ok)throw 0;return r.json()})
+    .then(enter).catch(function(){PW='';sessionStorage.removeItem('cms-auth');
+      document.documentElement.removeAttribute('data-authing')});})();
+
+function enter(d){el('login').classList.add('hide');el('app').classList.remove('hide');
+  state.list=d.articles||[];renderList();}
+
+function renderList(){
+  el('rows').innerHTML=state.list.map(function(a){
+    var t=a.title_lead||a.title_topic||'(ללא כותרת)';
+    return '<div class="row" onclick="openArticle('+a.id+')">'+
+      '<span class="n">'+esc(a.sort_order)+'</span>'+
+      '<span class="t"><b>'+esc(t)+'</b><small>'+esc(a.title_lead?(a.title_topic||''):'')+
+      ' · /library/'+esc(a.slug)+' · '+(a.block_count||0)+' בלוקים · '+(a.chain_count||0)+' אבני דומינו</small></span>'+
+      '<span class="pill p-'+esc(a.status)+'">'+({planned:'בתכנון',draft:'טיוטה',published:'מפורסם',hidden:'מוסתר'}[a.status]||a.status)+'</span>'+
+      '</div>';
+  }).join('');
+}
+function showList(){state.cur=null;el('listView').classList.remove('hide');el('editView').classList.add('hide');
+  el('btnBack').classList.add('hide');el('btnSave').classList.add('hide');el('btnNew').classList.remove('hide');
+  el('ctx').textContent='';msg('');reload();}
+function reload(){fetch(API,{headers:headers()}).then(function(r){return r.json()})
+  .then(function(d){state.list=d.articles||[];renderList()})}
+
+function openArticle(id){
+  fetch(API+'?id='+id,{headers:headers()}).then(function(r){return r.json()}).then(function(d){
+    if(!d.ok)return msg('לא נמצא',1);
+    var a=d.article;state.cur=a;
+    state.blocks=Array.isArray(a.blocks)?a.blocks:[];
+    state.chain=Array.isArray(a.chain)?a.chain:[];
+    state.pubs=Array.isArray(a.external_pubs)?a.external_pubs:[];
+    state.related=Array.isArray(a.related_ids)?a.related_ids:[];
+    ['title_lead','title_topic','summary','slug','sort_order','notes','term_name','status']
+      .forEach(function(f){el(f).value=a[f]==null?'':a[f]});
+    el('listView').classList.add('hide');el('editView').classList.remove('hide');
+    el('btnBack').classList.remove('hide');el('btnSave').classList.remove('hide');el('btnNew').classList.add('hide');
+    el('ctx').textContent='/library/'+a.slug;
+    drawChain();drawBlocks();drawPubs();drawRelated();preview();msg('');
+  });
+}
+
+/* ── the domino chain (private) ── */
+function drawChain(){
+  el('chain').innerHTML=state.chain.map(function(c,i){
+    return '<li><input type="text" value="'+esc(c)+'" oninput="state.chain['+i+']=this.value">'+
+      '<button onclick="state.chain.splice('+i+',1);drawChain()">✕</button></li>';
+  }).join('');
+}
+function addChain(){state.chain.push('');drawChain()}
+
+/* ── blocks ── */
+var LABEL={opening:'פתיחה',domino:'קטע',text:'טקסט',subheading:'תת-כותרת',quote:'ציטוט',
+  term:'תיבת מונח',fact:'תיבת עובדה',list:'רשימה',image:'תמונה',divider:'מפריד',footnotes:'הערות שוליים'};
+function fld(i,k,label,val,ta){
+  var v=esc(val==null?'':val);
+  return '<div class="f"><label>'+label+'</label>'+
+    (ta?'<textarea oninput="setB('+i+',\''+k+'\',this.value)">'+v+'</textarea>'
+       :'<input type="text" value="'+v+'" oninput="setB('+i+',\''+k+'\',this.value)">')+'</div>';
+}
+function setB(i,k,v){state.blocks[i][k]=v;schedulePreview()}
+function setItems(i,v){state.blocks[i].items=v.split('\n').filter(function(x){return x.trim()});schedulePreview()}
+function drawBlocks(){
+  el('blocks').innerHTML=state.blocks.map(function(b,i){
+    var h='<div class="blk"><div class="blk-h"><span class="ty">'+(LABEL[b.type]||b.type)+'</span>'+
+      '<button onclick="moveB('+i+',-1)" title="למעלה">↑</button>'+
+      '<button onclick="moveB('+i+',1)" title="למטה">↓</button>'+
+      '<button onclick="delB('+i+')" title="מחיקה">✕</button></div>';
+    if(b.type==='opening'){
+      h+='<div class="f"><label>מקור</label><select onchange="setB('+i+',\'source\',this.value);drawBlocks()">'+
+        ['book','library','free'].map(function(s){return '<option value="'+s+'"'+(b.source===s?' selected':'')+'>'+
+          ({book:'מתוך ״עיניים גדולות זה לא טוב״',library:'מתוך סיפור שהתקבל בספרייה',free:'טקסט חופשי'}[s])+'</option>'}).join('')+'</select></div>';
+      if(b.source==='free')h+=fld(i,'source_text','תווית המקור',b.source_text);
+      h+=fld(i,'body','הטקסט',b.body,1);
+    }
+    else if(b.type==='domino'){h+=fld(i,'heading','כותרת הקטע — אמירה, לא תווית',b.heading)+fld(i,'body','הטקסט',b.body,1)}
+    else if(b.type==='text'){h+=fld(i,'body','הטקסט',b.body,1)}
+    else if(b.type==='subheading'){h+=fld(i,'text','תת-כותרת',b.text)}
+    else if(b.type==='quote'){h+=fld(i,'body','הציטוט',b.body,1)+fld(i,'attribution','מקור',b.attribution)}
+    else if(b.type==='term'){h+=fld(i,'name','המונח',b.name)+fld(i,'name_en','באנגלית',b.name_en)+fld(i,'body','ההסבר',b.body,1)+fld(i,'link','קישור למילון',b.link)}
+    else if(b.type==='fact'){h+=fld(i,'title','כותרת',b.title)+fld(i,'body','התוכן',b.body,1)}
+    else if(b.type==='image'){h+=fld(i,'src','כתובת התמונה',b.src)+fld(i,'alt','תיאור',b.alt)+fld(i,'credit','קרדיט',b.credit)}
+    else if(b.type==='list'||b.type==='footnotes'){
+      h+='<div class="f"><label>'+(b.type==='list'?'פריטים':'הערות')+' — שורה לכל אחד</label>'+
+        '<textarea oninput="setItems('+i+',this.value)">'+esc((b.items||[]).join('\n'))+'</textarea></div>';
+    }
+    return h+'</div>';
+  }).join('');
+}
+function addBlock(){var t=el('newType').value;var b={type:t};
+  if(t==='opening')b.source='book';if(t==='list'||t==='footnotes')b.items=[];
+  state.blocks.push(b);drawBlocks();schedulePreview()}
+function delB(i){state.blocks.splice(i,1);drawBlocks();schedulePreview()}
+function moveB(i,d){var j=i+d;if(j<0||j>=state.blocks.length)return;
+  var t=state.blocks[i];state.blocks[i]=state.blocks[j];state.blocks[j]=t;drawBlocks();schedulePreview()}
+
+/* ── external publications & related ── */
+function drawPubs(){
+  el('pubs').innerHTML=state.pubs.map(function(p,i){
+    return '<div class="two" style="margin-bottom:8px">'+
+      '<input type="text" placeholder="שם הפרסום" value="'+esc(p.name)+'" oninput="state.pubs['+i+'].name=this.value">'+
+      '<input type="text" placeholder="קישור" value="'+esc(p.url)+'" oninput="state.pubs['+i+'].url=this.value">'+
+      '<input type="text" placeholder="תאריך" value="'+esc(p.date)+'" oninput="state.pubs['+i+'].date=this.value" style="flex:0 1 110px">'+
+      '<button onclick="state.pubs.splice('+i+',1);drawPubs()">✕</button></div>';
+  }).join('');
+}
+function addPub(){state.pubs.push({name:'',url:'',date:''});drawPubs()}
+function drawRelated(){
+  el('related').innerHTML=state.list.filter(function(a){return state.cur&&a.id!==state.cur.id})
+    .map(function(a){
+      return '<label style="display:flex;gap:8px;align-items:center;color:#22302F;margin:0 0 5px">'+
+        '<input type="checkbox" value="'+a.id+'"'+(state.related.indexOf(a.id)>-1?' checked':'')+
+        ' onchange="toggleRel('+a.id+',this.checked)">'+esc(a.title_lead||a.title_topic)+'</label>';
+    }).join('')||'<span class="note">אין עדיין מאמרים אחרים</span>';
+}
+function toggleRel(id,on){var i=state.related.indexOf(id);
+  if(on&&i<0)state.related.push(id);if(!on&&i>-1)state.related.splice(i,1)}
+
+/* ── preview: rendered by the SAME server code that publishes ── */
+var pvTimer=null;
+function schedulePreview(){clearTimeout(pvTimer);pvTimer=setTimeout(preview,400)}
+function preview(){
+  fetch(API,{method:'POST',headers:headers(),body:JSON.stringify({action:'preview',blocks:state.blocks})})
+    .then(function(r){return r.json()}).then(function(d){
+      var head='<header class="a-title">'+
+        (el('title_lead').value?'<h1 class="a-title-lead">'+esc(el('title_lead').value)+'</h1>':'')+
+        (el('title_topic').value?'<p class="a-title-topic">'+esc(el('title_topic').value)+'</p>':'')+'</header>';
+      el('preview').innerHTML='<article class="a-article">'+head+(d.html||'')+'</article>';
+    }).catch(function(){});
+}
+['title_lead','title_topic'].forEach(function(f){
+  document.addEventListener('input',function(e){if(e.target&&e.target.id===f)schedulePreview()})});
+
+/* ── save / create / delete ── */
+function save(){
+  if(!state.cur)return;
+  var body={id:state.cur.id,blocks:state.blocks,chain:state.chain.filter(function(c){return c.trim()}),
+    external_pubs:state.pubs.filter(function(p){return p.name||p.url}),related_ids:state.related};
+  ['title_lead','title_topic','summary','slug','notes','term_name','status'].forEach(function(f){body[f]=el(f).value});
+  body.sort_order=el('sort_order').value;
+  msg('שומר…');
+  fetch(API,{method:'PUT',headers:headers(),body:JSON.stringify(body)})
+    .then(function(r){return r.json()}).then(function(d){
+      if(!d.ok)return msg(d.message||'השמירה נכשלה',1);
+      msg('נשמר ✓');state.cur.slug=body.slug;el('ctx').textContent='/library/'+body.slug;reload();
+    }).catch(function(){msg('השמירה נכשלה',1)});
+}
+function newArticle(){
+  var s=prompt('כתובת באותיות לטיניות, למשל article-11');
+  if(!s)return;
+  fetch(API,{method:'POST',headers:headers(),body:JSON.stringify({slug:s})})
+    .then(function(r){return r.json()}).then(function(d){
+      if(!d.ok)return msg(d.message||'לא נוצר',1);
+      reload();setTimeout(function(){openArticle(d.id)},200);
+    });
+}
+function del(){
+  if(!state.cur)return;
+  if(!confirm('למחוק את המאמר לצמיתות?'))return;
+  fetch(API,{method:'DELETE',headers:headers(),body:JSON.stringify({id:state.cur.id})})
+    .then(function(){showList()});
+}
+function openLive(){if(state.cur)window.open('/library/'+el('slug').value,'_blank')}
+</script>
+</body>
+</html>

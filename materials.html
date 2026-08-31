@@ -145,6 +145,7 @@
           </summary>
           <div style="padding:4px clamp(22px,4vw,30px) clamp(26px,4vw,32px);">
             <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0; text-wrap:pretty;" data-cms="articles-note">הכתיבה שתובא כאן נבנית גם מהסיפורים שיעלו בקבוצות. הספרייה הזו תיבנה בהדרגה, ותאפשר לתיאוריה ולשטח להעשיר ולדייק זה את זו.</p>
+            <div id="articles-grid" style="margin-top:26px"></div>
           </div>
         </details>
 
@@ -361,6 +362,29 @@
   }).catch(function(){});
 })();
 </script>
+<script>(function(){
+  fetch('/api/article').then(function(r){return r.json()}).then(function(d){
+    var box=document.getElementById('articles-grid');
+    if(!box||!d||!d.ok||!d.articles||!d.articles.length)return;
+    function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+    box.innerHTML=d.articles.map(function(a){
+      var live=a.status==='published';
+      var lead=a.title_lead||a.title_topic||'';
+      var sub=a.title_lead?(a.title_topic||''):'';
+      var inner=
+        '<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(17px,2vw,20px); line-height:1.35; margin:0 0 4px;">'+esc(lead)+'</div>'+
+        (sub?'<div style="font-family:\'Frank Ruhl Libre\',serif; font-size:15px; line-height:1.6; color:#6E7C78;">'+esc(sub)+'</div>':'')+
+        (a.summary?'<div style="font-family:\'Frank Ruhl Libre\',serif; font-size:15px; line-height:1.7; color:#6E7C78; margin-top:8px;">'+esc(a.summary)+'</div>':'')+
+        (live?'':'<div style="font-size:12px; font-weight:600; letter-spacing:.08em; color:#EDA72E; margin-top:10px;">בקרוב</div>');
+      var box='display:block; text-decoration:none; background:#fff; border:1px solid rgba(34,48,47,.14);'+
+        'border-top:2px solid '+(live?'#EDA72E':'rgba(237,167,46,.35)')+'; border-radius:3px;'+
+        'padding:18px 20px; margin-bottom:10px;'+(live?'':'opacity:.72;');
+      return live
+        ? '<a href="/library/'+esc(a.slug)+'" style="'+box+'">'+inner+'</a>'
+        : '<div style="'+box+'">'+inner+'</div>';
+    }).join('');
+  }).catch(function(){});
+})();</script>
 <script>(function(){fetch('/api/content?page=materials').then(function(r){return r.json()}).then(function(d){if(!d.blocks)return;d.blocks.forEach(function(b){var el=document.querySelector('[data-cms="'+b.block_id+'"]');if(el)el.innerHTML=b.content.replace(/\n/g,'<br>')})}).catch(function(){})})()</script>
 </div>
 </x-dc>

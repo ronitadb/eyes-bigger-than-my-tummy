@@ -1,0 +1,180 @@
+/* הספרייה המשותפת — article components.
+   Loaded by the public article page and by the admin preview, so the preview
+   cannot drift from what gets published.
+
+   Palette: green is the furniture (headings, the landing zone), cream is the
+   reading surface, gold is the shared accent used sparingly. */
+
+.a-article{
+  --paper:#FAF8F4;   /* site ground */
+  --panel:#F1EBDE;   /* the design's cream, deepened to keep its step over paper */
+  --gold:#EDA72E;    /* the site's gold — used 44× elsewhere, so it wins */
+  --head:#2F5248;
+  --body:#3E4B47;    /* softer than the site's #22302F: kinder over 3000 words */
+  --rule:#EAE4D6;
+  --edge:#DCE6E0;
+  --muted:#8A9490;
+
+  direction:rtl; text-align:right;
+  max-width:34em; margin-inline:auto;
+  padding:0 clamp(20px,5vw,32px);
+  font-family:'Frank Ruhl Libre',serif;
+  font-size:19px; line-height:1.9; color:var(--body);
+}
+.a-article p{margin:0 0 1.1em; text-wrap:pretty}
+.a-article a{color:var(--head); text-decoration:underline; text-underline-offset:3px}
+.a-article em{font-style:italic; color:var(--head)}
+
+/* ── כותרת ראשית: two lines, deliberately different designs ───────────────
+   The light weight is what lets the literary line be large without shouting. */
+.a-title{margin:0 0 34px}
+.a-title-lead{
+  font-family:'Assistant',sans-serif; font-weight:300;
+  font-size:clamp(30px,5.2vw,46px); line-height:1.24;
+  color:var(--head); margin:0 0 14px; text-wrap:balance;
+}
+.a-title-topic{
+  font-family:'Assistant',sans-serif; font-weight:400;
+  font-size:clamp(18px,2.5vw,24px); line-height:1.4;
+  color:var(--head); opacity:.86; margin:0; text-wrap:balance;
+}
+
+/* ── the opening: literary entry, carrying its source ─────────────────────── */
+.a-opening{
+  background:var(--panel); padding:clamp(22px,4vw,30px);
+  margin:0 0 32px; border-radius:3px;
+}
+.a-opening p{
+  font-family:'Assistant',sans-serif; font-weight:300;
+  font-size:clamp(18px,2.2vw,21px); line-height:1.75; color:var(--head);
+}
+.a-opening p:last-child{margin-bottom:0}
+.a-opening-src{
+  font-family:'Assistant',sans-serif; font-size:13px; font-weight:600;
+  letter-spacing:.04em; color:var(--gold); margin:0 0 14px;
+}
+
+/* ── מפריד יהלום: the seam between dominoes. One job only. ────────────────── */
+.a-seam{display:flex; align-items:center; gap:12px; margin:46px 0 30px}
+.a-seam i{flex:1 1 auto; height:1px; background:var(--rule)}
+.a-seam b{width:6px; height:6px; background:var(--gold); transform:rotate(45deg); flex:none}
+
+/* ── domino heading — a statement, never numbered ─────────────────────────── */
+.a-domino h2{
+  font-family:'Assistant',sans-serif; font-weight:600;
+  font-size:clamp(19px,2.3vw,24px); line-height:1.35;
+  color:var(--head); margin:0 0 .7em; text-wrap:balance;
+}
+/* תת-כותרת: body font + bold, but the heading green. Colour and spacing carry
+   it, so bold stays unambiguous and no fourth size is needed. */
+.a-sub{
+  font-family:inherit; font-weight:700; font-size:1em;
+  color:var(--head); margin:1.8em 0 .35em;
+}
+
+/* ── ציטוט ─────────────────────────────────────────────────────────────────── */
+.a-quote{
+  background:var(--panel); border-inline-start:2px solid var(--gold);
+  margin:30px 0; padding:22px clamp(20px,3vw,26px);
+}
+.a-quote p{font-size:1.05em; line-height:1.85}
+.a-quote p:last-of-type{margin-bottom:0}
+.a-quote cite{
+  display:block; margin-top:12px; font-style:normal;
+  font-family:'Assistant',sans-serif; font-size:14px; color:var(--muted);
+}
+
+/* ── תיבת מונח / תיבת עובדה — white card with a gold top rule ─────────────── */
+.a-term,.a-fact{
+  background:#fff; border:1px solid var(--edge); border-top:2px solid var(--gold);
+  padding:20px clamp(18px,3vw,24px); margin:30px 0;
+}
+.a-term p,.a-fact p{font-size:.94em; line-height:1.8}
+.a-term p:last-of-type,.a-fact p:last-of-type{margin-bottom:0}
+.a-term-name,.a-fact-title{
+  font-family:'Assistant',sans-serif; font-weight:600; font-size:17px;
+  color:var(--head); margin:0 0 10px;
+}
+.a-term-name span{font-weight:400; color:var(--muted); font-size:15px}
+.a-term-link{
+  display:inline-block; margin-top:12px; font-family:'Assistant',sans-serif;
+  font-size:14px; text-decoration:none; color:var(--gold); font-weight:600;
+}
+
+/* ── רשימה — the bullet is the gold diamond, tying lists to the seam motif ── */
+.a-list{list-style:none; margin:0 0 1.3em; padding-inline-start:1.5em}
+.a-list li{position:relative; margin:0 0 .6em}
+.a-list li::before{
+  content:""; position:absolute; inset-inline-start:-1.5em; top:.78em;
+  width:5px; height:5px; background:var(--gold); transform:rotate(45deg);
+}
+.a-list-num{counter-reset:n}
+.a-list-num li{counter-increment:n}
+.a-list-num li::before{
+  content:counter(n) "."; background:none; transform:none; top:0;
+  width:auto; height:auto; color:var(--gold); font-weight:700;
+  font-family:'Assistant',sans-serif;
+}
+
+/* ── תמונה + קרדיט ────────────────────────────────────────────────────────── */
+.a-figure{margin:32px 0}
+.a-figure img{display:block; width:100%; height:auto; border-radius:3px}
+.a-figure figcaption{
+  font-family:'Assistant',sans-serif; font-size:13px;
+  color:var(--muted); line-height:1.6; margin-top:8px;
+}
+
+/* ── הערות שוליים ─────────────────────────────────────────────────────────── */
+.fn-ref{font-size:.7em; line-height:0}
+.fn-ref a{text-decoration:none; color:var(--gold); font-weight:700; padding:0 2px}
+.a-footnotes{margin:44px 0 0; padding-top:18px; border-top:1px solid var(--rule)}
+.a-footnotes ol{list-style:none; margin:0; padding:0}
+.a-footnotes li{
+  position:relative; font-size:15px; line-height:1.75;
+  color:var(--muted); margin:0 0 .6em; padding-inline-start:1.6em;
+}
+.fn-num{
+  position:absolute; inset-inline-start:0; color:var(--gold);
+  font-weight:700; font-family:'Assistant',sans-serif;
+}
+.fn-back{text-decoration:none; color:var(--gold)}
+
+/* ── the landing: green, bordered, distinctly not the reading surface.
+   The colour says "you have finished reading and returned to navigating". ─── */
+.a-landing{
+  max-width:34em; margin:56px auto 0;
+  background:rgba(61,116,104,.07); border:1px solid rgba(47,82,72,.22);
+  border-radius:3px; padding:clamp(24px,4vw,32px);
+  direction:rtl; text-align:right;
+  font-family:'Assistant',sans-serif; color:var(--head,#2F5248);
+}
+/* פתיח כותרת — reserved for the landing zone alone, never at a domino seam. */
+.a-landing-bar{display:flex; align-items:center; gap:0; margin:0 0 20px}
+.a-landing-bar i{height:3px; width:34px; background:#2F5248; flex:none}
+.a-landing-bar b{height:3px; flex:1 1 auto; background:#EDA72E}
+.a-landing h3{
+  font-size:14px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; color:#EDA72E; margin:22px 0 10px;
+}
+.a-landing h3:first-of-type{margin-top:0}
+.a-landing ul{list-style:none; margin:0; padding:0}
+.a-landing li{margin:0 0 8px; font-size:16px; line-height:1.6}
+.a-landing a{color:#2F5248; text-decoration:underline; text-underline-offset:3px}
+
+/* ── print: ⌘P → Save as PDF is how Ronit produces the article's PDF ─────── */
+@media print{
+  @page{size:A4; margin:18mm 16mm}
+  html,body{background:#fff !important}
+  .a-article{max-width:none; font-size:11.5pt; padding:0}
+  .a-title-lead{font-size:28pt}
+  .a-title-topic{font-size:16pt}
+  .a-domino h2{font-size:15pt; break-after:avoid}
+  .a-sub{break-after:avoid}
+  .a-opening,.a-quote,.a-term,.a-fact,.a-figure{
+    break-inside:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .a-seam{break-after:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .a-article a{color:inherit; text-decoration:none}
+  .a-landing,.no-print{display:none !important}
+  .a-footnotes{break-before:auto}
+}
