@@ -230,7 +230,14 @@ function renderList(){
     return '<div class="row" onclick="openArticle('+a.id+')">'+
       '<span class="n">'+esc(a.sort_order)+'</span>'+
       '<span class="t"><b>'+esc(t)+'</b><small>'+esc(a.title_lead?(a.title_topic||''):'')+
-      ' · /library/'+esc(a.slug)+' · '+(a.block_count||0)+' בלוקים · '+(a.chain_count||0)+' אבני דומינו</small></span>'+
+      ' · /library/'+esc(a.slug)+'</small>'+
+      '<small style="display:block;margin-top:2px">'+
+        (a.canvas_len?('כרטיס מאמר · '+Math.round(a.canvas_len/1000)+'K תווים'):'<span style="color:#C0762F">אין כרטיס מאמר</span>')+
+        ' · '+(a.chain_count||0)+' אבני דומינו'+
+        ' · '+(a.block_count||0)+' בלוקים'+
+        (a.has_asimon?' · אסימון ✓':'')+
+        (a.has_sentence?' · משפט ✓':'')+
+      '</small></span>'+
       '<span class="pill p-'+esc(a.status)+'">'+({planned:'בתכנון',draft:'טיוטה',published:'מפורסם',hidden:'מוסתר'}[a.status]||a.status)+'</span>'+
       '</div>';
   }).join('');
