@@ -59,5 +59,10 @@
       "source": "/library/:slug",
       "destination": "/api/article?slug=:slug"
     }
-  ]
+  ],
+  "functions": {
+    "api/admin/[resource].js": {
+      "maxDuration": 60
+    }
+  }
 }
