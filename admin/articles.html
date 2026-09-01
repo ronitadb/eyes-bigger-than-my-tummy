@@ -212,17 +212,33 @@ function msg(t,bad){el('msg').textContent=t||'';el('msg').className=bad?'bad':''
 
 function doLogin(){
   PW=el('pw').value;
-  fetch(API,{headers:headers()}).then(function(r){if(!r.ok)throw 0;return r.json()})
+  fetch(API,{headers:headers()}).then(function(r){
+      if(r.status===401)throw new Error('bad-password');
+      if(!r.ok)throw new Error('server-'+r.status);
+      return r.json();})
     .then(function(d){sessionStorage.setItem('cms-auth',PW);enter(d)})
-    .catch(function(){el('loginErr').textContent='סיסמה שגויה'});
+    .catch(function(e){
+      el('loginErr').textContent = e.message==='bad-password'
+        ? 'סיסמה שגויה'
+        : 'הסיסמה תקינה, אבל השרת החזיר שגיאה ('+e.message+'). כנראה חסרה הרצה של מיגרציה.';
+    });
 }
 (function(){var s=sessionStorage.getItem('cms-auth');if(!s)return;PW=s;
-  fetch(API,{headers:headers()}).then(function(r){if(!r.ok)throw 0;return r.json()})
-    .then(enter).catch(function(){PW='';sessionStorage.removeItem('cms-auth');
-      document.documentElement.removeAttribute('data-authing')});})();
+  fetch(API,{headers:headers()}).then(function(r){
+      if(r.status===401)throw new Error('bad-password');
+      if(!r.ok)throw new Error('server-'+r.status);
+      return r.json();})
+    .then(enter)
+    .catch(function(e){
+      document.documentElement.removeAttribute('data-authing');
+      if(e.message==='bad-password'){PW='';sessionStorage.removeItem('cms-auth');return}
+      // Session is fine — the server is not. Say so instead of asking again.
+      el('loginErr').textContent='השרת החזיר שגיאה ('+e.message+'). כנראה חסרה הרצה של מיגרציה.';
+    });})();
 
 function enter(d){el('login').classList.add('hide');el('app').classList.remove('hide');
-  state.list=d.articles||[];renderList();}
+  state.list=d.articles||[];renderList();
+  if(d.degraded)msg('חלק מהעמודות עדיין לא קיימות במסד — יש להריץ את המיגרציות. המסך עובד, אבל בלי חלק מהמידע.',1);}
 
 function renderList(){
   el('rows').innerHTML=state.list.map(function(a){
