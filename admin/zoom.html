@@ -377,7 +377,10 @@ function doLogout(){PW='';sessionStorage.removeItem('cms-auth');document.getElem
 (function(){var s=sessionStorage.getItem('cms-auth');if(!s)return;PW=s;fetch(API+'/admin/meetings',{headers:{'x-admin-password':PW}}).then(function(r){if(r.status===401){sessionStorage.removeItem('cms-auth');PW='';document.documentElement.removeAttribute('data-authing');return}enterApp();}).catch(function(){document.documentElement.removeAttribute('data-authing');});})();
 document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
 
-function showMsg(t,ok){var el=document.getElementById('msg');el.className='msg '+(ok?'msg-ok':'msg-err');el.textContent=t;setTimeout(function(){el.className='';el.textContent=''},5000)}
+// `sticky` keeps a message on screen. A bulk send takes ~30s, so a result
+// that auto-cleared after 5s vanished while nobody was looking at it — and
+// that is the one number worth reporting.
+function showMsg(t,ok,sticky){var el=document.getElementById('msg');el.className='msg '+(ok?'msg-ok':'msg-err');el.textContent=t;if(el.scrollIntoView)el.scrollIntoView({block:'center'});if(showMsg._t){clearTimeout(showMsg._t);showMsg._t=null}if(!sticky)showMsg._t=setTimeout(function(){el.className='';el.textContent=''},5000)}
 
 // Tabs
 function showTab(name){
