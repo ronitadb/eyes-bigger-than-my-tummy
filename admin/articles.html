@@ -96,8 +96,11 @@ html[data-authing] .login{display:none}
         <div class="card priv">
           <h2>משפט אחד שמחזיק את כל המאמר</h2>
           <textarea id="core_sentence" style="min-height:70px;font-family:'Frank Ruhl Libre',serif;font-size:16px;line-height:1.75"></textarea>
-          <p class="note">לא התקציר ולא הכותרת — המשפט שאליו משווים את הטיוטה.
-            שני כרטיסי העבודה הראשונים הגיעו אליו בעצמם, כל אחד בסעיף האחרון שלו.</p>
+          <p class="note">לא התקציר ולא הכותרת — המשפט שאליו משווים את הטיוטה.</p>
+          <label style="margin-top:16px">האסימון — מה אמור ליפול אצל הקורא</label>
+          <textarea id="asimon" style="min-height:70px;font-family:'Frank Ruhl Libre',serif;font-size:16px;line-height:1.75"></textarea>
+          <p class="note">המשפט מחזיק את המאמר; האסימון הוא המטרה שאליה השרשרת מכוונת.
+            חמשת כרטיסי העבודה הראשונים הגיעו אליו בעצמם, כל אחד.</p>
         </div>
 
         <div class="card">
@@ -111,6 +114,7 @@ html[data-authing] .login{display:none}
           <div class="two">
             <div class="f"><label>כתובת (לטינית)</label><input type="text" id="slug"></div>
             <div class="f"><label>סדר</label><input type="text" id="sort_order"></div>
+            <div class="f"><label>ציר</label><input type="text" id="axis" placeholder="הסביבה המגדלת / הקבוצה"></div>
           </div>
         </div>
 
@@ -167,6 +171,9 @@ html[data-authing] .login{display:none}
           <h2>הנחיתה</h2>
           <div class="f"><label>המונח שהמאמר תורם למילון</label>
             <input type="text" id="term_name" placeholder="שיקוף · mirroring"></div>
+          <div class="f"><label>נשען על — המאמרים שהמאמר הזה ממשיך</label>
+            <div id="buildson" style="max-height:130px;overflow:auto;border:1px solid var(--edge);border-radius:3px;padding:8px"></div>
+            <p class="note">הקשר המבני. ״לקריאה נוספת״ שמתחת הוא בחירה עורכית — זה משהו אחר.</p></div>
           <div class="f"><label>לקריאה נוספת — מאמרים קשורים</label>
             <div id="related" style="max-height:150px;overflow:auto;border:1px solid var(--edge);border-radius:3px;padding:8px"></div></div>
           <div class="f"><label>פורסם גם ב־</label><div id="pubs"></div>
@@ -197,7 +204,7 @@ html[data-authing] .login{display:none}
 </div>
 
 <script>
-var API='/api/admin/articles', PW='', state={list:[],cur:null,blocks:[],chain:[],pubs:[],related:[]};
+var API='/api/admin/articles', PW='', state={list:[],cur:null,blocks:[],chain:[],pubs:[],related:[],buildson:[]};
 function headers(){return{'Content-Type':'application/json','x-admin-password':PW}}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function el(id){return document.getElementById(id)}
@@ -242,13 +249,14 @@ function openArticle(id){
     state.chain=Array.isArray(a.chain)?a.chain:[];
     state.pubs=Array.isArray(a.external_pubs)?a.external_pubs:[];
     state.related=Array.isArray(a.related_ids)?a.related_ids:[];
+    state.buildson=Array.isArray(a.builds_on)?a.builds_on:[];
     ['title_lead','title_topic','summary','slug','sort_order','notes','term_name','status',
-     'canvas','canvas_link','core_sentence'].forEach(function(f){el(f).value=a[f]==null?'':a[f]});
+     'canvas','canvas_link','core_sentence','asimon','axis'].forEach(function(f){el(f).value=a[f]==null?'':a[f]});
     canvasStat();
     el('listView').classList.add('hide');el('editView').classList.remove('hide');
     el('btnBack').classList.remove('hide');el('btnSave').classList.remove('hide');el('btnNew').classList.add('hide');
     el('ctx').textContent='/library/'+a.slug;
-    drawChain();drawBlocks();drawPubs();drawRelated();preview();msg('');
+    drawChain();drawBlocks();drawPubs();drawRelated();drawBuildsOn();preview();msg('');
   });
 }
 
@@ -325,6 +333,16 @@ function drawRelated(){
         ' onchange="toggleRel('+a.id+',this.checked)">'+esc(a.title_lead||a.title_topic)+'</label>';
     }).join('')||'<span class="note">אין עדיין מאמרים אחרים</span>';
 }
+function drawBuildsOn(){
+  el('buildson').innerHTML=state.list.filter(function(a){return state.cur&&a.id!==state.cur.id})
+    .map(function(a){
+      return '<label style="display:flex;gap:8px;align-items:center;color:#22302F;margin:0 0 5px">'+
+        '<input type="checkbox" value="'+a.id+'"'+(state.buildson.indexOf(a.id)>-1?' checked':'')+
+        ' onchange="toggleBuild('+a.id+',this.checked)">'+esc(a.title_lead||a.title_topic)+'</label>';
+    }).join('')||'<span class="note">אין עדיין מאמרים אחרים</span>';
+}
+function toggleBuild(id,on){var i=state.buildson.indexOf(id);
+  if(on&&i<0)state.buildson.push(id);if(!on&&i>-1)state.buildson.splice(i,1)}
 function toggleRel(id,on){var i=state.related.indexOf(id);
   if(on&&i<0)state.related.push(id);if(!on&&i>-1)state.related.splice(i,1)}
 
@@ -347,9 +365,10 @@ function preview(){
 function save(){
   if(!state.cur)return;
   var body={id:state.cur.id,blocks:state.blocks,chain:state.chain.filter(function(c){return c.trim()}),
-    external_pubs:state.pubs.filter(function(p){return p.name||p.url}),related_ids:state.related};
+    external_pubs:state.pubs.filter(function(p){return p.name||p.url}),related_ids:state.related,
+    builds_on:state.buildson};
   ['title_lead','title_topic','summary','slug','notes','term_name','status',
-    'canvas','canvas_link','core_sentence'].forEach(function(f){body[f]=el(f).value});
+    'canvas','canvas_link','core_sentence','asimon','axis'].forEach(function(f){body[f]=el(f).value});
   body.sort_order=el('sort_order').value;
   msg('שומר…');
   fetch(API,{method:'PUT',headers:headers(),body:JSON.stringify(body)})
