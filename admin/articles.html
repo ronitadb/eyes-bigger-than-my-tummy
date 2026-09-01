@@ -116,6 +116,10 @@ html[data-authing] .login{display:none}
             <div class="f"><label>סדר</label><input type="text" id="sort_order"></div>
             <div class="f"><label>ציר</label><input type="text" id="axis" placeholder="הסביבה המגדלת / הקבוצה"></div>
           </div>
+          <div class="f"><label>קישור חיצוני — אם המאמר מתארח מחוץ לאתר</label>
+            <input type="text" id="external_url" placeholder="/maamar.pdf">
+            <p class="note">אם יש כאן ערך, הכרטיס בספרייה יוביל לשם במקום לעמוד המאמר.</p>
+          </div>
         </div>
 
         <div class="card priv">
@@ -274,7 +278,8 @@ function openArticle(id){
     state.related=Array.isArray(a.related_ids)?a.related_ids:[];
     state.buildson=Array.isArray(a.builds_on)?a.builds_on:[];
     ['title_lead','title_topic','summary','slug','sort_order','notes','term_name','status',
-     'canvas','canvas_link','core_sentence','asimon','axis'].forEach(function(f){el(f).value=a[f]==null?'':a[f]});
+     'canvas','canvas_link','core_sentence','asimon','axis','external_url']
+       .forEach(function(f){el(f).value=a[f]==null?'':a[f]});
     canvasStat();
     el('listView').classList.add('hide');el('editView').classList.remove('hide');
     el('btnBack').classList.remove('hide');el('btnSave').classList.remove('hide');el('btnNew').classList.add('hide');
@@ -391,7 +396,8 @@ function save(){
     external_pubs:state.pubs.filter(function(p){return p.name||p.url}),related_ids:state.related,
     builds_on:state.buildson};
   ['title_lead','title_topic','summary','slug','notes','term_name','status',
-    'canvas','canvas_link','core_sentence','asimon','axis'].forEach(function(f){body[f]=el(f).value});
+    'canvas','canvas_link','core_sentence','asimon','axis','external_url']
+      .forEach(function(f){body[f]=el(f).value});
   body.sort_order=el('sort_order').value;
   msg('שומר…');
   fetch(API,{method:'PUT',headers:headers(),body:JSON.stringify(body)})

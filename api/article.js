@@ -32,7 +32,8 @@ module.exports = async (req, res) => {
 async function list(res) {
   try {
     const { rows } = await sql`
-      SELECT id, slug, title_lead, title_topic, summary, status, published_at, sort_order
+      SELECT id, slug, title_lead, title_topic, summary, status, published_at,
+             sort_order, external_url
       FROM articles
       WHERE status IN ('planned','published')
       ORDER BY sort_order, id
