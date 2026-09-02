@@ -116,12 +116,43 @@
   font-family:'Assistant',sans-serif;
 }
 
-/* ── תמונה + קרדיט ────────────────────────────────────────────────────────── */
+/* ── תמונה + קרדיט ──────────────────────────────────────────────────────────
+   Four treatments. Full width suits a landscape archive photograph; a portrait
+   at the same width dominates the page, which is what the designed PDF avoided
+   by putting images into panels and side columns. */
 .a-figure{margin:32px 0}
 .a-figure img{display:block; width:100%; height:auto; border-radius:3px}
 .a-figure figcaption{
   font-family:'Assistant',sans-serif; font-size:13px;
   color:var(--muted); line-height:1.6; margin-top:8px;
+}
+/* smaller and centred — for a portrait or a book cover */
+.a-figure-inset{max-width:58%; margin-inline:auto}
+/* beside its text, as in the PDF's side column */
+.a-figure-side{
+  display:grid; grid-template-columns:38% 1fr; gap:22px; align-items:start;
+}
+.a-figure-side .a-figure-text p:last-child{margin-bottom:0}
+/* the cream panel: image and text as one object */
+.a-figure-panel{
+  display:flex; flex-direction:row; align-items:stretch; gap:0;
+  background:var(--panel); border-radius:3px; overflow:hidden;
+}
+.a-figure-panel .a-figure-media{flex:0 0 42%; display:flex; flex-direction:column}
+.a-figure-panel .a-figure-media img{height:100%; object-fit:cover; border-radius:0}
+.a-figure-panel .a-figure-media figcaption{padding:8px 14px 12px; margin:0}
+.a-figure-panel .a-figure-text{
+  flex:1 1 0; min-width:0; display:flex; flex-direction:column;
+  justify-content:center; padding:22px 24px;
+}
+.a-figure-panel .a-figure-text p:last-child{margin-bottom:0}
+/* a phone is too narrow for any two-column arrangement */
+@media (max-width:560px){
+  .a-figure-inset{max-width:100%}
+  .a-figure-side{grid-template-columns:1fr; gap:14px}
+  .a-figure-panel{flex-direction:column}
+  .a-figure-panel .a-figure-media{flex:0 0 auto}
+  .a-figure-panel .a-figure-media img{height:auto}
 }
 
 /* ── הערות שוליים ─────────────────────────────────────────────────────────── */
@@ -173,6 +204,8 @@
   .a-opening,.a-quote,.a-term,.a-fact,.a-figure{
     break-inside:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact;
   }
+  .a-figure-inset{max-width:52%}
+  .a-figure-side{grid-template-columns:36% 1fr}
   .a-seam{break-after:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact}
   .a-article a{color:inherit; text-decoration:none}
   .a-landing,.no-print{display:none !important}

@@ -327,7 +327,17 @@ function drawBlocks(){
     else if(b.type==='quote'){h+=fld(i,'body','הציטוט',b.body,1)+fld(i,'attribution','מקור',b.attribution)}
     else if(b.type==='term'){h+=fld(i,'name','המונח',b.name)+fld(i,'name_en','באנגלית',b.name_en)+fld(i,'body','ההסבר',b.body,1)+fld(i,'link','קישור למילון',b.link)}
     else if(b.type==='fact'){h+=fld(i,'title','כותרת',b.title)+fld(i,'body','התוכן',b.body,1)}
-    else if(b.type==='image'){h+=fld(i,'src','כתובת התמונה',b.src)+fld(i,'alt','תיאור',b.alt)+fld(i,'credit','קרדיט',b.credit)}
+    else if(b.type==='image'){
+      h+=fld(i,'src','כתובת התמונה',b.src)+fld(i,'alt','תיאור',b.alt)+fld(i,'credit','קרדיט',b.credit);
+      h+='<div class="f"><label>פריסה</label><select onchange="setB('+i+',\'layout\',this.value);drawBlocks()">'+
+        [['full','רוחב מלא — לתמונה לרוחב'],
+         ['inset','מוקטנת וממורכזת — לתמונה לאורך'],
+         ['side','לצד טקסט — עמודה צרה'],
+         ['panel','תיבה עם טקסט — רקע קרם']].map(function(o){
+          return '<option value="'+o[0]+'"'+((b.layout||'full')===o[0]?' selected':'')+'>'+o[1]+'</option>';
+        }).join('')+'</select></div>';
+      if(b.layout==='side'||b.layout==='panel')h+=fld(i,'body','הטקסט שלצד התמונה',b.body,1);
+    }
     else if(b.type==='list'||b.type==='footnotes'){
       h+='<div class="f"><label>'+(b.type==='list'?'פריטים':'הערות')+' — שורה לכל אחד</label>'+
         '<textarea oninput="setItems('+i+',this.value)">'+esc((b.items||[]).join('\n'))+'</textarea></div>';
