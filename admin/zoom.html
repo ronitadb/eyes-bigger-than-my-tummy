@@ -160,15 +160,7 @@
     <h3 style="color:#2F5248;margin-bottom:16px">תבניות אימייל</h3>
     <!-- The files the templates link to, so they can be opened from here rather
          than by digging a URL out of a template body. -->
-    <div class="card" style="background:#F7F5EF">
-      <h3 style="font-size:15px;margin-bottom:6px">קבצים שהמיילים מקשרים אליהם</h3>
-      <div class="meta" style="margin-bottom:10px">כדאי לפתוח ולוודא שהכול נפתח כשורה לפני שליחה.</div>
-      <div class="actions">
-        <a class="btn btn-small" href="/maamar.pdf" target="_blank" rel="noopener">הכתבה — PDF</a>
-        <a class="btn btn-small btn-secondary" href="https://zman-kibbutz.co.il/magazine/22983/" target="_blank" rel="noopener">הכתבה במגזין</a>
-        <a class="btn btn-small btn-secondary" href="/f" target="_blank" rel="noopener">מכתב ההפצה</a>
-      </div>
-    </div>
+    
     <div id="templatesList"></div>
   </div>
 
@@ -746,6 +738,15 @@ function loadTemplates(){
     });
 }
 var TPL_NAMES={join_confirmation:'אישור הצטרפות',meeting_reminder:'תזכורת ראשונה (5 ימים לפני)',meeting_reminder_1d:'תזכורת שנייה (יום לפני)',meeting_followup:'הודעה לאחר מפגש',update:'עדכון לנרשמים (לא קשור למפגש)'};
+// The email renderer only linkifies [text](http…). Listing links with the same
+// pattern means a relative or malformed URL shows up here as missing — which is
+// precisely the mistake worth catching before a send.
+function templateLinks(body){
+  var out=[],m,re=/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g;
+  while((m=re.exec(body||''))!==null) out.push({label:m[1],url:m[2]});
+  return out;
+}
+
 function renderTemplates(){
   var el=document.getElementById('templatesList');
   var auto=allTemplates.filter(function(t){return t.template_type!=='update'});
@@ -767,13 +768,21 @@ function renderTemplates(){
         '<button class="btn btn-small" onclick="deleteLetter('+t.id+')">מחיקה</button>'
       : '';
     var title=isLetter?(t.name||'מכתב ללא שם'):(TPL_NAMES[t.template_type]||t.template_type);
+    var links=templateLinks(t.body);
+    var linkRow=links.length
+      ? '<div class="meta" style="margin-top:8px">קישורים במכתב — כדאי לפתוח ולוודא: '+
+        links.map(function(l){
+          return '<a href="'+esc(l.url)+'" target="_blank" rel="noopener" '+
+                 'style="color:#3D7468">'+esc(l.label)+' ↗</a>';
+        }).join(' · ')+'</div>'
+      : '<div class="meta" style="margin-top:8px; color:#8A6560">אין קישורים במכתב.</div>';
     return '<div class="card"'+(t.archived?' style="opacity:.55"':'')+
       '><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">'+
       '<h3>'+esc(title)+(t.archived?' · בארכיון':'')+'</h3>'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap">'+sendBtn+extra+
       '<button class="btn btn-small" onclick="editTemplate('+t.id+')">עריכה</button></div></div>'+
       '<div class="meta">נושא: '+esc(t.subject)+'</div>'+
-      '<div class="meta">עודכן: '+fmtDate(t.updated_at)+'</div></div>';
+      '<div class="meta">עודכן: '+fmtDate(t.updated_at)+'</div>'+linkRow+'</div>';
   }
 
   el.innerHTML=
