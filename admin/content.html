@@ -115,7 +115,13 @@ function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'
 function showMsg(text,ok){
   var el=document.getElementById('msgArea');
   el.innerHTML='<div class="msg '+(ok?'msg-ok':'msg-err')+'">'+esc(text)+'</div>';
-  setTimeout(function(){el.innerHTML=''},4000);
+  // Scroll to the message: these screens are long, and feedback rendered
+  // off-screen is feedback nobody receives.
+  // A success may fade; a failure must not — an error that erases itself
+  // is indistinguishable from having worked.
+  if(el.scrollIntoView)el.scrollIntoView({block:'center',behavior:'smooth'});
+  if(showMsg._t)clearTimeout(showMsg._t);
+  if(ok)showMsg._t=setTimeout(function(){el.innerHTML=''},4000);
 }
 function key(slug,id){return slug+'/'+id;}
 function currentValue(k){ return (k in overrides) ? overrides[k] : (defaults[k]||''); }

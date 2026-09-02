@@ -86,8 +86,14 @@ function fmtDate(d) {
 function showMsg(text, ok) {
   var m = $('msg');
   m.innerHTML = '<div class="msg ' + (ok ? 'msg-ok' : 'msg-err') + '">' + esc(text) + '</div>';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  setTimeout(function () { m.innerHTML = ''; }, 4500);
+  // Scroll to the message: these screens are long, and feedback rendered
+  // off-screen is feedback nobody receives.
+  // A success may fade; a failure must not — an error that erases itself
+  // is indistinguishable from having worked.
+  if (m.scrollIntoView) m.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  else window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (showMsg._t) clearTimeout(showMsg._t);
+  if (ok) showMsg._t = setTimeout(function () { m.innerHTML = ''; }, 4500);
 }
 function openModal(id) { $(id).classList.add('active'); }
 function closeModal(id) {
