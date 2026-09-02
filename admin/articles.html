@@ -195,7 +195,7 @@ html[data-authing] .login{display:none}
             </select></div>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
-            <button class="pri" onclick="save()">שמירה</button>
+            <button class="pri" id="btnSave2" onclick="save()">שמירה</button>
             <button onclick="openLive()">צפייה בעמוד ↗</button>
             <button class="warn" onclick="del()">מחיקה</button>
           </div>
@@ -212,7 +212,25 @@ var API='/api/admin/articles', PW='', state={list:[],cur:null,blocks:[],chain:[]
 function headers(){return{'Content-Type':'application/json','x-admin-password':PW}}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function el(id){return document.getElementById(id)}
-function msg(t,bad){el('msg').textContent=t||'';el('msg').className=bad?'bad':''}
+function msg(t,bad){var e=el('msg');e.textContent=t||'';e.className=bad?'bad':'';
+  if(t&&e.scrollIntoView)e.scrollIntoView({block:'center',behavior:'smooth'})}
+
+// The save button sits at the foot of a long form, so a message at the top of
+// the page is feedback where nobody is looking. Report at the button itself.
+function saveBtnState(text,ok){
+  ['btnSave','btnSave2'].forEach(function(id){
+    var b=el(id); if(!b)return;
+    if(!b.dataset.label)b.dataset.label=b.textContent;
+    b.textContent=text;
+    b.style.background=ok===false?'#9B3B2F':(ok?'#2F7A4F':'');
+  });
+}
+function saveBtnReset(){
+  ['btnSave','btnSave2'].forEach(function(id){
+    var b=el(id); if(!b||!b.dataset.label)return;
+    b.textContent=b.dataset.label; b.style.background='';
+  });
+}
 
 function doLogin(){
   PW=el('pw').value;
@@ -409,12 +427,16 @@ function save(){
     'canvas','canvas_link','core_sentence','asimon','axis','external_url']
       .forEach(function(f){body[f]=el(f).value});
   body.sort_order=el('sort_order').value;
-  msg('שומר…');
+  msg('שומר…');saveBtnState('שומר…');
   fetch(API,{method:'PUT',headers:headers(),body:JSON.stringify(body)})
     .then(function(r){return r.json()}).then(function(d){
-      if(!d.ok)return msg(d.message||'השמירה נכשלה',1);
-      msg('נשמר ✓');state.cur.slug=body.slug;el('ctx').textContent='/library/'+body.slug;reload();
-    }).catch(function(){msg('השמירה נכשלה',1)});
+      if(!d.ok){saveBtnState('לא נשמר',false);setTimeout(saveBtnReset,2500);
+        return msg(d.message||'השמירה נכשלה',1)}
+      msg('נשמר ✓ — '+new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}));
+      saveBtnState('נשמר ✓',true);setTimeout(saveBtnReset,2000);
+      state.cur.slug=body.slug;el('ctx').textContent='/library/'+body.slug;reload();
+    }).catch(function(){saveBtnState('לא נשמר',false);setTimeout(saveBtnReset,2500);
+      msg('השמירה נכשלה',1)});
 }
 function newArticle(){
   var s=prompt('כתובת באותיות לטיניות, למשל article-11');
