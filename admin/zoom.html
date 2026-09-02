@@ -413,10 +413,12 @@ function loadSendLog(){
       logs.forEach(function(l){
         var t=new Date(l.sent_at).getTime();
         if(cur && cur.type===l.email_type && cur.meeting===(l.meeting_id||0) &&
+           cur.tpl===(l.template_name||'') &&
            Math.abs(cur.last-t)<SENDLOG_GAP_MS){
           cur.rows.push(l); cur.last=t;
         }else{
           cur={type:l.email_type,meeting:l.meeting_id||0,title:l.meeting_title,
+               tpl:l.template_name||'',
                first:t,last:t,rows:[l]};
           batches.push(cur);
         }
@@ -426,7 +428,8 @@ function loadSendLog(){
         var fail=b.rows.length-sent;
         var when=new Date(b.first).toLocaleString('he-IL',
           {day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
-        var name=(typeof TPL_NAMES!=='undefined'&&TPL_NAMES[b.type])||b.type;
+        var name=b.rows[0].template_name||
+                 (typeof TPL_NAMES!=='undefined'&&TPL_NAMES[b.type])||b.type;
         return '<details style="border:1px solid rgba(34,48,47,.14); border-radius:4px; '+
           'background:#fff; margin-bottom:10px; padding:0">'+
           '<summary style="cursor:pointer; padding:14px 16px; display:flex; gap:14px; '+
@@ -745,7 +748,10 @@ function loadTemplates(){
 var TPL_NAMES={join_confirmation:'אישור הצטרפות',meeting_reminder:'תזכורת ראשונה (5 ימים לפני)',meeting_reminder_1d:'תזכורת שנייה (יום לפני)',meeting_followup:'הודעה לאחר מפגש',update:'עדכון לנרשמים (לא קשור למפגש)'};
 function renderTemplates(){
   var el=document.getElementById('templatesList');
-  el.innerHTML=allTemplates.map(function(t){
+  var auto=allTemplates.filter(function(t){return t.template_type!=='update'});
+  var letters=allTemplates.filter(function(t){return t.template_type==='update'});
+
+  function card(t,isLetter){
     // Only a template with no meeting placeholders can go to everyone at once;
     // the rest are meaningless without a specific meeting behind them.
     var standalone=!/\{\{\s*(title|date|time|zoom_link)\s*\}\}/.test((t.body||'')+(t.subject||''));
@@ -755,11 +761,71 @@ function renderTemplates(){
       ? '<button class="btn btn-small" onclick="sendTestEmail('+t.id+')">שליחת בדיקה אליי</button>'+
         '<button class="btn btn-small btn-danger" onclick="sendUpdateToAll('+t.id+')">שליחה לכל הנרשמים</button>'
       : '';
-    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3>'+(TPL_NAMES[t.template_type]||t.template_type)+'</h3>'+
-      '<div style="display:flex;gap:8px">'+sendBtn+'<button class="btn btn-small" onclick="editTemplate('+t.id+')">עריכה</button></div></div>'+
+    var extra=isLetter
+      ? '<button class="btn btn-small" onclick="duplicateLetter('+t.id+')">שכפול</button>'+
+        '<button class="btn btn-small" onclick="renameLetter('+t.id+')">שם</button>'+
+        '<button class="btn btn-small" onclick="deleteLetter('+t.id+')">מחיקה</button>'
+      : '';
+    var title=isLetter?(t.name||'מכתב ללא שם'):(TPL_NAMES[t.template_type]||t.template_type);
+    return '<div class="card"'+(t.archived?' style="opacity:.55"':'')+
+      '><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">'+
+      '<h3>'+esc(title)+(t.archived?' · בארכיון':'')+'</h3>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">'+sendBtn+extra+
+      '<button class="btn btn-small" onclick="editTemplate('+t.id+')">עריכה</button></div></div>'+
       '<div class="meta">נושא: '+esc(t.subject)+'</div>'+
-      '<div class="meta">עודכן: '+fmtDate(t.updated_at)+'</div></div>'
-  }).join('');
+      '<div class="meta">עודכן: '+fmtDate(t.updated_at)+'</div></div>';
+  }
+
+  el.innerHTML=
+    '<h3 style="margin:0 0 4px">מכתבי שמירת קשר</h3>'+
+    '<p style="color:#6E7C78;font-size:14px;margin:0 0 12px;line-height:1.7">'+
+      'כל מכתב נשמר בנפרד ואפשר לשלוח אותו שוב בסדרות הבאות. '+
+      '״שכפול״ יוצר עותק לעריכה בלי לגעת במקור.</p>'+
+    '<button class="btn btn-small" style="margin-bottom:12px" onclick="newLetter()">+ מכתב חדש</button>'+
+    (letters.length?letters.map(function(t){return card(t,true)}).join(''):
+      '<div class="meta">אין עדיין מכתבים.</div>')+
+    '<h3 style="margin:26px 0 4px">תבניות אוטומטיות</h3>'+
+    '<p style="color:#6E7C78;font-size:14px;margin:0 0 12px;line-height:1.7">'+
+      'נשלחות מעצמן — אישור הצטרפות ותזכורות. אחת מכל סוג, ואי אפשר למחוק אותן.</p>'+
+    auto.map(function(t){return card(t,false)}).join('');
+}
+
+function newLetter(){
+  var name=window.prompt('שם המכתב (לשימוש שלך בלבד):');
+  if(!name)return;
+  fetch(API+'/admin/templates',{method:'POST',headers:headers(),
+    body:JSON.stringify({name:name})})
+    .then(function(r){return r.json()}).then(function(d){
+      if(!d.ok)return showMsg((d&&d.message)||'לא נוצר.',false);
+      loadTemplates();showMsg('נוצר מכתב חדש — ערכי אותו לפני שליחה.',true);
+    });
+}
+function duplicateLetter(id){
+  var t=allTemplates.find(function(x){return x.id===id});
+  var name=window.prompt('שם לעותק:', (t&&t.name?t.name+' — עותק':'מכתב חדש'));
+  if(!name)return;
+  fetch(API+'/admin/templates',{method:'POST',headers:headers(),
+    body:JSON.stringify({name:name,copy_from:id})})
+    .then(function(r){return r.json()}).then(function(){loadTemplates();showMsg('שוכפל.',true)});
+}
+function renameLetter(id){
+  var t=allTemplates.find(function(x){return x.id===id});
+  var name=window.prompt('שם המכתב:', (t&&t.name)||'');
+  if(name===null)return;
+  fetch(API+'/admin/templates',{method:'PUT',headers:headers(),
+    body:JSON.stringify({id:id,name:name,subject:t.subject,body:t.body})})
+    .then(function(){loadTemplates()});
+}
+function deleteLetter(id){
+  var t=allTemplates.find(function(x){return x.id===id});
+  if(!window.confirm('למחוק את המכתב ״'+((t&&t.name)||'')+'״? '+
+     'ההיסטוריה של שליחות קודמות נשמרת.'))return;
+  fetch(API+'/admin/templates',{method:'DELETE',headers:headers(),
+    body:JSON.stringify({id:id})})
+    .then(function(r){return r.json()}).then(function(d){
+      if(!d.ok)return showMsg((d&&d.message)||'לא נמחק.',false,true);
+      loadTemplates();showMsg('נמחק.',true);
+    });
 }
 
 // One email, to one address, logged nowhere. Nobody on the list is touched
@@ -772,7 +838,7 @@ function sendTestEmail(id){
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){showMsg('כתובת לא תקינה — לא נשלח דבר.',false);return}
   showMsg('שולח בדיקה…',true);
   fetch(API+'/admin/send-email',{method:'POST',headers:headers(),
-    body:JSON.stringify({template_type:t.template_type,test_to:to})})
+    body:JSON.stringify({template_type:t.template_type,template_id:t.id,test_to:to})})
     .then(function(r){return r.json()})
     .then(function(d){
       if(d&&d.ok)showMsg('נשלחה בדיקה אחת אל '+to+'. לא נשלח לאיש מהנרשמים.',true);
@@ -795,7 +861,7 @@ function sendUpdateToAll(id){
     'להמשך הקלידי:  שלח');
   if(typed===null)return;
   if(typed.trim()!=='שלח'){showMsg('בוטל — לא נשלח דבר.',false);return}
-  var payload={template_type:t.template_type};
+  var payload={template_type:t.template_type,template_id:t.id};
   if(attach)payload.attachments=[{filename:'לחזור לביתלדים — זמן קיבוץ.pdf',
                                   path:'https://www.beityeladim.co.il/maamar.pdf'}];
   showMsg('שולח…',true);
