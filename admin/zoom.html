@@ -116,6 +116,7 @@
     <button class="tab" onclick="showTab('meetings')">מפגשים</button>
     <button class="tab" onclick="showTab('participants')">משתתפים</button>
     <button class="tab" onclick="showTab('templates')">תבניות אימייל</button>
+    <button class="tab" onclick="showTab('sendlog')">היסטוריית שליחות</button>
   </div>
   <div id="msg"></div>
 
@@ -169,6 +170,17 @@
       </div>
     </div>
     <div id="templatesList"></div>
+  </div>
+
+  <div id="panel-sendlog" class="panel">
+    <h2 style="margin:0 0 6px">היסטוריית שליחות</h2>
+    <p style="color:#6E7C78; font-size:14px; margin:0 0 18px; line-height:1.7">
+      מה נשלח, מתי, ולמי. הרשומות נכתבות אחת־אחת בזמן השליחה, כך שהן נשמרות
+      גם אם המסך נסגר.<br>
+      כאן רואים אם המערכת שלנו הצליחה למסור את המייל ל-Resend. אם המייל הגיע
+      בפועל לתיבה של הנמען — זה מידע שנמצא רק ב-Resend.
+    </p>
+    <div id="sendlogBody" style="color:#6E7C78">טוען…</div>
   </div>
 </div>
 
@@ -383,12 +395,73 @@ document.getElementById('pw').addEventListener('keydown',function(e){if(e.key===
 function showMsg(t,ok,sticky){var el=document.getElementById('msg');el.className='msg '+(ok?'msg-ok':'msg-err');el.textContent=t;if(el.scrollIntoView)el.scrollIntoView({block:'center'});if(showMsg._t){clearTimeout(showMsg._t);showMsg._t=null}if(!sticky)showMsg._t=setTimeout(function(){el.className='';el.textContent=''},5000)}
 
 // Tabs
+// ── היסטוריית שליחות ────────────────────────────────────────────────────────
+// A bulk send writes one row per recipient within about half a minute. Grouping
+// on a clock boundary would split a send that straddles one, so rows are
+// clustered by the gap between them instead.
+var SENDLOG_GAP_MS = 10*60*1000;
+function loadSendLog(){
+  var box=document.getElementById('sendlogBody');
+  box.textContent='טוען…';
+  fetch(API+'/admin/send-log',{headers:headers()})
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if(!d||!d.ok){box.textContent='שגיאה בטעינת ההיסטוריה.';return}
+      var logs=d.logs||[];
+      if(!logs.length){box.textContent='עדיין לא נשלחו מיילים.';return}
+      var batches=[],cur=null;
+      logs.forEach(function(l){
+        var t=new Date(l.sent_at).getTime();
+        if(cur && cur.type===l.email_type && cur.meeting===(l.meeting_id||0) &&
+           Math.abs(cur.last-t)<SENDLOG_GAP_MS){
+          cur.rows.push(l); cur.last=t;
+        }else{
+          cur={type:l.email_type,meeting:l.meeting_id||0,title:l.meeting_title,
+               first:t,last:t,rows:[l]};
+          batches.push(cur);
+        }
+      });
+      box.innerHTML=batches.map(function(b,i){
+        var sent=b.rows.filter(function(r){return r.status==='sent'}).length;
+        var fail=b.rows.length-sent;
+        var when=new Date(b.first).toLocaleString('he-IL',
+          {day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+        var name=(typeof TPL_NAMES!=='undefined'&&TPL_NAMES[b.type])||b.type;
+        return '<details style="border:1px solid rgba(34,48,47,.14); border-radius:4px; '+
+          'background:#fff; margin-bottom:10px; padding:0">'+
+          '<summary style="cursor:pointer; padding:14px 16px; display:flex; gap:14px; '+
+            'align-items:center; flex-wrap:wrap">'+
+            '<span style="font-weight:700; color:#2F5248">'+esc(name)+'</span>'+
+            (b.title?'<span style="color:#6E7C78">'+esc(b.title)+'</span>':'')+
+            '<span style="flex:1 1 auto"></span>'+
+            '<span style="color:#6E7C78; font-size:14px">'+esc(when)+'</span>'+
+            '<span style="font-weight:700; color:'+(fail?'#9B3B2F':'#2F5248')+'">'+
+              sent+' נשלחו'+(fail?' · '+fail+' נכשלו':'')+'</span>'+
+          '</summary>'+
+          '<div style="padding:0 16px 14px">'+
+            '<table style="width:100%; border-collapse:collapse; font-size:14px">'+
+            b.rows.map(function(r){
+              return '<tr style="border-top:1px solid #EEF2F0">'+
+                '<td style="padding:7px 0">'+esc(r.name||'')+'</td>'+
+                '<td style="padding:7px 0; color:#6E7C78">'+esc(r.email||'')+'</td>'+
+                '<td style="padding:7px 0; text-align:left; color:'+
+                  (r.status==='sent'?'#2F5248':'#9B3B2F')+'">'+
+                  (r.status==='sent'?'נשלח':'נכשל')+
+                  (r.error?' — '+esc(r.error):'')+'</td></tr>';
+            }).join('')+
+            '</table></div></details>';
+      }).join('');
+    })
+    .catch(function(){box.textContent='שגיאת חיבור.'});
+}
+
 function showTab(name){
-  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',['dashboard','meetings','participants','templates'][i]===name)});
+  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',['dashboard','meetings','participants','templates','sendlog'][i]===name)});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
   document.getElementById('panel-'+name).classList.add('active');
   if(name==='participants')loadParticipants();
   if(name==='templates')loadTemplates();
+  if(name==='sendlog')loadSendLog();
 }
 
 var STATUS_HE={draft:'טיוטה',open:'פתוח',closed:'סגור',completed:'הסתיים'};

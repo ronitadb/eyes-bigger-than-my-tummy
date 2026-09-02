@@ -10,6 +10,7 @@ const handlers = {
   'meetings': require('../../lib/admin/meetings'),
   'participants': require('../../lib/admin/participants'),
   'send-email': require('../../lib/admin/send-email'),
+  'send-log': require('../../lib/admin/send-log'),
   'stories': require('../../lib/admin/stories'),
   'templates': require('../../lib/admin/templates'),
   // Distribution & outreach network (/admin/network)
