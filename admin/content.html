@@ -69,6 +69,7 @@
       <a href="/admin" style="color:#8A9692;font-size:13px">מרכז</a>
       <a href="/admin/content" style="color:#2F5248;font-weight:700;border-bottom:2px solid #3D7468;padding-bottom:2px">תוכן</a>
       <a href="/admin/stories">ספרייה</a>
+      <a href="/admin/articles" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">מאמרים</a>
       <a href="/admin/zoom">מפגשים</a>
       <a href="/admin/network">הפצה</a>
       <button class="btn-small btn-reset" onclick="doLogout()">יציאה</button>
@@ -112,6 +113,20 @@ function labelFor(id,val){ return LABELS[id] || preview(val); }
 
 function headers(){return{'Content-Type':'application/json','x-admin-password':PW}}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+// The button reports for itself. On this page there is one save per block, so
+// a message at the top cannot say WHICH block was saved.
+function btnState(b,text,ok){
+  if(!b)return;
+  if(!b.dataset.label)b.dataset.label=b.textContent;
+  b.textContent=text;
+  b.style.background=ok===false?'#9B3B2F':(ok?'#2F7A4F':'');
+  b.style.color=(ok===false||ok===true)?'#fff':'';
+  if(ok!==null&&ok!==undefined)setTimeout(function(){
+    if(b.dataset.label){b.textContent=b.dataset.label;b.style.background='';b.style.color=''}
+  }, ok?2000:2600);
+}
+
 function showMsg(text,ok){
   var el=document.getElementById('msgArea');
   el.innerHTML='<div class="msg '+(ok?'msg-ok':'msg-err')+'">'+esc(text)+'</div>';
@@ -206,7 +221,7 @@ function renderPages(){
       html+='<label>'+esc(labelFor(id,val))+'</label>';
       html+='<textarea id="txt-'+page.slug+'-'+id+'" data-key="'+k+'">'+esc(val)+'</textarea>';
       html+='<div class="block-actions">';
-      html+='<button class="btn btn-small" onclick="saveBlock(\''+page.slug+'\',\''+id+'\')">שמירה</button>';
+      html+='<button class="btn btn-small" onclick="saveBlock(\''+page.slug+'\',\''+id+'\',this)">שמירה</button>';
       html+='<button class="btn btn-small btn-reset" id="reset-'+page.slug+'-'+id+'" onclick="resetBlock(\''+page.slug+'\',\''+id+'\')"'+(edited?'':' style="display:none"')+'>שחזור לטקסט המקורי</button>';
       html+='<span class="block-status'+(edited?' saved':'')+'" id="status-'+page.slug+'-'+id+'">'+(edited?'נערך · גרסה שמורה':'טקסט האתר')+'</span>';
       html+='</div>';
@@ -219,17 +234,18 @@ function renderPages(){
 
 function toggleSection(slug){ document.getElementById('section-'+slug).classList.toggle('open'); }
 
-function saveBlock(pageSlug,blockId){
+function saveBlock(pageSlug,blockId,btn){
   var k=key(pageSlug,blockId);
   var content=document.getElementById('txt-'+pageSlug+'-'+blockId).value;
+  btnState(btn,'שומר…');
   fetch(API,{method:'PUT',headers:headers(),body:JSON.stringify({page_slug:pageSlug,block_id:blockId,content:content})})
     .then(function(r){return r.json()})
     .then(function(data){
-      if(!data.ok){showMsg('שגיאה בשמירה',false);return}
+      if(!data.ok){btnState(btn,'לא נשמר',false);showMsg('שגיאה בשמירה',false);return}
       overrides[k]=content;
       var st=document.getElementById('status-'+pageSlug+'-'+blockId); if(st){st.textContent='נערך · גרסה שמורה'; st.classList.add('saved');}
       var rb=document.getElementById('reset-'+pageSlug+'-'+blockId); if(rb) rb.style.display='';
-      showMsg('נשמר בהצלחה',true);
+      btnState(btn,'נשמר ✓',true);showMsg('נשמר בהצלחה',true);
     })
     .catch(function(){showMsg('שגיאה בשמירה',false)});
 }

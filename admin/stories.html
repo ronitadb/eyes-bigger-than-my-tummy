@@ -78,6 +78,7 @@
       <a href="/admin" style="font-size:13px;color:#8A9692;text-decoration:none;font-weight:600">מרכז</a>
       <a href="/admin/content" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">תוכן</a>
       <a href="/admin/stories" style="font-size:14px;color:#2F5248;text-decoration:none;font-weight:700;border-bottom:2px solid #3D7468;padding-bottom:2px">ספרייה</a>
+      <a href="/admin/articles" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">מאמרים</a>
       <a href="/admin/zoom" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">מפגשים</a>
       <a href="/admin/network" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">הפצה</a>
       <button type="button" onclick="doLogout()" style="border:1px solid #ccc;background:none;color:#666;padding:6px 14px;border-radius:4px;font-family:inherit;font-size:13px;cursor:pointer">יציאה</button>
@@ -122,7 +123,7 @@
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeEdit()">ביטול</button>
-      <button class="btn" onclick="saveEdit()">שמירה</button>
+      <button class="btn" id="btnSaveStory" onclick="saveEdit()">שמירה</button>
     </div>
   </div>
 </div>
@@ -171,6 +172,20 @@ function setFilter(f){
   var btns=document.querySelectorAll('.filter');
   for(var i=0;i<btns.length;i++){btns[i].classList.toggle('active',btns[i].getAttribute('data-f')===f)}
   render();
+}
+
+
+// The button reports for itself. A message elsewhere on the page is feedback
+// the eye is not on when it presses save.
+function btnState(b,text,ok){
+  if(!b)return;
+  if(!b.dataset.label)b.dataset.label=b.textContent;
+  b.textContent=text;
+  b.style.background=ok===false?'#9B3B2F':(ok?'#2F7A4F':'');
+  b.style.color=(ok===false||ok===true)?'#fff':'';
+  if(ok!==null&&ok!==undefined)setTimeout(function(){
+    if(b.dataset.label){b.textContent=b.dataset.label;b.style.background='';b.style.color=''}
+  }, ok?2000:2600);
 }
 
 function showMsg(text,ok){
@@ -257,6 +272,8 @@ function openEdit(id){
 function closeEdit(){editId=null;document.getElementById('editOverlay').classList.remove('active')}
 function saveEdit(){
   if(!editId)return;
+  var btn=document.getElementById('btnSaveStory');
+  btnState(btn,'שומר…');
   var body={
     id:editId,
     sender:document.getElementById('eSender').value,
@@ -266,8 +283,10 @@ function saveEdit(){
   };
   fetch(API+'/admin/stories',{method:'PUT',headers:headers(),body:JSON.stringify(body)})
     .then(function(r){return r.json()})
-    .then(function(d){if(d&&d.ok){showMsg('נשמר.',true);closeEdit();load()}else{showMsg('שגיאה בשמירה.',false)}})
-    .catch(function(){showMsg('שגיאת חיבור.',false)});
+    .then(function(d){
+      if(d&&d.ok){btnState(btn,'נשמר ✓',true);showMsg('נשמר.',true);closeEdit();load()}
+      else{btnState(btn,'לא נשמר',false);showMsg('שגיאה בשמירה.',false)}})
+    .catch(function(){btnState(btn,'לא נשמר',false);showMsg('שגיאת חיבור.',false)});
 }
 document.getElementById('editOverlay').addEventListener('click',function(e){if(e.target===this)closeEdit()});
 </script>

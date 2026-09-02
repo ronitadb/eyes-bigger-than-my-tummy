@@ -81,7 +81,14 @@ html[data-authing] .login{display:none}
 <div id="app" class="hide">
   <div class="bar">
     <h1>הספרייה — מאמרים</h1>
-    <a href="/admin" style="font-size:14px">← מרכז הניהול</a>
+    <nav style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <a href="/admin" style="font-size:13px;color:#8A9692;text-decoration:none;font-weight:600">מרכז</a>
+      <a href="/admin/content" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">תוכן</a>
+      <a href="/admin/stories" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">ספרייה</a>
+      <a href="/admin/articles" style="font-size:14px;color:#2F5248;text-decoration:none;font-weight:700;border-bottom:2px solid #3D7468;padding-bottom:2px">מאמרים</a>
+      <a href="/admin/zoom" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">מפגשים</a>
+      <a href="/admin/network" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">הפצה</a>
+    </nav>
     <div class="sp"></div>
     <span id="ctx" style="color:var(--muted);font-size:14px"></span>
     <button id="btnNew" onclick="newArticle()">מאמר חדש</button>
