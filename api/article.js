@@ -30,10 +30,27 @@ module.exports = async (req, res) => {
 // The index: planned titles are shown too — ten titles together are the outline
 // of the whole argument, not a placeholder.
 async function list(res) {
+  // Two attempts. external_url arrived in a later migration, and a column that
+  // does not exist yet must not empty the library: the catch below returns []
+  // on any error, which silently removed every card from /materials until the
+  // migration was run. Degrade to the core columns instead.
   try {
     const { rows } = await sql`
       SELECT id, slug, title_lead, title_topic, summary, status, published_at,
              sort_order, external_url
+      FROM articles
+      WHERE status IN ('planned','published')
+      ORDER BY sort_order, id
+    `;
+    res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=600');
+    return res.status(200).json({ ok: true, articles: rows });
+  } catch (err) {
+    console.error('GET /api/article: extended list failed, falling back:', err.message);
+  }
+  try {
+    const { rows } = await sql`
+      SELECT id, slug, title_lead, title_topic, summary, status, published_at,
+             sort_order
       FROM articles
       WHERE status IN ('planned','published')
       ORDER BY sort_order, id
