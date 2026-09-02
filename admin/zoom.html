@@ -763,7 +763,8 @@ function renderTemplates(){
         '<button class="btn btn-small btn-danger" onclick="sendUpdateToAll('+t.id+')">שליחה לכל הנרשמים</button>'
       : '';
     var extra=isLetter
-      ? '<button class="btn btn-small" onclick="duplicateLetter('+t.id+')">שכפול</button>'+
+      ? '<button class="btn btn-small" onclick="showMissing('+t.id+')">מי טרם קיבל?</button>'+
+        '<button class="btn btn-small" onclick="duplicateLetter('+t.id+')">שכפול</button>'+
         '<button class="btn btn-small" onclick="renameLetter('+t.id+')">שם</button>'+
         '<button class="btn btn-small" onclick="deleteLetter('+t.id+')">מחיקה</button>'
       : '';
@@ -782,7 +783,8 @@ function renderTemplates(){
       '<div style="display:flex;gap:8px;flex-wrap:wrap">'+sendBtn+extra+
       '<button class="btn btn-small" onclick="editTemplate('+t.id+')">עריכה</button></div></div>'+
       '<div class="meta">נושא: '+esc(t.subject)+'</div>'+
-      '<div class="meta">עודכן: '+fmtDate(t.updated_at)+'</div>'+linkRow+'</div>';
+      '<div class="meta">עודכן: '+fmtDate(t.updated_at)+'</div>'+linkRow+
+      '<div id="missing-'+t.id+'"></div></div>';
   }
 
   el.innerHTML=
@@ -797,6 +799,56 @@ function renderTemplates(){
     '<p style="color:#6E7C78;font-size:14px;margin:0 0 12px;line-height:1.7">'+
       'נשלחות מעצמן — אישור הצטרפות ותזכורות. אחת מכל סוג, ואי אפשר למחוק אותן.</p>'+
     auto.map(function(t){return card(t,false)}).join('');
+}
+
+// Who never received a given letter. People register between mailings, so
+// after every send there is a group who missed it — and re-sending to everyone
+// would mean the other forty-six get it twice.
+function showMissing(id){
+  var box=document.getElementById('missing-'+id);
+  box.innerHTML='<div class="meta">בודק…</div>';
+  fetch(API+'/admin/send-log?missing='+id,{headers:headers()})
+    .then(function(r){return r.json()}).then(function(d){
+      if(!d||!d.ok){box.innerHTML='<div class="meta">שגיאה בבדיקה.</div>';return}
+      var m=d.missing||[];
+      if(!m.length){
+        box.innerHTML='<div class="meta" style="color:#2F5248;margin-top:10px">'+
+          'כל הנרשמים הפעילים קיבלו את המכתב הזה ✓</div>';
+        return;
+      }
+      box.innerHTML='<div style="margin-top:12px;padding:12px 14px;background:#FBF7EC;'+
+        'border:1px solid rgba(34,48,47,.14);border-radius:4px">'+
+        '<div style="font-weight:700;color:#2F5248;margin-bottom:6px">'+
+          m.length+' נרשמים טרם קיבלו את המכתב הזה</div>'+
+        '<div class="meta" style="line-height:1.9">'+
+          m.map(function(p){return esc(p.name||'')+' · '+esc(p.email||'')}).join('<br>')+
+        '</div>'+
+        '<button class="btn btn-small btn-danger" style="margin-top:10px" '+
+          'onclick="sendMissing('+id+','+m.length+')">שליחה ל-'+m.length+' שטרם קיבלו</button>'+
+        '</div>';
+    })
+    .catch(function(){box.innerHTML='<div class="meta">שגיאת חיבור.</div>'});
+}
+
+function sendMissing(id,count){
+  var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
+  var typed=window.prompt(
+    'שליחה ל-'+count+' נרשמים שטרם קיבלו את המכתב הזה.\n\n'+
+    'נושא: '+t.subject+'\n\n'+
+    'מי שכבר קיבל — לא יקבל שוב.\n'+
+    'נשלחים מיילים אמיתיים ואי אפשר לבטל.\n'+
+    'להמשך הקלידי:  שלח');
+  if(typed===null)return;
+  if(typed.trim()!=='שלח'){showMsg('בוטל — לא נשלח דבר.',false);return}
+  showMsg('שולח…',true);
+  fetch(API+'/admin/send-email',{method:'POST',headers:headers(),
+    body:JSON.stringify({template_type:t.template_type,template_id:t.id,only_missing:true})})
+    .then(function(r){return r.json()}).then(function(d){
+      if(d&&d.ok)showMsg('נשלח ל-'+d.sent+' נרשמים'+(d.failed?' · '+d.failed+' נכשלו':'')+'.',true,true);
+      else showMsg((d&&d.message)||'שגיאה בשליחה.',false,true);
+      showMissing(id);
+    })
+    .catch(function(){showMsg('שגיאת חיבור — ייתכן שחלק מהמיילים כן נשלחו.',false,true)});
 }
 
 function newLetter(){
