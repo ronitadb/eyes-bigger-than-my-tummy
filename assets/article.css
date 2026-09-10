@@ -320,6 +320,7 @@
   width:min(38em,100%);
   height:min(86vh,44em);
   overflow:auto;
+  display:flex; flex-direction:column;
   --pad-y:clamp(28px,4vw,40px);
   --pad-x:clamp(22px,4vw,38px);
   padding:var(--pad-y) var(--pad-x);
@@ -353,7 +354,13 @@
    of the edge reads as a mistake; one that touches reads as a decision.
    Each story carries its own geometry: fourteen identical windows would be a
    template, not a design. */
-.story-window-inner{position:relative}
+.story-window-inner{
+  position:relative;
+  /* Fill the window when the story is short, grow past it when long. Without
+     this the wrapper is only as tall as the text, so a band anchored to it ends
+     where the words end rather than at the frame. */
+  flex:1 0 auto;
+}
 .story-accent{
   position:absolute; pointer-events:none; z-index:0;
   background:rgba(61,116,104,.16);
