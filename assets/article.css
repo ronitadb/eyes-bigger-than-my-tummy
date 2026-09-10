@@ -5,7 +5,7 @@
    Palette: green is the furniture (headings, the landing zone), cream is the
    reading surface, gold is the shared accent used sparingly. */
 
-.a-article{
+.a-article,.a-story{
   --paper:#FAF8F4;   /* site ground */
   --panel:#F1EBDE;   /* the design's cream, deepened to keep its step over paper */
   --gold:#EDA72E;    /* the site's gold — used 44× elsewhere, so it wins */
@@ -22,6 +22,21 @@
   font-size:19px; line-height:1.9; color:var(--body);
 }
 .a-article p{margin:0 0 1.1em; text-wrap:pretty}
+
+/* ── סיפור ────────────────────────────────────────────────────────────────────
+   A story borrows the articles' voice and none of their apparatus. Same face,
+   size, leading and colour; no headings, no seams, no pull-quotes. Articles are
+   structured because they argue; stories are quiet because they testify, and
+   marking a line in someone's testimony edits their emphasis for them. */
+.a-story{
+  direction:rtl; text-align:right;
+  font-family:'Frank Ruhl Libre',serif;
+  font-size:19px; line-height:1.9; color:var(--body);
+}
+.a-story p{margin:0 0 1.1em; text-wrap:pretty}
+.a-story p:last-of-type{margin-bottom:0}
+.a-story a{color:var(--head); text-decoration:underline; text-underline-offset:3px}
+.a-story em{font-style:italic; color:var(--head)}
 .a-article a{color:var(--head); text-decoration:underline; text-underline-offset:3px}
 .a-article em{font-style:italic; color:var(--head)}
 

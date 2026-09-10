@@ -74,6 +74,8 @@
 <div id="app" class="app">
   <div class="header">
     <h1>הספרייה המשותפת — סיפורים</h1>
+    <button type="button" class="btn" onclick="newStory()"
+      style="margin-inline-start:14px">+ סיפור חדש</button>
     <nav style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
       <a href="/admin" style="font-size:13px;color:#8A9692;text-decoration:none;font-weight:600">מרכז</a>
       <a href="/admin/content" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">תוכן</a>
@@ -100,7 +102,7 @@
 <!-- edit modal -->
 <div id="editOverlay" class="modal-overlay">
   <div class="modal">
-    <h2>עריכת סיפור</h2>
+    <h2 id="editTitle">עריכת סיפור</h2>
     <div class="field">
       <label>שם השולח/ת</label>
       <input id="eSender" type="text">
@@ -259,10 +261,12 @@ function del(id){
     .catch(function(){showMsg('שגיאת חיבור.',false)});
 }
 
+function setEditTitle(){var t=document.getElementById('editTitle');if(t)t.textContent='עריכת סיפור'}
 function openEdit(id){
   var s=null;for(var i=0;i<STORIES.length;i++){if(STORIES[i].id===id)s=STORIES[i]}
   if(!s)return;
   editId=id;
+  setEditTitle();
   document.getElementById('eSender').value=s.sender||'';
   document.getElementById('eAttr').value=s.attribution||'anonymous';
   document.getElementById('eTitle').value=s.title||'';
@@ -270,9 +274,25 @@ function openEdit(id){
   document.getElementById('editOverlay').classList.add('active');
 }
 function closeEdit(){editId=null;document.getElementById('editOverlay').classList.remove('active')}
+// Stories that never came through the public form — the ones Ronit received by
+// email before the site existed. The same modal, with editId null meaning
+// "create". Consent is set true on the server, because she only types a story
+// in once the person has given it; on the public form the sender decides and
+// the default is no.
+function newStory(){
+  editId=null;
+  document.getElementById('editTitle').textContent='סיפור חדש';
+  ['eSender','eTitle','eBody'].forEach(function(id){document.getElementById(id).value=''});
+  document.getElementById('eAttr').value='anonymous';
+  document.getElementById('editOverlay').classList.add('active');
+}
+
 function saveEdit(){
-  if(!editId)return;
   var btn=document.getElementById('btnSaveStory');
+  var creating=!editId;
+  if(creating&&!document.getElementById('eBody').value.trim()){
+    btnState(btn,'אין טקסט',false);return;
+  }
   btnState(btn,'שומר…');
   var body={
     id:editId,
@@ -281,10 +301,13 @@ function saveEdit(){
     title:document.getElementById('eTitle').value,
     body:document.getElementById('eBody').value
   };
-  fetch(API+'/admin/stories',{method:'PUT',headers:headers(),body:JSON.stringify(body)})
+  if(creating)delete body.id;
+  fetch(API+'/admin/stories',{method:creating?'POST':'PUT',headers:headers(),
+    body:JSON.stringify(body)})
     .then(function(r){return r.json()})
     .then(function(d){
-      if(d&&d.ok){btnState(btn,'נשמר ✓',true);showMsg('נשמר.',true);closeEdit();load()}
+      if(d&&d.ok){btnState(btn,'נשמר ✓',true);
+        showMsg(creating?'הסיפור נוסף — עדיין לא מפורסם.':'נשמר.',true);closeEdit();load()}
       else{btnState(btn,'לא נשמר',false);showMsg('שגיאה בשמירה.',false)}})
     .catch(function(){btnState(btn,'לא נשמר',false);showMsg('שגיאת חיבור.',false)});
 }
