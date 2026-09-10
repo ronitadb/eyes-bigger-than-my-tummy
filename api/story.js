@@ -48,13 +48,13 @@ async function listPublished(req, res) {
           SELECT id, sender, title, body, attribution, published_at, created_at
           FROM stories
           WHERE status = 'published' AND consent = true AND article_id = ${articleId}
-          ORDER BY COALESCE(published_at, created_at) ASC
+          ORDER BY COALESCE(published_at, created_at) ASC, id ASC
         `
       : await sql`
           SELECT id, sender, title, body, attribution, published_at, created_at
           FROM stories
           WHERE status = 'published' AND consent = true AND article_id IS NULL
-          ORDER BY COALESCE(published_at, created_at) DESC
+          ORDER BY COALESCE(published_at, created_at) DESC, id DESC
         `;
     const stories = rows.map(function (r) {
       return {

@@ -120,6 +120,14 @@
       <input id="eTitle" type="text">
     </div>
     <div class="field">
+      <label>תאריך פרסום</label>
+      <input id="ePublished" type="date">
+      <div style="font-size:12px;color:#8A9692;margin-top:4px;line-height:1.6">
+        קובע גם את סדר הסיפורים בספרייה — החדש ביותר מופיע ראשון.
+        ריק = נקבע אוטומטית ברגע הפרסום.
+      </div>
+    </div>
+    <div class="field">
       <label>הסיפור</label>
       <textarea id="eBody"></textarea>
     </div>
@@ -271,6 +279,7 @@ function openEdit(id){
   document.getElementById('eAttr').value=s.attribution||'anonymous';
   document.getElementById('eTitle').value=s.title||'';
   document.getElementById('eBody').value=s.body||'';
+  document.getElementById('ePublished').value=(s.published_at||'').slice(0,10);
   document.getElementById('editOverlay').classList.add('active');
 }
 function closeEdit(){editId=null;document.getElementById('editOverlay').classList.remove('active')}
@@ -282,7 +291,7 @@ function closeEdit(){editId=null;document.getElementById('editOverlay').classLis
 function newStory(){
   editId=null;
   document.getElementById('editTitle').textContent='סיפור חדש';
-  ['eSender','eTitle','eBody'].forEach(function(id){document.getElementById(id).value=''});
+  ['eSender','eTitle','eBody','ePublished'].forEach(function(id){document.getElementById(id).value=''});
   document.getElementById('eAttr').value='anonymous';
   document.getElementById('editOverlay').classList.add('active');
 }
@@ -299,6 +308,7 @@ function saveEdit(){
     sender:document.getElementById('eSender').value,
     attribution:document.getElementById('eAttr').value,
     title:document.getElementById('eTitle').value,
+    published_at:document.getElementById('ePublished').value,
     body:document.getElementById('eBody').value
   };
   if(creating)delete body.id;
