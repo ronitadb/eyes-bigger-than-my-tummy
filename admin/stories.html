@@ -128,6 +128,39 @@
       </div>
     </div>
     <div class="field">
+      <label style="display:flex;align-items:center;gap:8px">
+        <input id="eAccOn" type="checkbox" onchange="accPreview()">
+        <span>מלבן ירוק מאחורי הטקסט</span>
+      </label>
+      <div id="accControls" style="margin-top:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <button type="button" class="btn btn-small" onclick="accPreset(4,0,20,100)">פס בצד שמאל</button>
+          <button type="button" class="btn btn-small" onclick="accPreset(76,0,20,100)">פס בצד ימין</button>
+          <button type="button" class="btn btn-small" onclick="accPreset(0,0,100,16)">פס עליון</button>
+          <button type="button" class="btn btn-small" onclick="accPreset(0,84,100,16)">פס תחתון</button>
+          <button type="button" class="btn btn-small" onclick="accPreset(6,55,34,34)">ריבוע בפינה</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <label style="flex:1 1 90px;font-size:12px;color:#8A9692">מימין (%)
+            <input id="eAccX" type="number" oninput="accPreview()" style="width:100%"></label>
+          <label style="flex:1 1 90px;font-size:12px;color:#8A9692">מלמעלה (%)
+            <input id="eAccY" type="number" oninput="accPreview()" style="width:100%"></label>
+          <label style="flex:1 1 90px;font-size:12px;color:#8A9692">רוחב (%)
+            <input id="eAccW" type="number" oninput="accPreview()" style="width:100%"></label>
+          <label style="flex:1 1 90px;font-size:12px;color:#8A9692">גובה (%)
+            <input id="eAccH" type="number" oninput="accPreview()" style="width:100%"></label>
+        </div>
+        <div id="accPrev" style="position:relative;height:120px;margin-top:12px;background:#F1EBDE;
+             border-inline-start:3px solid #EDA72E;border-radius:3px;overflow:hidden">
+          <div id="accPrevRect" style="position:absolute;background:rgba(61,116,104,.16);border-radius:2px"></div>
+          <div style="position:relative;padding:12px 14px;font-family:'Frank Ruhl Libre',serif;
+               font-size:11px;line-height:1.9;color:#3E4B47">
+            הטקסט של הסיפור יופיע כאן, והמלבן יישב מאחוריו.<br>הזיזי את המספרים כדי לראות איך זה נראה.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="field">
       <label>הסיפור</label>
       <textarea id="eBody"></textarea>
     </div>
@@ -280,6 +313,7 @@ function openEdit(id){
   document.getElementById('eTitle').value=s.title||'';
   document.getElementById('eBody').value=s.body||'';
   document.getElementById('ePublished').value=(s.published_at||'').slice(0,10);
+  accLoad(s.accent);
   document.getElementById('editOverlay').classList.add('active');
 }
 function closeEdit(){editId=null;document.getElementById('editOverlay').classList.remove('active')}
@@ -288,11 +322,43 @@ function closeEdit(){editId=null;document.getElementById('editOverlay').classLis
 // "create". Consent is set true on the server, because she only types a story
 // in once the person has given it; on the public form the sender decides and
 // the default is no.
+// The band behind a story's text. Percentages of the text area, so what is set
+// here is what the reading window shows at any width.
+function accPreset(x,y,w,h){
+  document.getElementById('eAccOn').checked=true;
+  document.getElementById('eAccX').value=x;
+  document.getElementById('eAccY').value=y;
+  document.getElementById('eAccW').value=w;
+  document.getElementById('eAccH').value=h;
+  accPreview();
+}
+function accVal(){
+  function n(id,d){var v=parseFloat(document.getElementById(id).value);return isFinite(v)?v:d}
+  return {on:document.getElementById('eAccOn').checked,
+          x:n('eAccX',4),y:n('eAccY',0),w:n('eAccW',20),h:n('eAccH',100)};
+}
+function accPreview(){
+  var a=accVal(), r=document.getElementById('accPrevRect');
+  document.getElementById('accControls').style.opacity=a.on?'1':'.45';
+  r.style.display=a.on?'':'none';
+  r.style.left=a.x+'%'; r.style.top=a.y+'%'; r.style.width=a.w+'%'; r.style.height=a.h+'%';
+}
+function accLoad(a){
+  a=a||{};
+  document.getElementById('eAccOn').checked=!!a.on;
+  document.getElementById('eAccX').value=(a.x!==undefined?a.x:4);
+  document.getElementById('eAccY').value=(a.y!==undefined?a.y:0);
+  document.getElementById('eAccW').value=(a.w!==undefined?a.w:20);
+  document.getElementById('eAccH').value=(a.h!==undefined?a.h:100);
+  accPreview();
+}
+
 function newStory(){
   editId=null;
   document.getElementById('editTitle').textContent='סיפור חדש';
   ['eSender','eTitle','eBody','ePublished'].forEach(function(id){document.getElementById(id).value=''});
   document.getElementById('eAttr').value='anonymous';
+  accLoad(null);
   document.getElementById('editOverlay').classList.add('active');
 }
 
@@ -309,6 +375,7 @@ function saveEdit(){
     attribution:document.getElementById('eAttr').value,
     title:document.getElementById('eTitle').value,
     published_at:document.getElementById('ePublished').value,
+    accent:accVal(),
     body:document.getElementById('eBody').value
   };
   if(creating)delete body.id;
