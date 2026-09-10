@@ -314,11 +314,6 @@
   });
 })();
 </script>
-<style>
-  #stories-anthology .story-body{ position:relative; }
-  #stories-anthology .story-clamped{ max-height:16em; overflow:hidden; }
-  #stories-anthology .story-clamped::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:5em; background:linear-gradient(to bottom, rgba(240,244,241,0), #F0F4F1); pointer-events:none; }
-</style>
 <script>
 (function(){
   var wrap=document.getElementById('stories-anthology');
@@ -326,37 +321,73 @@
   var MONTHS=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
   function fmt(d){ if(!d) return ''; var x=new Date(d); if(isNaN(x.getTime())) return ''; return x.getDate()+' ב'+MONTHS[x.getMonth()]+' '+x.getFullYear(); }
-  function paras(t){ return String(t).split(/\n\n+/).map(function(p){ return '<p style="margin:0 0 16px;">'+esc(p).replace(/\n/g,'<br>')+'</p>'; }).join(''); }
-
-  document.addEventListener('click', function(e){
-    var btn=e.target && e.target.closest ? e.target.closest('.story-more') : null;
-    if(!btn) return;
-    var art=btn.closest('article');
-    var body=art && art.querySelector('.story-body');
-    if(body) body.classList.remove('story-clamped');
-    btn.style.display='none';
-  });
+  function paras(t){ return String(t).split(/\n\n+/).map(function(p){ return '<p>'+esc(p).replace(/\n/g,'<br>')+'</p>'; }).join(''); }
 
   fetch('/api/story').then(function(r){return r.json();}).then(function(d){
     if(!d || !d.ok || !d.stories || !d.stories.length) return;
+    var STORIES=d.stories;
+
+    // A card per story, not one long column. Someone scanning the library should
+    // see how many voices are here and choose one, rather than falling into the
+    // first and scrolling past the rest.
+    function label(s){
+      if(s.title) return s.title;
+      var t=(s.body||'').replace(/\s+/g,' ').trim();
+      var cut=t.split(' ').slice(0,9).join(' ');
+      return cut + (cut.length < t.length ? '…' : '');
+    }
     var html='<div style="margin:40px 0 0;">';
     html+='<div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:4px;">מן הספרייה</div>';
-    html+='<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(18px,2vw,22px); margin:0 0 6px;">קולות שכבר נאספו</div>';
-    d.stories.forEach(function(s,i){
-      var LONG=(s.body||'').length>720;
+    html+='<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(18px,2vw,22px); margin:0 0 16px;">קולות שכבר נאספו</div>';
+    STORIES.forEach(function(s,i){
       var byline=[s.author, fmt(s.date)].filter(Boolean).join(' · ');
-      html+='<article style="padding:28px 0 26px; '+(i>0?'border-top:1px solid rgba(34,48,47,.12);':'')+'">';
-      if(s.title) html+='<h4 style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(19px,2.2vw,23px); margin:0 0 6px; line-height:1.3;">'+esc(s.title)+'</h4>';
-      if(byline) html+='<div style="font-size:13px; color:#8A9692; margin:0 0 14px;">'+esc(byline)+'</div>';
-      html+='<div class="a-story story-body'+(LONG?' story-clamped':'')+'">'+paras(s.body)+'</div>';
-      if(LONG) html+='<button type="button" class="story-more" style="margin-top:8px; background:none; border:none; color:var(--accent); font-weight:700; font-size:15px; cursor:pointer; font-family:inherit; padding:0;">המשך קריאה ↓</button>';
-      html+='</article>';
+      html+='<button type="button" class="story-card" data-i="'+i+'">'+
+        '<div class="story-card-title">'+esc(label(s))+'</div>'+
+        (byline?'<div class="story-card-by">'+esc(byline)+'</div>':'')+
+        '<div class="story-card-cta">לקריאה ←</div>'+
+      '</button>';
     });
     html+='</div>';
+
+    // One story at a time, in a window over the page. Esc, the ✕ or the
+    // backdrop all close it.
+    function openStory(i){
+      var s=STORIES[i]; if(!s) return;
+      var byline=[s.author, fmt(s.date)].filter(Boolean).join(' · ');
+      var ov=document.createElement('div');
+      ov.className='story-overlay';
+      ov.innerHTML='<div class="story-window" role="dialog" aria-modal="true" tabindex="-1">'+
+        '<button type="button" class="story-close" aria-label="סגירה">&#10005;</button>'+
+        (s.title?'<div class="story-window-title">'+esc(s.title)+'</div>':'')+
+        (byline?'<div class="story-window-by">'+esc(byline)+'</div>':'')+
+        '<div class="a-story">'+paras(s.body)+'</div>'+
+      '</div>';
+      function close(){
+        ov.remove();
+        document.removeEventListener('keydown',onKey);
+        document.body.style.overflow='';
+      }
+      function onKey(e){ if(e.key==='Escape') close(); }
+      ov.addEventListener('click',function(e){
+        if(e.target===ov || e.target.classList.contains('story-close')) close();
+      });
+      document.addEventListener('keydown',onKey);
+      document.body.style.overflow='hidden';
+      document.body.appendChild(ov);
+      var w=ov.querySelector('.story-window'); if(w) w.focus();
+    }
+
+    function bind(el){
+      Array.prototype.forEach.call(el.querySelectorAll('.story-card'),function(b){
+        b.onclick=function(){ openStory(parseInt(b.getAttribute('data-i'),10)); };
+      });
+    }
     // Re-assert if the x-dc framework rebuilds the DOM (a fast fetch can resolve
-    // during x-dc's initial render and get wiped). Re-query by id and only paint
-    // when empty, so a reader's expanded story isn't collapsed.
-    function paint(){ var el=document.getElementById('stories-anthology'); if(el && !el.querySelector('article')) el.innerHTML=html; }
+    // during its initial render and get wiped).
+    function paint(){
+      var el=document.getElementById('stories-anthology');
+      if(el && !el.querySelector('.story-card')){ el.innerHTML=html; bind(el); }
+    }
     paint();
     [50,200,500,1200].forEach(function(ms){ setTimeout(paint, ms); });
     window.addEventListener('load', paint);
