@@ -91,6 +91,7 @@ html[data-authing] .login{display:none}
       <span aria-hidden="true" style="color:#C8D2CE">|</span>
       <a href="/admin/zoom" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">מפגשים</a>
       <a href="/admin/network" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">הפצה</a>
+      <button type="button" onclick="doLogout()" style="border:1px solid #ccc;background:none;color:#666;padding:6px 14px;border-radius:4px;font-family:inherit;font-size:13px;cursor:pointer">יציאה</button>
     </nav>
     <div class="sp"></div>
     <span id="ctx" style="color:var(--muted);font-size:14px"></span>
@@ -240,6 +241,15 @@ function saveBtnReset(){
     var b=el(id); if(!b||!b.dataset.label)return;
     b.textContent=b.dataset.label; b.style.background='';
   });
+}
+
+function doLogout(){
+  PW='';
+  sessionStorage.removeItem('cms-auth');
+  document.documentElement.removeAttribute('data-authing');
+  el('app').classList.add('hide');
+  el('login').classList.remove('hide');
+  el('pw').value='';
 }
 
 function doLogin(){
