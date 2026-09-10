@@ -374,8 +374,11 @@ function accLoad(a){
   a=a||{};
   document.getElementById('eAccOn').checked=!!a.on;
   var m=a.mode;
-  if(!m){ var yy=parseFloat(a.y)||0, hh=(a.h===undefined?100:parseFloat(a.h));
-          m=(yy>0 || hh<100) ? 'free' : 'v'; }
+  if(!m){
+    function g(v,d){var q=parseFloat(v);return isFinite(q)?q:d}
+    var X=g(a.x,0), Y=g(a.y,0), W=g(a.w,100), H=g(a.h,100);
+    m = (H>=98 && Y<=2) ? 'v' : ((W>=98 && X<=2) ? 'h' : 'free');
+  }
   var radio=document.querySelector('input[name="accMode"][value="'+m+'"]');
   if(radio)radio.checked=true;
   document.getElementById('eAccX').value=(a.x!==undefined?a.x:4);

@@ -357,8 +357,17 @@
       // Records saved before modes existed carry only x/y/w/h. Defaulting them
       // to a vertical band silently discards y and h, so infer instead: anything
       // that starts below the top or stops short of the bottom was a shape.
+      // Records saved before modes existed carry only x/y/w/h. Read the geometry
+      // for what it describes: full height is a vertical band, full width a
+      // horizontal one, anything else a free shape. Guessing wrong here means a
+      // band that stops short of the frame, which is the thing being fixed.
       var m=a.mode;
-      if(!m) m=(n(a.y,0)>0 || n(a.h,100)<100) ? 'free' : 'v';
+      if(!m){
+        var X=n(a.x,0), Y=n(a.y,0), W=n(a.w,100), H=n(a.h,100);
+        if(H>=98 && Y<=2)      m='v';
+        else if(W>=98 && X<=2) m='h';
+        else                   m='free';
+      }
       // inset-inline-start, not left: in RTL that is the right edge, which is
       // what "מימין" in the editor promises.
       if(m==='v') return '<div class="story-accent story-accent-v" style="inset-inline-start:'+
