@@ -361,15 +361,21 @@ function accPreview(){
   var a=accVal(), r=document.getElementById('accPrevRect');
   document.getElementById('accControls').style.opacity=a.on?'1':'.45';
   r.style.display=a.on?'':'none';
-  r.style.left=r.style.right=r.style.top=r.style.bottom=r.style.width=r.style.height='';
-  if(a.mode==='v'){ r.style.top='0'; r.style.bottom='0'; r.style.left=a.x+'%'; r.style.width=a.w+'%'; }
-  else if(a.mode==='h'){ r.style.left='0'; r.style.right='0'; r.style.top=a.y+'%'; r.style.height=a.h+'%'; }
-  else { r.style.left=a.x+'%'; r.style.top=a.y+'%'; r.style.width=a.w+'%'; r.style.height=a.h+'%'; }
+  r.style.cssText='position:absolute;background:rgba(61,116,104,.16)';
+  // Mirrors the page exactly: inset-inline-start, which in RTL is the right edge.
+  if(a.mode==='v'){ r.style.top='0'; r.style.bottom='0';
+    r.style.insetInlineStart=a.x+'%'; r.style.width=a.w+'%'; }
+  else if(a.mode==='h'){ r.style.insetInline='0';
+    r.style.top=a.y+'%'; r.style.height=a.h+'%'; }
+  else { r.style.insetInlineStart=a.x+'%'; r.style.top=a.y+'%';
+    r.style.width=a.w+'%'; r.style.height=a.h+'%'; }
 }
 function accLoad(a){
   a=a||{};
   document.getElementById('eAccOn').checked=!!a.on;
-  var m=a.mode||'v';
+  var m=a.mode;
+  if(!m){ var yy=parseFloat(a.y)||0, hh=(a.h===undefined?100:parseFloat(a.h));
+          m=(yy>0 || hh<100) ? 'free' : 'v'; }
   var radio=document.querySelector('input[name="accMode"][value="'+m+'"]');
   if(radio)radio.checked=true;
   document.getElementById('eAccX').value=(a.x!==undefined?a.x:4);

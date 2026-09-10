@@ -354,14 +354,18 @@
     function accentEl(a){
       if(!a || !a.on) return '';
       function n(v,d){ v=parseFloat(v); return isFinite(v)?Math.max(-20,Math.min(140,v)):d; }
-      var m=a.mode||'v';
-      // Vertical and horizontal bands take their length from the window, so the
-      // short sides always meet the frame; only position and thickness are set.
-      if(m==='v') return '<div class="story-accent story-accent-v" style="left:'+
+      // Records saved before modes existed carry only x/y/w/h. Defaulting them
+      // to a vertical band silently discards y and h, so infer instead: anything
+      // that starts below the top or stops short of the bottom was a shape.
+      var m=a.mode;
+      if(!m) m=(n(a.y,0)>0 || n(a.h,100)<100) ? 'free' : 'v';
+      // inset-inline-start, not left: in RTL that is the right edge, which is
+      // what "מימין" in the editor promises.
+      if(m==='v') return '<div class="story-accent story-accent-v" style="inset-inline-start:'+
         n(a.x,4)+'%;width:'+n(a.w,20)+'%"></div>';
       if(m==='h') return '<div class="story-accent story-accent-h" style="top:'+
         n(a.y,0)+'%;height:'+n(a.h,18)+'%"></div>';
-      return '<div class="story-accent story-accent-free" style="left:'+n(a.x,4)+
+      return '<div class="story-accent story-accent-free" style="inset-inline-start:'+n(a.x,4)+
         '%;top:'+n(a.y,0)+'%;width:'+n(a.w,20)+'%;height:'+n(a.h,40)+'%"></div>';
     }
 
