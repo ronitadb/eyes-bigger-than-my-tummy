@@ -155,7 +155,7 @@
             <div>
               <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:10px;">הקהילה</div>
               <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.6vw,28px); line-height:1.32; text-wrap:balance;" data-cms="door2-title">הסיפורים, המחשבות והקולות שלכם</div>
-              <div style="font-family:'Frank Ruhl Libre',serif; font-size:16px; line-height:1.7; color:#6E7C78; margin-top:10px;">הספרייה נבנית גם מהחיים עצמם — קִראו את הקולות שכבר נאספו.</div>
+              <div data-cms="door2-sub" style="font-family:'Frank Ruhl Libre',serif; font-size:16px; line-height:1.7; color:#6E7C78; margin-top:10px;">הספרייה נבנית גם מהחיים עצמם — קִראו את הקולות שכבר נאספו.</div>
             </div>
             <span class="door-arrow" style="color:var(--accent); font-size:24px; line-height:1; flex:0 0 auto; margin-top:4px;">⌄</span>
           </summary>
@@ -168,6 +168,10 @@
         <li style="margin:0; text-wrap:pretty;" data-cms="li2"><span style="color:var(--accent);">—</span>&nbsp; סיפורים ומחשבות שמציגים זווית אחרת, קולות שונים, או חוויות נוספות שהמאמרים אינם נוגעים בהם או מפספסים אותם.</li>
       </ul>
       <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0; text-wrap:pretty;" data-cms="p26">כי כדי להבין באמת את המציאות שגדלנו בתוכה, אנחנו זקוקים גם לתיאוריה שתמפה אותה – וגם לסיפורים ולשפה של מי שחיו אותה.</p>
+            <div id="stories-heading" style="display:none; margin:40px 0 16px;">
+              <div data-cms="stories-eyebrow" style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:4px;">מן הספרייה</div>
+              <div data-cms="stories-title" style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(18px,2vw,22px);">קולות שכבר נאספו</div>
+            </div>
             <div id="stories-anthology"></div>
           </div>
         </details>
@@ -336,9 +340,9 @@
       var cut=t.split(' ').slice(0,9).join(' ');
       return cut + (cut.length < t.length ? '…' : '');
     }
-    var html='<div style="margin:40px 0 0;">';
-    html+='<div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:4px;">מן הספרייה</div>';
-    html+='<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(18px,2vw,22px); margin:0 0 16px;">קולות שכבר נאספו</div>';
+    // The headings live in the page, not here, so the CMS can find and edit
+    // them. They stay hidden until there is something to head.
+    var html='<div>';
     STORIES.forEach(function(s,i){
       var byline=[s.author, fmt(s.date)].filter(Boolean).join(' · ');
       html+='<button type="button" class="story-card" data-i="'+i+'">'+
@@ -418,7 +422,10 @@
     // during its initial render and get wiped).
     function paint(){
       var el=document.getElementById('stories-anthology');
-      if(el && !el.querySelector('.story-card')){ el.innerHTML=html; bind(el); }
+      if(el && !el.querySelector('.story-card')){
+        el.innerHTML=html; bind(el);
+        var h=document.getElementById('stories-heading'); if(h) h.style.display='';
+      }
     }
     paint();
     [50,200,500,1200].forEach(function(ms){ setTimeout(paint, ms); });
@@ -456,7 +463,12 @@
     }).join('');
   }).catch(function(){});
 })();</script>
-<script>(function(){fetch('/api/content?page=materials').then(function(r){return r.json()}).then(function(d){if(!d.blocks)return;d.blocks.forEach(function(b){var el=document.querySelector('[data-cms="'+b.block_id+'"]');if(el)el.innerHTML=b.content.replace(/\n/g,'<br>')})}).catch(function(){})})()</script>
+<script>(function(){fetch('/api/content?page=materials').then(function(r){return r.json()}).then(function(d){if(!d.blocks)return;d.blocks.forEach(function(b){var el=document.querySelector('[data-cms="'+b.block_id+'"]');if(!el)return;
+  var t=(b.content||'').trim();
+  // An empty override hides the element: emptying a field in the CMS is how a
+  // line is removed, and an empty div still occupies its margins.
+  if(!t){el.style.display='none';return}
+  el.style.display='';el.innerHTML=t.replace(/\n/g,'<br>')})}).catch(function(){})})()</script>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;showGrain&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;מראה&quot;}}">
