@@ -137,28 +137,34 @@
       </label>
       <div id="accControls" style="margin-top:10px">
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-          <button type="button" class="btn btn-small" onclick="accPreset(4,0,20,100)">פס בצד שמאל</button>
-          <button type="button" class="btn btn-small" onclick="accPreset(76,0,20,100)">פס בצד ימין</button>
-          <button type="button" class="btn btn-small" onclick="accPreset(0,0,100,16)">פס עליון</button>
-          <button type="button" class="btn btn-small" onclick="accPreset(0,84,100,16)">פס תחתון</button>
-          <button type="button" class="btn btn-small" onclick="accPreset(6,55,34,34)">ריבוע בפינה</button>
+          <label style="font-size:13px;color:#8A9692;display:flex;align-items:center;gap:6px">
+            <input type="radio" name="accMode" value="v" onchange="accMode()"> פס אנכי
+          </label>
+          <label style="font-size:13px;color:#8A9692;display:flex;align-items:center;gap:6px">
+            <input type="radio" name="accMode" value="h" onchange="accMode()"> פס אופקי
+          </label>
+          <label style="font-size:13px;color:#8A9692;display:flex;align-items:center;gap:6px">
+            <input type="radio" name="accMode" value="free" onchange="accMode()"> צורה חופשית
+          </label>
         </div>
+        <div style="font-size:12px;color:#8A9692;line-height:1.7;margin-bottom:10px" id="accHint"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <label style="flex:1 1 90px;font-size:12px;color:#8A9692">מימין (%)
+          <label class="acc-x" style="flex:1 1 90px;font-size:12px;color:#8A9692">מימין (%)
             <input id="eAccX" type="number" oninput="accPreview()" style="width:100%"></label>
-          <label style="flex:1 1 90px;font-size:12px;color:#8A9692">מלמעלה (%)
+          <label class="acc-y" style="flex:1 1 90px;font-size:12px;color:#8A9692">מלמעלה (%)
             <input id="eAccY" type="number" oninput="accPreview()" style="width:100%"></label>
-          <label style="flex:1 1 90px;font-size:12px;color:#8A9692">רוחב (%)
+          <label class="acc-w" style="flex:1 1 90px;font-size:12px;color:#8A9692">רוחב (%)
             <input id="eAccW" type="number" oninput="accPreview()" style="width:100%"></label>
-          <label style="flex:1 1 90px;font-size:12px;color:#8A9692">גובה (%)
+          <label class="acc-h" style="flex:1 1 90px;font-size:12px;color:#8A9692">גובה (%)
             <input id="eAccH" type="number" oninput="accPreview()" style="width:100%"></label>
         </div>
-        <div id="accPrev" style="position:relative;height:120px;margin-top:12px;background:#F1EBDE;
+        <div id="accPrev" style="position:relative;height:130px;margin-top:12px;background:#F1EBDE;
              border-inline-start:3px solid #EDA72E;border-radius:3px;overflow:hidden">
-          <div id="accPrevRect" style="position:absolute;background:rgba(61,116,104,.16);border-radius:2px"></div>
-          <div style="position:relative;padding:12px 14px;font-family:'Frank Ruhl Libre',serif;
+          <div id="accPrevRect" style="position:absolute;background:rgba(61,116,104,.16)"></div>
+          <div style="position:relative;padding:14px 16px;font-family:'Frank Ruhl Libre',serif;
                font-size:11px;line-height:1.9;color:#3E4B47">
-            הטקסט של הסיפור יופיע כאן, והמלבן יישב מאחוריו.<br>הזיזי את המספרים כדי לראות איך זה נראה.
+            כך ייראה החלון. פס אנכי או אופקי נוגע תמיד בקצוות המסגרת —<br>
+            את קובעת רק את המיקום והעובי.
           </div>
         </div>
       </div>
@@ -325,36 +331,54 @@ function closeEdit(){editId=null;document.getElementById('editOverlay').classLis
 // "create". Consent is set true on the server, because she only types a story
 // in once the person has given it; on the public form the sender decides and
 // the default is no.
-// The band behind a story's text. Percentages of the text area, so what is set
-// here is what the reading window shows at any width.
-function accPreset(x,y,w,h){
-  document.getElementById('eAccOn').checked=true;
-  document.getElementById('eAccX').value=x;
-  document.getElementById('eAccY').value=y;
-  document.getElementById('eAccW').value=w;
-  document.getElementById('eAccH').value=h;
+// The band behind a story. A vertical or horizontal band takes its length from
+// the window, so its short sides always meet the frame — only position and
+// thickness are chosen. Free mode is for a shape that touches nothing.
+function accModeVal(){
+  var r=document.querySelector('input[name="accMode"]:checked');
+  return r?r.value:'v';
+}
+function accMode(){
+  var m=accModeVal();
+  var show={v:['acc-x','acc-w'],h:['acc-y','acc-h'],free:['acc-x','acc-y','acc-w','acc-h']}[m];
+  ['acc-x','acc-y','acc-w','acc-h'].forEach(function(c){
+    var el=document.querySelector('.'+c);
+    if(el)el.style.display=show.indexOf(c)>-1?'':'none';
+  });
+  document.getElementById('accHint').textContent={
+    v:'הפס יגיע מלמעלה עד למטה. קבעי כמה הוא רחוק מימין וכמה הוא רחב.',
+    h:'הפס יגיע מקצה לקצה לרוחב. קבעי כמה הוא רחוק מלמעלה וכמה הוא עבה.',
+    free:'צורה חופשית בתוך שטח הטקסט — לא נוגעת בקצוות.'
+  }[m];
   accPreview();
 }
 function accVal(){
   function n(id,d){var v=parseFloat(document.getElementById(id).value);return isFinite(v)?v:d}
-  return {on:document.getElementById('eAccOn').checked,
-          x:n('eAccX',4),y:n('eAccY',0),w:n('eAccW',20),h:n('eAccH',100)};
+  return {on:document.getElementById('eAccOn').checked, mode:accModeVal(),
+          x:n('eAccX',4),y:n('eAccY',0),w:n('eAccW',20),h:n('eAccH',18)};
 }
 function accPreview(){
   var a=accVal(), r=document.getElementById('accPrevRect');
   document.getElementById('accControls').style.opacity=a.on?'1':'.45';
   r.style.display=a.on?'':'none';
-  r.style.left=a.x+'%'; r.style.top=a.y+'%'; r.style.width=a.w+'%'; r.style.height=a.h+'%';
+  r.style.left=r.style.right=r.style.top=r.style.bottom=r.style.width=r.style.height='';
+  if(a.mode==='v'){ r.style.top='0'; r.style.bottom='0'; r.style.left=a.x+'%'; r.style.width=a.w+'%'; }
+  else if(a.mode==='h'){ r.style.left='0'; r.style.right='0'; r.style.top=a.y+'%'; r.style.height=a.h+'%'; }
+  else { r.style.left=a.x+'%'; r.style.top=a.y+'%'; r.style.width=a.w+'%'; r.style.height=a.h+'%'; }
 }
 function accLoad(a){
   a=a||{};
   document.getElementById('eAccOn').checked=!!a.on;
+  var m=a.mode||'v';
+  var radio=document.querySelector('input[name="accMode"][value="'+m+'"]');
+  if(radio)radio.checked=true;
   document.getElementById('eAccX').value=(a.x!==undefined?a.x:4);
   document.getElementById('eAccY').value=(a.y!==undefined?a.y:0);
   document.getElementById('eAccW').value=(a.w!==undefined?a.w:20);
-  document.getElementById('eAccH').value=(a.h!==undefined?a.h:100);
-  accPreview();
+  document.getElementById('eAccH').value=(a.h!==undefined?a.h:18);
+  accMode();
 }
+
 
 function newStory(){
   editId=null;

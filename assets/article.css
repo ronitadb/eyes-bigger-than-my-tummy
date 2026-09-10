@@ -314,7 +314,9 @@
   position:relative; background:#F1EBDE;
   border-radius:4px; border-inline-start:3px solid #EDA72E;
   width:min(38em,100%); max-height:86vh; overflow:auto;
-  padding:clamp(28px,4vw,40px) clamp(22px,4vw,38px);
+  --pad-y:clamp(28px,4vw,40px);
+  --pad-x:clamp(22px,4vw,38px);
+  padding:var(--pad-y) var(--pad-x);
   direction:rtl; text-align:right;
   box-shadow:0 18px 50px rgba(20,34,31,.28);
   outline:none;
@@ -337,15 +339,27 @@
    not need the page's narrower column */
 .story-window .a-story{font-size:18px; line-height:1.85}
 
-/* The band. Positioned inside the text area rather than the window, so it
-   scrolls with the words instead of hanging behind them; and translucent, so
-   the text stays the thing being read. Each story carries its own geometry —
-   fourteen identical windows would be a template, not a design. */
-.story-body-wrap{position:relative}
+/* The band behind a story.
+   It lives in an inner wrapper whose height is the whole scrollable content, so
+   it scrolls with the words rather than hanging fixed behind them — and negative
+   insets carry it back out through the window's padding, so its short sides meet
+   the frame instead of stopping just inside it. A band ending a few pixels short
+   of the edge reads as a mistake; one that touches reads as a decision.
+   Each story carries its own geometry: fourteen identical windows would be a
+   template, not a design. */
+.story-window-inner{position:relative}
 .story-accent{
   position:absolute; pointer-events:none; z-index:0;
   background:rgba(61,116,104,.16);
-  border-radius:2px;
 }
-.story-body-wrap > .a-story{position:relative; z-index:1}
+/* אנכי — full height, bleeding past the padding at both ends */
+.story-accent-v{ top:calc(-1 * var(--pad-y)); bottom:calc(-1 * var(--pad-y)); }
+/* אופקי — full width, bleeding to both side edges */
+.story-accent-h{ inset-inline:calc(-1 * var(--pad-x)); }
+/* חופשי — a shape inside the text area, rounded because it touches nothing */
+.story-accent-free{ border-radius:2px; }
+.story-window-inner > .story-window-title,
+.story-window-inner > .story-window-by,
+.story-window-inner > .a-seam,
+.story-window-inner > .a-story{ position:relative; z-index:1; }
 @media print{ .story-accent{display:none} }

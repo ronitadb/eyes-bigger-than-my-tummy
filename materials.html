@@ -354,8 +354,15 @@
     function accentEl(a){
       if(!a || !a.on) return '';
       function n(v,d){ v=parseFloat(v); return isFinite(v)?Math.max(-20,Math.min(140,v)):d; }
-      return '<div class="story-accent" style="left:'+n(a.x,4)+'%;top:'+n(a.y,0)+
-             '%;width:'+n(a.w,20)+'%;height:'+n(a.h,100)+'%"></div>';
+      var m=a.mode||'v';
+      // Vertical and horizontal bands take their length from the window, so the
+      // short sides always meet the frame; only position and thickness are set.
+      if(m==='v') return '<div class="story-accent story-accent-v" style="left:'+
+        n(a.x,4)+'%;width:'+n(a.w,20)+'%"></div>';
+      if(m==='h') return '<div class="story-accent story-accent-h" style="top:'+
+        n(a.y,0)+'%;height:'+n(a.h,18)+'%"></div>';
+      return '<div class="story-accent story-accent-free" style="left:'+n(a.x,4)+
+        '%;top:'+n(a.y,0)+'%;width:'+n(a.w,20)+'%;height:'+n(a.h,40)+'%"></div>';
     }
 
     // One story at a time, in a window over the page. Esc, the ✕ or the
@@ -367,9 +374,10 @@
       ov.className='story-overlay';
       ov.innerHTML='<div class="story-window" role="dialog" aria-modal="true" tabindex="-1">'+
         '<button type="button" class="story-close" aria-label="סגירה">&#10005;</button>'+
-        (s.title?'<div class="story-window-title">'+esc(s.title)+'</div>':'')+
-        (byline?'<div class="story-window-by">'+esc(byline)+'</div>':'')+
-        '<div class="story-body-wrap">'+accentEl(s.accent)+
+        '<div class="story-window-inner">'+
+          accentEl(s.accent)+
+          (s.title?'<div class="story-window-title">'+esc(s.title)+'</div>':'')+
+          (byline?'<div class="story-window-by">'+esc(byline)+'</div>':'')+
           '<div class="a-story">'+paras(s.body)+'</div>'+
         '</div>'+
       '</div>';
