@@ -11,12 +11,29 @@
 // so they cannot leak into the source. Hidden-with-CSS would still be in ⌘U.
 
 const { sql } = require('../lib/db');
-const { renderBlocks, esc } = require('../lib/articles-render');
+const { renderBlocks, esc, inline } = require('../lib/articles-render');
 
 const SITE = 'https://www.beityeladim.co.il';
 const PUBLIC_COLUMNS = `id, slug, title_lead, title_topic, summary, blocks,
   term_name, hero_image, hero_credit, external_pubs, related_ids,
   status, published_at, sort_order`;
+
+// The הדים form appears on every article, so its wording lives in page_content
+// under one slug rather than being repeated per article. Server-rendered, so an
+// edit shows immediately with no flash of the default.
+async function echoTexts() {
+  try {
+    const { rows } = await sql`
+      SELECT block_id, content FROM page_content WHERE page_slug = 'echo'
+    `;
+    const map = {};
+    rows.forEach(function (r) { if (r.content && r.content.trim()) map[r.block_id] = r.content; });
+    return map;
+  } catch (err) {
+    console.error('echo texts unavailable, using defaults:', err.message);
+    return {};
+  }
+}
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {
@@ -109,7 +126,8 @@ async function page(slug, res) {
     console.error('echoes lookup failed:', err.message);
   }
 
-  return html(res, 200, articlePage(article, related, echoes));
+  const texts = await echoTexts();
+  return html(res, 200, articlePage(article, related, echoes, texts));
 }
 
 function html(res, code, body) {
@@ -155,7 +173,7 @@ function shell(title, description, canonical, image, body) {
     '</style>\n</head>\n<body>\n' + body + '\n</body>\n</html>';
 }
 
-function articlePage(a, related, echoes) {
+function articlePage(a, related, echoes, texts) {
   const canonical = SITE + '/library/' + a.slug;
   const description = a.summary || a.title_topic || '';
   const image = a.hero_image
@@ -193,7 +211,7 @@ function articlePage(a, related, echoes) {
       }).join('') + '</section>\n';
   }
 
-  body += echoForm(a.id);
+  body += echoForm(a.id, texts || {});
 
   const pubs = Array.isArray(a.external_pubs) ? a.external_pubs : [];
   let landing = '';
@@ -225,43 +243,61 @@ function articlePage(a, related, echoes) {
 
 // The invitation shapes what arrives more than any rule enforced afterwards,
 // so the question is "מה זה עורר בך?" and never "הוסף תגובה".
-function echoForm(id) {
+function echoForm(id, texts) {
+  // data-cms marks each string so /admin/content can discover it by scanning a
+  // published article, and takes the text here as the default.
+  const t = (k, d) => (texts[k] || d);
+  const D = {
+    title:   'מה זה עורר בך?',
+    why:     'התגובות כאן עוברות דרכי. אני קוראת כל מה שנשלח ובוחרת מה ומתי לפרסם — לא כדי לסנן דעות, אלא כדי שיהיה אפשר לומר כאן דברים אישיים בלי להיחשף יותר ממה שרצית. שיחה ישירה בין המשתתפים מתקיימת ב[מפגשי הזום](/zoom).',
+    name:    'שם (לא חובה)',
+    email:   'אימייל לחזרה (לא חובה)',
+    body:    'מה עלה בך כשקראת?',
+    consent: 'אני מאשר/ת שהדברים יצטרפו לספרייה. ללא סימון — הם יגיעו לרונית בלבד.',
+    attr:    'אם יפורסם — כיצד לייחס אליי?',
+    full:    'בשמי המלא', first: 'בשם פרטי בלבד', anon: 'באופן אנונימי',
+    submit:  'שליחה',
+    note:    'תגובות מתפרסמות כמה ימים לאחר קבלתן — יש זמן לחשוב שוב. אפשר לבטל בכל רגע, גם אחרי הפרסום, בלי צורך בהסבר.',
+    thanks:  'הדברים הגיעו לרונית. תודה.',
+    empty:   'עוד לא נכתב דבר.',
+    failed:  'השליחה נכשלה. אפשר לנסות שוב.',
+  };
+  const v = {}; Object.keys(D).forEach(function (k) { v[k] = t('echo-' + k, D[k]); });
+  const js = function (x) { return String(x).replace(/\\/g, '\\\\').replace(/'/g, "\\'"); };
+
   return '<section class="a-echo-form no-print" id="echo">' +
-    '<h2>מה זה עורר בך?</h2>' +
-    '<p class="a-echo-why">התגובות כאן עוברות דרכי. אני קוראת כל מה שנשלח ובוחרת מה ומתי לפרסם — ' +
-    'לא כדי לסנן דעות, אלא כדי שיהיה אפשר לומר כאן דברים אישיים בלי להיחשף יותר ממה שרצית. ' +
-    'שיחה ישירה בין המשתתפים מתקיימת ב<a href="/zoom">מפגשי הזום</a>.</p>' +
+    '<h2 data-cms="echo-title">' + esc(v.title) + '</h2>' +
+    '<p class="a-echo-why" data-cms="echo-why">' + inline(v.why) + '</p>' +
     '<form id="echoForm">' +
     '<div class="a-echo-two">' +
-      '<input type="text" name="sender" placeholder="שם (לא חובה)">' +
-      '<input type="email" name="email" placeholder="אימייל לחזרה (לא חובה)">' +
+      '<input type="text" name="sender" data-cms="echo-name" placeholder="' + esc(v.name) + '">' +
+      '<input type="email" name="email" data-cms="echo-email" placeholder="' + esc(v.email) + '">' +
     '</div>' +
-    '<textarea name="story" rows="6" placeholder="מה עלה בך כשקראת?"></textarea>' +
+    '<textarea name="story" rows="6" data-cms="echo-body" placeholder="' + esc(v.body) + '"></textarea>' +
     '<label class="a-echo-consent">' +
       '<input type="checkbox" name="consent" value="1">' +
-      '<span>אני מאשר/ת שהדברים יצטרפו לספרייה. ללא סימון — הם יגיעו לרונית בלבד.</span>' +
+      '<span data-cms="echo-consent">' + esc(v.consent) + '</span>' +
     '</label>' +
-    '<div class="a-echo-attr">אם יפורסם — כיצד לייחס אליי?' +
-      ['<label><input type="radio" name="attribution" value="full"> בשמי המלא</label>',
-       '<label><input type="radio" name="attribution" value="first"> בשם פרטי בלבד</label>',
-       '<label><input type="radio" name="attribution" value="anonymous" checked> באופן אנונימי</label>'
-      ].join('') + '</div>' +
-    '<button type="submit">שליחה</button>' +
+    '<div class="a-echo-attr"><span data-cms="echo-attr">' + esc(v.attr) + '</span>' +
+      '<label><input type="radio" name="attribution" value="full"> <span data-cms="echo-full">' + esc(v.full) + '</span></label>' +
+      '<label><input type="radio" name="attribution" value="first"> <span data-cms="echo-first">' + esc(v.first) + '</span></label>' +
+      '<label><input type="radio" name="attribution" value="anonymous" checked> <span data-cms="echo-anon">' + esc(v.anon) + '</span></label>' +
+    '</div>' +
+    '<button type="submit" data-cms="echo-submit">' + esc(v.submit) + '</button>' +
     '<div id="echoMsg"></div>' +
-    '<p class="a-echo-note">תגובות מתפרסמות כמה ימים לאחר קבלתן — יש זמן לחשוב שוב. ' +
-    'אפשר לבטל בכל רגע, גם אחרי הפרסום, בלי צורך בהסבר.</p>' +
+    '<p class="a-echo-note" data-cms="echo-note">' + esc(v.note) + '</p>' +
     '</form></section>\n' +
     '<script>(function(){var f=document.getElementById("echoForm");if(!f)return;' +
     'f.addEventListener("submit",function(e){e.preventDefault();' +
     'var d=new FormData(f),m=document.getElementById("echoMsg");' +
-    'if(!String(d.get("story")||"").trim()){m.textContent="עוד לא נכתב דבר.";return}' +
+    'if(!String(d.get("story")||"").trim()){m.textContent=\'' + js(v.empty) + '\';return}' +
     'm.textContent="שולח…";' +
     'fetch("/api/story",{method:"POST",headers:{"Content-Type":"application/json"},' +
     'body:JSON.stringify({article_id:' + id + ',sender:d.get("sender"),email:d.get("email"),' +
     'story:d.get("story"),consent:d.get("consent")==="1",attribution:d.get("attribution")})})' +
     '.then(function(r){return r.json()}).then(function(){' +
-    'f.innerHTML="<p class=\'a-echo-thanks\'>הדברים הגיעו לרונית. תודה.</p>"})' +
-    '.catch(function(){m.textContent="השליחה נכשלה. אפשר לנסות שוב."})});})();<\/script>';
+    'f.innerHTML="<p class=\'a-echo-thanks\'>' + js(esc(v.thanks)) + '</p>"})' +
+    '.catch(function(){m.textContent=\'' + js(v.failed) + '\'})});})();<\/script>';
 }
 
 function errorPage(message) {
