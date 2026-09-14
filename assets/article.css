@@ -153,26 +153,58 @@
   display:grid; grid-template-columns:38% 1fr; gap:22px; align-items:start;
 }
 .a-figure-side .a-figure-text p:last-child{margin-bottom:0}
-/* the cream panel: image and text as one object */
+/* The cream panel, as the designed PDF has it: the photograph fills a 40%
+   column edge to edge, its credit runs vertically down the outer edge in white
+   over a fading dark wash, and the text sits centred beside it in Assistant —
+   not the body serif — under a diamond-and-rule. */
 .a-figure-panel{
   display:flex; flex-direction:row; align-items:stretch; gap:0;
   background:var(--panel); border-radius:3px; overflow:hidden;
+  min-height:250px;
 }
-.a-figure-panel .a-figure-media{flex:0 0 42%; display:flex; flex-direction:column}
-.a-figure-panel .a-figure-media img{height:100%; object-fit:cover; border-radius:0}
-.a-figure-panel .a-figure-media figcaption{padding:8px 14px 12px; margin:0}
+.a-figure-panel .a-figure-media{
+  flex:0 0 40%; align-self:stretch; position:relative; overflow:hidden;
+}
+.a-figure-panel .a-figure-media img{
+  display:block; width:100%; height:100%;
+  object-fit:cover; object-position:center 30%; border-radius:0;
+}
+.a-figure-panel .a-figure-media figcaption{
+  position:absolute; top:0; bottom:0; right:0; margin:0;
+  display:flex; align-items:flex-end; padding:12px 7px;
+  writing-mode:vertical-rl;
+  font-family:'Assistant',sans-serif; font-size:11px; letter-spacing:.08em;
+  color:rgba(255,255,255,.92); white-space:nowrap; line-height:1;
+  background-image:linear-gradient(to left,
+    rgba(20,34,31,.66) 0%, rgba(20,34,31,.32) 62%, rgba(20,34,31,0) 100%);
+}
 .a-figure-panel .a-figure-text{
   flex:1 1 0; min-width:0; display:flex; flex-direction:column;
   justify-content:center; padding:22px 24px;
 }
-.a-figure-panel .a-figure-text p:last-child{margin-bottom:0}
+.a-figure-accent{display:flex; align-items:center; gap:12px; margin:0 0 13px}
+.a-figure-accent b{
+  width:6px; height:6px; background:var(--gold);
+  transform:rotate(45deg); flex:none;
+}
+.a-figure-accent i{flex:1 1 auto; height:1px; background:var(--gold); opacity:.5}
+.a-figure-label{
+  font-family:'Assistant',sans-serif; font-size:14px; font-weight:400;
+  letter-spacing:.02em; color:#A8801F; margin:0 0 8px;
+}
+.a-figure-panel .a-figure-text p{
+  font-family:'Assistant',sans-serif; font-weight:400;
+  font-size:clamp(17px,2.2vw,22px); line-height:1.32;
+  color:var(--head); margin:0; text-wrap:pretty;
+}
+
 /* a phone is too narrow for any two-column arrangement */
 @media (max-width:560px){
   .a-figure-inset{max-width:100%}
   .a-figure-side{grid-template-columns:1fr; gap:14px}
-  .a-figure-panel{flex-direction:column}
-  .a-figure-panel .a-figure-media{flex:0 0 auto}
-  .a-figure-panel .a-figure-media img{height:auto}
+  .a-figure-panel{flex-direction:column; min-height:0}
+  .a-figure-panel .a-figure-media{flex:0 0 auto; aspect-ratio:4/3}
+  .a-figure-panel .a-figure-media img{height:100%}
 }
 
 /* ── הערות שוליים ─────────────────────────────────────────────────────────── */

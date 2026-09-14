@@ -374,6 +374,7 @@ function drawBlocks(){
          ['panel','תיבה עם טקסט — רקע קרם']].map(function(o){
           return '<option value="'+o[0]+'"'+((b.layout||'full')===o[0]?' selected':'')+'>'+o[1]+'</option>';
         }).join('')+'</select></div>';
+      if(b.layout==='panel')h+=fld(i,'title','כותרת קטנה (זהב, מעל הטקסט)',b.title);
       if(b.layout==='side'||b.layout==='panel')h+=fld(i,'body','הטקסט שלצד התמונה',b.body,1);
     }
     else if(b.type==='list'||b.type==='footnotes'){
