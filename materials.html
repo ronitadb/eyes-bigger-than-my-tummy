@@ -136,7 +136,7 @@
       </style>
       <div style="max-width:66ch; margin:0 auto; display:flex; flex-direction:column; gap:16px;">
 
-        <details open name="library-door" class="door" style="border:1px solid rgba(34,48,47,.16); border-inline-start:4px solid #EDA72E; background:#F0F4F1; border-radius:4px;">
+        <details open id="articles" name="library-door" class="door" style="border:1px solid rgba(34,48,47,.16); border-inline-start:4px solid #EDA72E; background:#F0F4F1; border-radius:4px;">
           <summary>
             <div>
               <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:10px;">המאמרים</div>
@@ -150,7 +150,7 @@
           </div>
         </details>
 
-        <details name="library-door" class="door" style="border:1px solid rgba(34,48,47,.16); border-inline-start:4px solid #EDA72E; background:#F0F4F1; border-radius:4px;">
+        <details id="community" name="library-door" class="door" style="border:1px solid rgba(34,48,47,.16); border-inline-start:4px solid #EDA72E; background:#F0F4F1; border-radius:4px;">
           <summary>
             <div>
               <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:10px;">הקהילה</div>
@@ -241,7 +241,23 @@
   function setMsg(m,color,text){ if(m){ m.style.color=color; m.textContent=text; } }
 
   function setDefaultAttribution(){
-    var form=document.getElementById('story-submit-form');
+    // A link that points into a closed door should open the door. Browsers only
+  // began doing this for <details> recently, and the people who follow these
+  // links from an email are not all on recent browsers — so do it explicitly.
+  function openToHash(){
+    var id=(location.hash||'').slice(1); if(!id) return;
+    var el=document.getElementById(id); if(!el) return;
+    var d=el.closest('details'); if(d) d.open=true;
+    // The article cards arrive after a fetch, so a single early jump can land
+    // short of the target. Settle once now and once after the paint.
+    var land=function(){ el.scrollIntoView({block:'start'}) };
+    requestAnimationFrame(land);
+    setTimeout(land,400);
+  }
+  window.addEventListener('hashchange',openToHash);
+  openToHash();
+
+  var form=document.getElementById('story-submit-form');
     if(!form) return;
     var radios=form.querySelectorAll('input[name="attribution"]');
     var any=false, i;
