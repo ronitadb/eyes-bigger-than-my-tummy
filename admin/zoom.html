@@ -871,15 +871,21 @@ function duplicateLetter(id){
   if(!name)return;
   fetch(API+'/admin/templates',{method:'POST',headers:headers(),
     body:JSON.stringify({name:name,copy_from:id})})
-    .then(function(r){return r.json()}).then(function(){loadTemplates();showMsg('שוכפל.',true)});
+    .then(function(r){return r.json()}).then(function(d){
+      if(!d.ok)return showMsg((d&&d.message)||'לא שוכפל.',false);
+      loadTemplates();showMsg('שוכפל. המקור לא נגע.',true);
+    });
 }
 function renameLetter(id){
   var t=allTemplates.find(function(x){return x.id===id});
   var name=window.prompt('שם המכתב:', (t&&t.name)||'');
   if(name===null)return;
   fetch(API+'/admin/templates',{method:'PUT',headers:headers(),
-    body:JSON.stringify({id:id,name:name,subject:t.subject,body:t.body})})
-    .then(function(){loadTemplates()});
+    body:JSON.stringify({id:id,name:name})})
+    .then(function(r){return r.json()}).then(function(d){
+      if(!d.ok)return showMsg((d&&d.message)||'השם לא נשמר.',false);
+      loadTemplates();showMsg('השם עודכן.',true);
+    });
 }
 function deleteLetter(id){
   var t=allTemplates.find(function(x){return x.id===id});
