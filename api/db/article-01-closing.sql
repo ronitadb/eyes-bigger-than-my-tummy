@@ -6,7 +6,7 @@
 -- any edit made in the CMS meanwhile survives.
 
 WITH target AS (
-  SELECT a.id AS aid, (t.idx - 1) AS pos
+  SELECT a.id AS aid, (t.idx - 1)::int AS pos
   FROM articles a,
        LATERAL jsonb_array_elements(a.blocks) WITH ORDINALITY AS t(block, idx)
   WHERE a.slug = 'article-01'
