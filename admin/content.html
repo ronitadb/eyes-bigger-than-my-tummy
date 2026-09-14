@@ -150,6 +150,11 @@ function currentValue(k){ return (k in overrides) ? overrides[k] : (defaults[k]|
 
 // Turn a page element's HTML into the plain, line-broken text shown in the editor.
 function extractText(el){
+  // An input or textarea has no text of its own — its wording is the
+  // placeholder. data-cms-default carries it so the block is not a blank card
+  // with nothing to identify it by.
+  var attr=el.getAttribute('data-cms-default');
+  if(attr!==null) return attr;
   var html=el.innerHTML.replace(/<br\s*\/?>/gi,'\n');
   var tmp=document.createElement('div'); tmp.innerHTML=html;
   var t=tmp.textContent||'';

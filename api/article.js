@@ -270,10 +270,10 @@ function echoForm(id, texts) {
     '<p class="a-echo-why" data-cms="echo-why">' + inline(v.why) + '</p>' +
     '<form id="echoForm">' +
     '<div class="a-echo-two">' +
-      '<input type="text" name="sender" data-cms="echo-name" placeholder="' + esc(v.name) + '">' +
-      '<input type="email" name="email" data-cms="echo-email" placeholder="' + esc(v.email) + '">' +
+      '<input type="text" name="sender" data-cms="echo-name" data-cms-default="' + esc(v.name) + '" placeholder="' + esc(v.name) + '">' +
+      '<input type="email" name="email" data-cms="echo-email" data-cms-default="' + esc(v.email) + '" placeholder="' + esc(v.email) + '">' +
     '</div>' +
-    '<textarea name="story" rows="6" data-cms="echo-body" placeholder="' + esc(v.body) + '"></textarea>' +
+    '<textarea name="story" rows="6" data-cms="echo-body" data-cms-default="' + esc(v.body) + '" placeholder="' + esc(v.body) + '"></textarea>' +
     '<label class="a-echo-consent">' +
       '<input type="checkbox" name="consent" value="1">' +
       '<span data-cms="echo-consent">' + esc(v.consent) + '</span>' +
