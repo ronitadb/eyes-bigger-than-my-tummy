@@ -95,6 +95,7 @@ html[data-authing] .login{display:none}
     </nav>
     <div class="sp"></div>
     <span id="ctx" style="color:var(--muted);font-size:14px"></span>
+    <button id="btnExport" onclick="exportCanvases()" title="כל השלדים בקובץ אחד, לעבודה עם קלוד">ייצוא שלדים</button>
     <button id="btnNew" onclick="newArticle()">מאמר חדש</button>
     <button id="btnBack" class="hide" onclick="showList()">← לרשימה</button>
     <button id="btnSave" class="pri hide" onclick="save()">שמירה</button>
@@ -300,6 +301,83 @@ function renderList(){
       '</div>';
   }).join('');
 }
+// The skeletons live in the database, not in a folder, so there is nothing to
+// point an assistant at. This writes them all into one Markdown file that can
+// be handed to one — re-run it after editing, since the file is a snapshot and
+// does not follow the database.
+function exportCanvases(){
+  var b=el('btnExport'), was=b.textContent;
+  b.disabled=true; b.textContent='אוסף…';
+  var ids=state.list.map(function(a){return a.id});
+  var out=[], done=0;
+
+  // One at a time: the list endpoint returns only lengths, so each skeleton
+  // needs its own fetch, and 14 at once is a burst for no gain.
+  function next(){
+    if(!ids.length) return finish();
+    var id=ids.shift();
+    fetch(API+'/admin/articles?id='+id,{headers:headers()})
+      .then(function(r){return r.json()})
+      .then(function(d){
+        var a=(d&&d.article)||null;
+        if(a) out.push(oneCanvas(a));
+        done++; b.textContent='אוסף… '+done+'/'+state.list.length;
+        next();
+      })
+      .catch(function(){done++; next()});
+  }
+
+  function finish(){
+    b.disabled=false; b.textContent=was;
+    if(!out.length){alert('לא נמצאו שלדים.');return}
+    var today=new Date().toISOString().slice(0,10);
+    var doc='# שלדי המאמרים — הספרייה המשותפת\n\n'+
+            'יוצא מהאתר ב-'+today+'. זהו צילום מצב: עריכות שנעשו אחר כך לא ישתקפו כאן.\n\n'+
+            out.join('\n\n---\n\n')+'\n';
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([doc],{type:'text/markdown;charset=utf-8'}));
+    a.download='שלדי-מאמרים-'+today+'.md';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(a.href)},2000);
+  }
+
+  next();
+}
+
+// One article's private working material. Empty fields are left out entirely,
+// so a half-filled card reads as a short section rather than a form of blanks.
+function oneCanvas(a){
+  var p=[], add=function(label,val){
+    if(val==null) return;
+    var v=String(val).trim(); if(!v) return;
+    p.push('**'+label+':** '+v);
+  };
+  p.push('## '+((a.title_lead||a.slug||'').trim()||'(ללא כותרת)'));
+  add('כותרת משנית', a.title_topic);
+  add('מצב', a.status);
+  add('ציר', a.axis);
+  add('משפט הליבה', a.core_sentence);
+  add('אסימון', a.asimon);
+  add('תקציר', a.summary);
+  add('מונח', a.term_name);
+
+  var chain=Array.isArray(a.chain)?a.chain:[];
+  if(chain.length){
+    p.push('**שרשרת הדומינו:**');
+    p.push(chain.map(function(c,i){
+      return (i+1)+'. '+String((c&&(c.text||c.title))||c||'').trim();
+    }).join('\n'));
+  }
+
+  add('הערות', a.notes);
+
+  if(a.canvas && String(a.canvas).trim()){
+    p.push('**הקנבס:**');
+    p.push(String(a.canvas).trim());
+  }
+  return p.join('\n\n');
+}
+
 function showList(){state.cur=null;el('listView').classList.remove('hide');el('editView').classList.add('hide');
   el('btnBack').classList.add('hide');el('btnSave').classList.add('hide');el('btnNew').classList.remove('hide');
   el('ctx').textContent='';msg('');reload();}
