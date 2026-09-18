@@ -260,8 +260,35 @@
   .a-figure-side{grid-template-columns:36% 1fr}
   .a-seam{break-after:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact}
   .a-article a{color:inherit; text-decoration:none}
-  .a-landing,.no-print{display:none !important}
+  /* The PDF is the article and nothing else. Responses keep arriving, so a
+     file saved today and forwarded next month would carry a version of the
+     conversation that has moved on — and they were given to the library,
+     not to a document that travels on its own. */
+  .a-landing,.a-echoes,.no-print{display:none !important}
   .a-footnotes{break-before:auto}
+}
+
+/* ── שמירה כ-PDF ──────────────────────────────────────────────────────────────
+   The stylesheet above already sets the article for A4; this just opens the
+   browser's own print dialog, where every browser and phone offers "save as
+   PDF". No server, no generated file to go stale against the page. */
+.a-pdf{
+  max-width:34em; margin:40px auto 0;
+  padding:0 clamp(20px,5vw,32px);
+  direction:rtl; text-align:center;
+}
+.a-pdf button{
+  font-family:'Assistant',sans-serif; font-size:15px; font-weight:600;
+  color:#2F5248; background:none;
+  border:1px solid rgba(47,82,72,.28); border-radius:999px;
+  padding:11px 26px; cursor:pointer;
+  transition:background .15s ease, border-color .15s ease;
+}
+.a-pdf button:hover{background:rgba(237,167,46,.1); border-color:#EDA72E}
+.a-pdf button:focus-visible{outline:2px solid #EDA72E; outline-offset:2px}
+.a-pdf p{
+  font-family:'Assistant',sans-serif; font-size:13px; color:#8A9490;
+  margin:10px 0 0; line-height:1.6;
 }
 
 /* ── הדים ─────────────────────────────────────────────────────────────────────

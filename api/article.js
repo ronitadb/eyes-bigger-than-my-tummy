@@ -195,6 +195,11 @@ function articlePage(a, related, echoes, texts) {
 
   body += renderBlocks(a.blocks) + '\n</article>\n';
 
+  // Offered where a reader finishes, not before they have started.
+  body += '<div class="a-pdf no-print">' +
+    '<button type="button" onclick="window.print()">שמירה כ-PDF</button>' +
+    '<p>נפתח חלון ההדפסה — בחרו בו ״שמירה כ-PDF״.</p></div>\n';
+
   // The landing. When the last domino falls the reader should feel it land, and
   // then the apparatus arrives as a distinctly separate zone.
   // ── הדים ──────────────────────────────────────────────────────────────────
