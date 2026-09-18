@@ -921,20 +921,31 @@ function sendTestEmail(id){
 // A standalone update: no meeting, every active participant, optionally with
 // the article PDF attached. Behind a typed confirmation because this is the one
 // control here that mails real people and cannot be taken back.
+// A letter can only ever offer the file it actually links to. The attachment
+// used to be hard-wired to one article's PDF and offered on every letter, so
+// the natural mistake was attaching last month's article to this month's.
+function pdfInTemplate(body){
+  var links=templateLinks(body).filter(function(l){return /\.pdf($|\?)/i.test(l.url)});
+  if(!links.length) return null;
+  var name=String(links[0].label||'קובץ').replace(/[\\\/:*?"<>|]/g,' ').trim().slice(0,80);
+  return {filename:name+'.pdf', path:links[0].url};
+}
+
 function sendUpdateToAll(id){
   var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
-  var attach=window.confirm('לצרף את קובץ הכתבה (maamar.pdf)?\n\nאישור = עם הקובץ · ביטול = בלי.');
+  var pdf=pdfInTemplate(t.body);
+  var attach=pdf?window.confirm('לצרף את הקובץ שהמכתב מקשר אליו?\n\n'+pdf.filename+
+                                '\n\nאישור = עם הקובץ · ביטול = בלי.'):false;
   var typed=window.prompt(
     'שליחה לכל '+(allParticipants.filter(function(p){return p.status==="active"}).length)+' הנרשמים הפעילים.\n\n'+
     'נושא: '+t.subject+'\n'+
-    (attach?'כולל קובץ מצורף.':'בלי קובץ מצורף.')+'\n\n'+
+    (attach?'כולל קובץ מצורף: '+pdf.filename:'בלי קובץ מצורף.')+'\n\n'+
     'נשלחים מיילים אמיתיים ואי אפשר לבטל.\n'+
     'להמשך הקלידי:  שלח');
   if(typed===null)return;
   if(typed.trim()!=='שלח'){showMsg('בוטל — לא נשלח דבר.',false);return}
   var payload={template_type:t.template_type,template_id:t.id};
-  if(attach)payload.attachments=[{filename:'לחזור לביתלדים — זמן קיבוץ.pdf',
-                                  path:'https://www.beityeladim.co.il/maamar.pdf'}];
+  if(attach)payload.attachments=[pdf];
   showMsg('שולח…',true);
   fetch(API+'/admin/send-email',{method:'POST',headers:headers(),body:JSON.stringify(payload)})
     .then(function(r){return r.json()})

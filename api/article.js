@@ -202,7 +202,8 @@ function articlePage(a, related, echoes, texts) {
   // A collection of voices, not a conversation between strangers — which is
   // what makes a pile-on structurally impossible rather than merely discouraged.
   if (Array.isArray(echoes) && echoes.length) {
-    body += '<section class="a-echoes"><h2>הדים</h2>' +
+    body += '<section class="a-echoes"><h2 data-cms="echo-published">' +
+      esc((texts && texts['echo-published']) || 'תגובות מכם') + '</h2>' +
       echoes.map(function (e) {
         return '<article class="a-echo">' +
           renderBlocks([{ type: 'text', body: e.body || '' }]) +
