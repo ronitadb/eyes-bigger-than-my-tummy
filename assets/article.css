@@ -104,6 +104,61 @@
   font-family:'Assistant',sans-serif; font-size:14px; color:var(--muted);
 }
 
+/* ── מוטו — a line of verse under a heading ──────────────────────────────────
+   No panel, no rule, no gold: it belongs to the heading above it, not to the
+   reading surface, and every accent already has its one job. The light face in
+   the heading green is the opening's voice, at the opening's size: verse set
+   smaller than the prose around it reads as a caption. */
+.a-motto{margin:0 0 1.6em}
+.a-motto p{
+  font-family:'Assistant',sans-serif; font-weight:300;
+  font-size:clamp(18px,2.2vw,21px); line-height:1.6;
+  color:var(--head); margin:0; text-wrap:balance;
+}
+.a-motto cite{
+  font-style:normal; font-weight:400; white-space:nowrap;
+  font-family:'Assistant',sans-serif; font-size:14px; color:var(--muted);
+}
+/* under the article title rather than a domino heading */
+.a-title + .a-motto{margin-top:-14px; margin-bottom:32px}
+
+/* ── שורת מפתח — a sentence set larger in the running text ─────────────────
+   From the designed PDF, where "ואז נפל האסימון." is set this way: the
+   opening's light green voice, one step up, with room around it and no box.
+   Its job is to break a long even stretch of prose, so it stays rare. It must
+   never read as a heading: light where the headings are bold. */
+.a-article .a-keyline{
+  font-family:'Assistant',sans-serif; font-weight:300;
+  font-size:clamp(21px,2.6vw,25px); line-height:1.45;
+  color:var(--head); margin:1.5em auto; text-wrap:balance;
+  text-align:center; max-width:26em;
+}
+/* A short paragraph, or a few, in the same white card as תיבת מונח / תיבת
+   עובדה. Whole paragraphs run several lines, so the size steps down from the
+   single line above and the text keeps the column's reading edge. */
+.a-article .a-keyline-box{
+  max-width:none; text-align:start; text-wrap:initial;
+  font-size:clamp(19px,2.2vw,22px); line-height:1.6;
+  background:#fff; border:1px solid var(--edge);
+  border-top:2px solid var(--gold); padding:22px clamp(20px,4vw,34px);
+}
+.a-article .a-keyline-box p{margin:0 0 .7em; text-wrap:pretty}
+.a-article .a-keyline-box p:last-child{margin-bottom:0}
+
+/* ── קולות — several voices in a row, from the designed PDF ─────────────────
+   The name leads its own words in a darker gold (the site gold is too pale to
+   carry text), and thin rules separate the speakers without boxing them. */
+.a-voices{margin:26px 0 30px}
+.a-voices-src{
+  font-family:'Assistant',sans-serif; font-size:13px; font-weight:600;
+  letter-spacing:.04em; color:var(--gold); margin:0 0 6px;
+}
+.a-voice{border-top:1px solid var(--rule); padding:16px 0}
+.a-voice:last-child{border-bottom:1px solid var(--rule)}
+.a-voice p{font-size:.95em; line-height:1.85; margin:0 0 .7em}
+.a-voice p:last-child{margin-bottom:0}
+.a-voice-name{font-weight:500; font-size:1.12em; color:#A8801F; margin-inline-end:.3em}
+
 /* ── תיבת מונח / תיבת עובדה — white card with a gold top rule ─────────────── */
 .a-term,.a-fact{
   background:#fff; border:1px solid var(--edge); border-top:2px solid var(--gold);
@@ -153,6 +208,18 @@
   display:grid; grid-template-columns:38% 1fr; gap:22px; align-items:start;
 }
 .a-figure-side .a-figure-text p:last-child{margin-bottom:0}
+/* Where the screen has a margin to give, the image steps out of the column
+   into it and the paragraph keeps the full measure, reading as one more
+   paragraph with a picture beside it rather than a boxed-off figure. The
+   breakpoint is where the margin (beyond the article's own padding) can hold
+   the image and its gap. Print and narrower screens keep the grid above. */
+@media screen and (min-width:1260px){
+  .a-figure-side{display:block; position:relative; margin:0 0 1.1em; --side-w:240px}
+  .a-figure-side .a-figure-media{
+    position:absolute; top:.45em; width:var(--side-w);
+    inset-inline-start:calc(-1 * (var(--side-w) + 40px));
+  }
+}
 /* The cream panel, as the designed PDF has it: the photograph fills a 40%
    column edge to edge, its credit runs vertically down the outer edge in white
    over a fading dark wash, and the text sits centred beside it in Assistant —
@@ -197,6 +264,9 @@
   font-size:clamp(17px,2.2vw,22px); line-height:1.32;
   color:var(--head); margin:0; text-wrap:pretty;
 }
+
+/* the photograph takes two thirds, for a short line that needs little room */
+.a-figure-panel-wide .a-figure-media{flex-basis:66.667%}
 
 /* a phone is too narrow for any two-column arrangement */
 @media (max-width:560px){
@@ -252,7 +322,9 @@
   .a-title-lead{font-size:28pt}
   .a-title-topic{font-size:16pt}
   .a-domino h2{font-size:15pt; break-after:avoid}
-  .a-sub{break-after:avoid}
+  .a-sub,.a-motto{break-after:avoid}
+  .a-keyline{break-inside:avoid}
+  .a-voice{break-inside:avoid}
   .a-opening,.a-quote,.a-term,.a-fact,.a-figure{
     break-inside:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact;
   }
