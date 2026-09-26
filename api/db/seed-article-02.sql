@@ -43,7 +43,7 @@ UPDATE articles SET
   "layout": "full",
   "src": "/assets/article/a02-ramot-menashe-1957.jpg",
   "alt": "",
-  "credit": "ילדים והורים ברמות מנשה, 1957 · פיקיוויקי, נחלת הכלל"
+  "credit": "ילדים והורים ברמות מנשה, 1957 · PikiWiki, נחלת הכלל"
  },
  {
   "type": "text",
@@ -78,7 +78,7 @@ UPDATE articles SET
   "layout": "panel",
   "src": "/assets/article/a02-matsuva-1943.jpg",
   "alt": "",
-  "credit": "הורים וילדים במצובה, 1943 · פיקיוויקי, נחלת הכלל",
+  "credit": "הורים וילדים במצובה, 1943 · PikiWiki, נחלת הכלל",
   "body": "המבוגר מכיר. הילד מרגיש מוכר.\nהראשון מעניק, השני מקבל."
  },
  {
