@@ -139,7 +139,7 @@ https://www.beityeladim.co.il
 
 -- =====================================================================
 -- Distribution & Outreach network (also available standalone in
--- api/db/migrate-distribution.sql for an existing database).
+-- api/db/applied/migrate-distribution.sql for an existing database).
 -- =====================================================================
 
 CREATE TABLE IF NOT EXISTS contacts (
