@@ -58,6 +58,10 @@
     {
       "source": "/library/:slug",
       "destination": "/api/article?slug=:slug"
+    },
+    {
+      "source": "/voices/:slug",
+      "destination": "/api/story?page=:slug"
     }
   ],
   "functions": {

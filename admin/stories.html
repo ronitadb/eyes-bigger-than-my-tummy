@@ -130,6 +130,23 @@
         ריק = נקבע אוטומטית ברגע הפרסום.
       </div>
     </div>
+    <!-- A story long enough for a page of its own (library-decisions §14). -->
+    <div class="field" style="background:#F6F3EC;border:1px solid rgba(34,48,47,.1);border-radius:4px;padding:12px 14px">
+      <label>עמוד משלו (לסיפור ארוך)</label>
+      <input id="eSlug" type="text" dir="ltr" placeholder="למשל mi-yavin — ריק = אין עמוד, נפתח בחלון">
+      <div style="font-size:12px;color:#8A9692;margin-top:4px;line-height:1.6">
+        אותיות לטיניות קטנות ומקפים. הכתובת תהיה beityeladim.co.il/voices/…
+      </div>
+      <label style="margin-top:12px">אישור הכותב/ת לדף</label>
+      <input id="eApproved" type="date">
+      <div style="font-size:12px;color:#8A9692;margin-top:4px;line-height:1.6">
+        התאריך שבו התקבל אישור לדף. בלי תאריך — אי אפשר לפרסם.
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:12px">
+        <input id="eIndexable" type="checkbox">
+        <span>מופיע גם בחיפוש בגוגל (רק אם הכותב/ת ביקש/ה)</span>
+      </label>
+    </div>
     <div class="field">
       <label style="display:flex;align-items:center;gap:8px">
         <input id="eAccOn" type="checkbox" onchange="accPreview()">
@@ -268,6 +285,18 @@ function render(){
     meta.push('ייחוס: '+esc(ATTR_LABEL[s.attribution]||s.attribution));
     if(s.has_file)meta.push('📎 קובץ מצורף'+(s.file_name?' ('+esc(s.file_name)+')':'')+' — נשלח למייל');
     if(s.status==='published'&&s.published_at)meta.push('פורסם: '+esc(fmtDate(s.published_at)));
+    var page='';
+    if(s.slug){
+      var pub='https://www.beityeladim.co.il/voices/'+s.slug;
+      var prev=pub+'?preview='+(s.preview_token||'');
+      page='<div class="meta" style="margin-top:6px;line-height:1.9">'+
+        'עמוד משלו: <a href="'+esc(pub)+'" target="_blank" dir="ltr">/voices/'+esc(s.slug)+'</a>'+
+        (s.approved_at?' · אושר: '+esc(fmtDate(s.approved_at)):' · <b style="color:#8b4513">טרם אושר</b>')+
+        (s.indexable?' · מופיע בגוגל':' · לא מופיע בגוגל')+
+        (s.preview_token?'<br>קישור לתצוגה מקדימה (לשליחה לכותב/ת בלבד): '+
+          '<input readonly dir="ltr" value="'+esc(prev)+'" onclick="this.select()" style="width:100%;font-size:12px;margin-top:4px">':'')+
+        '</div>';
+    }
 
     var actions='';
     if(s.status!=='published'){
@@ -284,7 +313,7 @@ function render(){
         '<h3>'+(s.title?esc(s.title):'<span style="color:#aaa">(ללא כותרת)</span>')+'</h3>'+
         '<span class="status status-'+s.status+'">'+esc(STATUS_LABEL[s.status]||s.status)+'</span>'+
       '</div>'+
-      '<div class="meta">'+meta.join(' · ')+'<br>'+consentPill+'</div>'+
+      '<div class="meta">'+meta.join(' · ')+'<br>'+consentPill+'</div>'+page+
       (s.body?'<div class="body">'+esc(s.body)+'</div>':'<div class="meta" style="color:#aaa">(ללא טקסט — קובץ מצורף בלבד)</div>')+
       '<div class="actions">'+actions+'</div>'+
     '</div>';
@@ -298,6 +327,7 @@ function setStatus(id,status){
     .then(function(d){
       if(d&&d.ok){showMsg('עודכן.',true);load()}
       else if(d&&d.error==='no_consent'){showMsg('אי אפשר לפרסם — המשתתף/ת לא אישר/ה פרסום.',false)}
+      else if(d&&d.error==='not_approved'){showMsg('אי אפשר לפרסם — לסיפור יש עמוד משלו, והכותב/ת עוד לא אישר/ה אותו. יש למלא תאריך אישור.',false)}
       else{showMsg('שגיאה בעדכון.',false)}
     })
     .catch(function(){showMsg('שגיאת חיבור.',false)});
@@ -322,6 +352,9 @@ function openEdit(id){
   document.getElementById('eTitle').value=s.title||'';
   document.getElementById('eBody').value=s.body||'';
   document.getElementById('ePublished').value=(s.published_at||'').slice(0,10);
+  document.getElementById('eSlug').value=s.slug||'';
+  document.getElementById('eApproved').value=(s.approved_at||'').slice(0,10);
+  document.getElementById('eIndexable').checked=!!s.indexable;
   accLoad(s.accent);
   document.getElementById('editOverlay').classList.add('active');
 }
@@ -392,7 +425,8 @@ function accLoad(a){
 function newStory(){
   editId=null;
   document.getElementById('editTitle').textContent='סיפור חדש';
-  ['eSender','eTitle','eBody','ePublished'].forEach(function(id){document.getElementById(id).value=''});
+  ['eSender','eTitle','eBody','ePublished','eSlug','eApproved'].forEach(function(id){document.getElementById(id).value=''});
+  document.getElementById('eIndexable').checked=false;
   document.getElementById('eAttr').value='anonymous';
   accLoad(null);
   document.getElementById('editOverlay').classList.add('active');
@@ -412,7 +446,10 @@ function saveEdit(){
     title:document.getElementById('eTitle').value,
     published_at:document.getElementById('ePublished').value,
     accent:accVal(),
-    body:document.getElementById('eBody').value
+    body:document.getElementById('eBody').value,
+    slug:document.getElementById('eSlug').value,
+    approved_at:document.getElementById('eApproved').value,
+    indexable:document.getElementById('eIndexable').checked
   };
   if(creating)delete body.id;
   fetch(API+'/admin/stories',{method:creating?'POST':'PUT',headers:headers(),
@@ -421,7 +458,7 @@ function saveEdit(){
     .then(function(d){
       if(d&&d.ok){btnState(btn,'נשמר ✓',true);
         showMsg(creating?'הסיפור נוסף — עדיין לא מפורסם.':'נשמר.',true);closeEdit();load()}
-      else{btnState(btn,'לא נשמר',false);showMsg('שגיאה בשמירה.',false)}})
+      else{btnState(btn,'לא נשמר',false);showMsg((d&&d.message)||'שגיאה בשמירה.',false)}})
     .catch(function(){btnState(btn,'לא נשמר',false);showMsg('שגיאת חיבור.',false)});
 }
 document.getElementById('editOverlay').addEventListener('click',function(e){if(e.target===this)closeEdit()});

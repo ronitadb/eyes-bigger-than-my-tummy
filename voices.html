@@ -88,8 +88,11 @@
         .lib-voices .story-card-cta{margin-top:auto; padding-top:6px;}
         .story-card-lines{font-family:'Frank Ruhl Libre',serif; font-size:15px; line-height:1.65; color:#3A4744;
           display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; line-clamp:2; overflow:hidden;}
+        /* a piece with a page of its own spans two columns */
+        .lib-voices .story-card-long{grid-column:span 2; text-decoration:none;}
         @media (max-width:900px){ .lib-voices .story-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
-        @media (max-width:600px){ .lib-voices .story-grid{grid-template-columns:1fr;} }
+        @media (max-width:600px){ .lib-voices .story-grid{grid-template-columns:1fr;}
+          .lib-voices .story-card-long{grid-column:auto;} }
         /* the series is ordered, so the list says so */
         .art-num{font-family:'Assistant',sans-serif; font-size:13px; font-weight:700; color:#C08C22;
           letter-spacing:.04em; margin:0 0 6px;}
@@ -281,6 +284,17 @@
     STORIES.forEach(function(s,i){
       var byline=[s.author, fmt(s.date)].filter(Boolean).join(' · ');
       var lines=(s.body||'').replace(/\s+/g,' ').trim();
+      // A longer piece has a page of its own: a wider card that goes there,
+      // instead of the window the short ones open in.
+      if(s.slug){
+        html+='<a class="story-card story-card-long" href="/voices/'+encodeURIComponent(s.slug)+'">'+
+          (s.title?'<div class="story-card-title">'+esc(s.title)+'</div>':'')+
+          '<div class="story-card-lines">'+esc(lines)+'</div>'+
+          (byline?'<div class="story-card-by">'+esc(byline)+'</div>':'')+
+          '<div class="story-card-cta">לקריאה ←</div>'+
+        '</a>';
+        return;
+      }
       html+='<button type="button" class="story-card" data-i="'+i+'">'+
         (s.title?'<div class="story-card-title">'+esc(s.title)+'</div>':'')+
         '<div class="story-card-lines">'+esc(lines)+'</div>'+

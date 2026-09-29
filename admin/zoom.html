@@ -762,12 +762,18 @@ function renderTemplates(){
     var standalone=!/\{\{\s*(title|date|time|zoom_link)\s*\}\}/.test((t.body||'')+(t.subject||''));
     // Test first, and make it the obvious button. The real send is the one
     // that cannot be undone, so it is the quieter of the two.
-    var sendBtn=standalone
+    // A letter with {{link}} is personal — written to one person, with a link
+    // that is theirs alone (a story's private preview). It can only go to one
+    // named address; the send-to-everyone button is not offered at all.
+    var personal=/\{\{\s*link\s*\}\}/.test((t.body||'')+(t.subject||''));
+    var sendBtn=!standalone ? ''
+      : personal
       ? '<button class="btn btn-small" onclick="sendTestEmail('+t.id+')">שליחת בדיקה אליי</button>'+
-        '<button class="btn btn-small btn-danger" onclick="sendUpdateToAll('+t.id+')">שליחה לכל הנרשמים</button>'
-      : '';
+        '<button class="btn btn-small btn-danger" onclick="sendToOne('+t.id+')">שליחה לאדם אחד</button>'
+      : '<button class="btn btn-small" onclick="sendTestEmail('+t.id+')">שליחת בדיקה אליי</button>'+
+        '<button class="btn btn-small btn-danger" onclick="sendUpdateToAll('+t.id+')">שליחה לכל הנרשמים</button>';
     var extra=isLetter
-      ? '<button class="btn btn-small" onclick="showMissing('+t.id+')">מי טרם קיבל?</button>'+
+      ? (personal?'':'<button class="btn btn-small" onclick="showMissing('+t.id+')">מי טרם קיבל?</button>')+
         '<button class="btn btn-small" onclick="duplicateLetter('+t.id+')">שכפול</button>'+
         '<button class="btn btn-small" onclick="renameLetter('+t.id+')">שם</button>'+
         '<button class="btn btn-small" onclick="deleteLetter('+t.id+')">מחיקה</button>'
@@ -924,6 +930,33 @@ function sendTestEmail(id){
     .then(function(d){
       if(d&&d.ok)showMsg('נשלחה בדיקה אחת אל '+to+'. לא נשלח לאיש מהנרשמים.',true);
       else showMsg((d&&d.message)||'שגיאה בשליחת הבדיקה.',false);
+    })
+    .catch(function(){showMsg('שגיאת חיבור.',false)});
+}
+
+// A personal letter: one name, one address, and the link that is theirs.
+// Typed confirmation, as for any real send — it reaches a real person.
+function sendToOne(id){
+  var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
+  var name=window.prompt('שליחה לאדם אחד\n\nשם (כפי שיופיע בפנייה):','');
+  if(name===null)return; name=name.trim();
+  var to=window.prompt('כתובת המייל של '+(name||'הנמען/ת')+':','');
+  if(to===null)return; to=to.trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){showMsg('כתובת לא תקינה — לא נשלח דבר.',false);return}
+  var link=window.prompt('הקישור האישי (למשל הקישור לתצוגה המקדימה מ״ניהול סיפורים״):','');
+  if(link===null)return; link=link.trim();
+  if(!/^https?:\/\//.test(link)){showMsg('הקישור חסר או לא תקין — לא נשלח דבר.',false);return}
+  var typed=window.prompt('שליחה אל '+(name||to)+' <'+to+'>\n\nנושא: '+t.subject+'\n\n'+
+    'נשלח מייל אמיתי, לאדם אחד בלבד. להמשך הקלידי:  שלח');
+  if(typed===null)return;
+  if(typed.trim()!=='שלח'){showMsg('בוטל — לא נשלח דבר.',false);return}
+  showMsg('שולח…',true);
+  fetch(API+'/admin/send-email',{method:'POST',headers:headers(),
+    body:JSON.stringify({template_type:t.template_type,template_id:t.id,to_one:{name:name,email:to,link:link}})})
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if(d&&d.ok&&d.sent)showMsg('נשלח אל '+to+'.',true,true);
+      else showMsg((d&&d.message)||'השליחה נכשלה.',false,true);
     })
     .catch(function(){showMsg('שגיאת חיבור.',false)});
 }
