@@ -217,7 +217,7 @@
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeMeetingForm()">ביטול</button>
-      <button class="btn" onclick="saveMeeting()">שמירה</button>
+      <button class="btn" onclick="saveMeeting(this)">שמירה</button>
     </div>
   </div>
 </div>
@@ -282,7 +282,7 @@
     </p>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeTemplateModal()">ביטול</button>
-      <button class="btn" onclick="saveTemplate()">שמירה</button>
+      <button class="btn" onclick="saveTemplate(this)">שמירה</button>
     </div>
   </div>
 </div>
@@ -584,7 +584,16 @@ function openMeetingForm(m){
 function closeMeetingForm(){document.getElementById('meetingModal').classList.remove('active')}
 function editMeeting(id){var m=allMeetings.find(function(x){return x.id===id});if(m)openMeetingForm(m)}
 
-function saveMeeting(){
+// Saving reports at the button: ✓ for a moment, then the editor closes. The
+// page does not jump to a message at the top.
+function btnDone(b,ok){
+  if(!b)return;
+  if(!b.dataset.label)b.dataset.label=b.textContent;
+  b.textContent=ok?'✓':'לא נשמר';
+  b.style.background=ok?'#2F7A4F':'#9B3B2F';
+  setTimeout(function(){b.textContent=b.dataset.label;b.style.background=''},ok?1200:2600);
+}
+function saveMeeting(btn){
   var id=document.getElementById('fId').value;
   var body={title:document.getElementById('fTitle').value,description:document.getElementById('fDesc').value,
     meeting_date:document.getElementById('fDate').value,meeting_time:document.getElementById('fTime').value,
@@ -594,9 +603,9 @@ function saveMeeting(){
   if(id)body.id=parseInt(id,10);
   fetch(API+'/admin/meetings',{method:id?'PUT':'POST',headers:headers(),body:JSON.stringify(body)})
     .then(function(r){return r.json()}).then(function(data){
-      if(!data.ok){showMsg('שגיאה בשמירה',false);return}
-      closeMeetingForm();showMsg(id?'המפגש עודכן':'המפגש נוצר',true);loadAll();
-    }).catch(function(){showMsg('שגיאת חיבור',false)});
+      if(!data.ok){btnDone(btn,false);return}
+      btnDone(btn,true);setTimeout(function(){closeMeetingForm();loadAll()},700);
+    }).catch(function(){btnDone(btn,false)});
 }
 
 // Send email
@@ -1055,14 +1064,14 @@ function editTemplate(id){
   document.getElementById('templateModal').classList.add('active');
 }
 function closeTemplateModal(){document.getElementById('templateModal').classList.remove('active')}
-function saveTemplate(){
+function saveTemplate(btn){
   var id=document.getElementById('tplId').value;
   var body={id:parseInt(id,10),subject:document.getElementById('tplSubject').value,body:document.getElementById('tplBody').value};
   fetch(API+'/admin/templates',{method:'PUT',headers:headers(),body:JSON.stringify(body)})
     .then(function(r){return r.json()}).then(function(data){
-      if(!data.ok){showMsg('שגיאה בשמירה',false);return}
-      closeTemplateModal();showMsg('התבנית עודכנה',true);loadTemplates();
-    }).catch(function(){showMsg('שגיאת חיבור',false)});
+      if(!data.ok){btnDone(btn,false);return}
+      btnDone(btn,true);setTimeout(function(){closeTemplateModal();loadTemplates()},700);
+    }).catch(function(){btnDone(btn,false)});
 }
 </script>
 </body>

@@ -264,7 +264,6 @@ function showMsg(text,ok){
   // off-screen is feedback nobody receives.
   // A success may fade; a failure must not — an error that erases itself
   // is indistinguishable from having worked.
-  if(m.scrollIntoView)m.scrollIntoView({block:'center',behavior:'smooth'});
   if(showMsg._t)clearTimeout(showMsg._t);
   if(ok)showMsg._t=setTimeout(function(){m.innerHTML=''},4000);
 }
@@ -456,8 +455,10 @@ function saveEdit(){
     body:JSON.stringify(body)})
     .then(function(r){return r.json()})
     .then(function(d){
-      if(d&&d.ok){btnState(btn,'נשמר ✓',true);
-        showMsg(creating?'הסיפור נוסף — עדיין לא מפורסם.':'נשמר.',true);closeEdit();load()}
+      if(d&&d.ok){btnState(btn,'✓',true);
+        // the ✓ is seen before the editor closes; the list keeps its place
+        setTimeout(function(){closeEdit();load()},700);
+        if(creating)showMsg('הסיפור נוסף — עדיין לא מפורסם.',true)}
       else{btnState(btn,'לא נשמר',false);showMsg((d&&d.message)||'שגיאה בשמירה.',false)}})
     .catch(function(){btnState(btn,'לא נשמר',false);showMsg('שגיאת חיבור.',false)});
 }
