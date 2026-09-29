@@ -107,12 +107,24 @@
          what the library holds. Same surface as the cards, but it spans both
          and has no gold edge, so it reads as a note above the two shelves
          rather than a third shelf. */
-      .lib-series{grid-column:1 / -1; display:flex; align-items:center; justify-content:center; gap:12px;
-        text-decoration:none; background:#F0F4F1; border:1px solid rgba(34,48,47,.16); border-radius:4px;
-        padding:clamp(16px,2.4vw,20px) clamp(18px,3vw,26px); text-align:center;
-        font-family:var(--head-font); font-weight:600; font-size:clamp(17px,1.9vw,20px); color:var(--head-color);
-        transition:border-color .15s ease, background .15s ease;}
+      /* The series door: the thesis itself, and a way into the argument. Built
+         as the widest of the three cards — its label, its gold edge — so it
+         reads as a door and not as a heading over the other two; the button is
+         what says "open me". */
+      .lib-series{grid-column:1 / -1; display:flex; flex-direction:column; align-items:flex-start; gap:12px;
+        text-decoration:none; text-align:start; background:#F0F4F1; border:1px solid rgba(34,48,47,.16);
+        border-inline-start:4px solid #EDA72E; border-radius:4px;
+        padding:clamp(22px,3vw,28px) clamp(20px,3vw,28px);
+        transition:background .15s ease, border-color .15s ease;}
       .lib-series:hover{background:#E8EFEA; border-color:rgba(34,48,47,.26);}
+      .lib-series-thesis{font-family:'Frank Ruhl Libre',serif; font-weight:500;
+        font-size:clamp(19px,2.2vw,23px); line-height:1.6; color:var(--head-color); max-width:62ch; text-wrap:pretty;}
+      .lib-series-cta{display:inline-flex; align-items:center; margin-top:4px;
+        font-family:var(--head-font); font-weight:600; font-size:15px; color:var(--head-color);
+        border:1px solid rgba(47,82,72,.4); border-radius:999px; padding:9px 22px;
+        transition:background .15s ease, color .15s ease, border-color .15s ease;}
+      .lib-series:hover .lib-series-cta,.lib-series:focus-visible .lib-series-cta{
+        background:#2F5248; border-color:#2F5248; color:#fff;}
       @media (max-width:640px){ .lib-doors{grid-template-columns:1fr;} }
     </style>
     <!-- One note spanning the shelves — what the series sets out to argue — and
@@ -120,7 +132,9 @@
          filled from the data, never typed. -->
     <ul class="lib-doors">
       <li class="lib-series-li" style="grid-column:1 / -1;"><a class="lib-series" href="/about-series">
-        <span data-cms="door-series">לקריאת הטיעון שסדרת המאמרים בוחנת</span>
+        <span class="lib-door-label">על הסדרה</span>
+        <span class="lib-series-thesis" data-cms="door-series">גם אם ניקח את הילד הכי ׳טוב׳, את ההורים הכי ׳טובים׳ ואת המטפלת הכי ׳טובה׳ - עדיין יהיה חסך. החסך מקורו מבני, ולא אישיותי.</span>
+        <span class="lib-series-cta" data-cms="door-series-cta">לקריאת הטיעון שסדרת המאמרים בוחנת</span>
       </a></li>
       <li><a class="lib-door" href="/library">
         <span class="lib-door-label">המאמרים</span>
