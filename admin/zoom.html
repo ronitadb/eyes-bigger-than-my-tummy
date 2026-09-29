@@ -938,9 +938,11 @@ function sendTestEmail(id){
 // Typed confirmation, as for any real send — it reaches a real person.
 function sendToOne(id){
   var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
-  var name=window.prompt('שליחה לאדם אחד\n\nשם (כפי שיופיע בפנייה):','');
-  if(name===null)return; name=name.trim();
-  var to=window.prompt('כתובת המייל של '+(name||'הנמען/ת')+':','');
+  // The name is typed into the letter itself, by hand, before sending.
+  if(/___/.test((t.body||'')+(t.subject||''))){
+    showMsg('במכתב נשארו מקומות ריקים (___). השלימי אותם בעריכה, ואז שלחי.',false,true);return}
+  var name='';
+  var to=window.prompt('שליחה לאדם אחד\n\nכתובת המייל:','');
   if(to===null)return; to=to.trim();
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){showMsg('כתובת לא תקינה — לא נשלח דבר.',false);return}
   var link=window.prompt('הקישור האישי (למשל הקישור לתצוגה המקדימה מ״ניהול סיפורים״):','');
