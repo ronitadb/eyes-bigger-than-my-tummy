@@ -61,6 +61,11 @@
       <span style="display:block; max-width:24ch; margin:0 auto; text-align:center; font-family:'Frank Ruhl Libre',serif; color:var(--paper); font-weight:400; font-size:clamp(38px,5.4vw,68px); line-height:1.1;">להבין יחד את בית הילדים</span>
     </h1>
     <div aria-hidden="true" style="width:100vw; margin-inline:calc(50% - 50vw); margin-top:2px; height:3px; background:#EDA72E;"></div>
+    <figure style="margin:clamp(30px,4vw,46px) auto 0; max-width:min(980px,92vw); text-align:center; position:relative;">
+      <img fetchpriority="high" decoding="async" src="assets/reading-corner.webp" alt="פינת הקריאה בבית הילדים — מדף כרכי המשמר לילדים" style="width:100%; height:auto; display:block; border:1px solid rgba(34,48,47,.16); box-shadow:0 18px 40px rgba(34,48,47,.16);">
+      <div aria-hidden="true" style="position:absolute; top:0; bottom:0; left:-5px; width:3px; z-index:2; background:#EDA72E;"></div>
+      <div aria-hidden="true" style="position:absolute; top:0; bottom:0; right:-5px; width:3px; z-index:2; background:#EDA72E;"></div>
+    </figure>
     <div style="text-align:center; padding:0 8px; max-width:56ch; margin-inline:auto;">
       <p data-cms="subtitle" style="font-family:'Assistant',sans-serif; font-size:clamp(18px,2vw,22px); line-height:1.7; color:#6E7C78; margin:26px auto 0; max-width:56ch;">מרחב משותף: מאמרים שאני מביאה, לצד הסיפורים, הזיכרונות והמחשבות שאתם מבקשים לחלוק.</p>
     </div>
@@ -76,130 +81,59 @@
       <p data-cms="mnote" style="font-family:'Assistant',sans-serif; font-size:clamp(14px,1.7vw,16px); line-height:1.8; color:#6E7C78; margin:6px 0 0;">
         בשם מלא, בשם פרטי בלבד או באופן אנונימי · אפשר גם לצרף קובץ
       </p>
-      <a href="#story-submit-form" data-cta="story" style="display:inline-block; margin-top:18px; background:#3D7468; color:#F4F8F4; font-family:'Assistant',sans-serif; font-weight:700; font-size:clamp(16px,1.9vw,18px); text-decoration:none; padding:14px 34px; border-radius:999px; box-shadow:0 6px 18px rgba(34,48,47,.18);">לשליחת סיפור</a>
+      <a href="/voices#story-submit-form" data-cta="story" style="display:inline-block; margin-top:18px; background:#3D7468; color:#F4F8F4; font-family:'Assistant',sans-serif; font-weight:700; font-size:clamp(16px,1.9vw,18px); text-decoration:none; padding:14px 34px; border-radius:999px; box-shadow:0 6px 18px rgba(34,48,47,.18);">לשליחת סיפור</a>
     </div>
 
-    <!-- The framing essay moved to /about-series: most visits come for the
-         articles, and a returning reader should not scroll past what they have
-         already read. Its first paragraph stays as the standfirst, and the first
-         of the three doors below leads to the rest. -->
-    <section style="max-width:60ch; margin-inline:auto; padding:clamp(40px,6vw,60px) 0 0;">
-      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0; text-wrap:pretty;" data-cms="p1">איך מנכיחים את הכאב והחסך שצמחו בבית הילדים, מבלי לבטל את האהבה והכוונות הטובות של ההורים שבנו אותו? המאמרים המובאים מבקשים להחזיק יחד שני קצוות שנדמה שלעיתים הופרדו זה מזה: את מגבלותיו הַמִּבְנִיּוֹת של בית הילדים כסביבה מספקת צרכים, לצד האמונה והמסירות של הורינו, והאהבה שהובילה את עשייתם.</p>
-    </section>
+
+    <!-- /materials is the gateway: the banner, the illustration, the essay's
+         first paragraph and three doors. Each door opens a page of its own —
+         /about-series, /library, /voices — so nothing here has to be scrolled
+         past to reach what a visitor came for. -->
 
     <style>
-      .lib-doors{list-style:none; margin:clamp(34px,5vw,48px) auto 0; padding:0; max-width:980px;
-        display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px;}
+      .lib-doors{list-style:none; margin:clamp(34px,5vw,48px) auto 0; padding:0; max-width:860px;
+        display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;}
       .lib-door{display:flex; flex-direction:column; gap:10px; height:100%; text-decoration:none;
         background:#F0F4F1; border:1px solid rgba(34,48,47,.16); border-inline-start:4px solid #EDA72E;
-        border-radius:4px; padding:clamp(20px,3vw,26px) clamp(18px,3vw,24px);
+        border-radius:4px; padding:clamp(22px,3vw,28px) clamp(20px,3vw,26px);
         transition:background .15s ease, border-color .15s ease;}
       .lib-door:hover{background:#E8EFEA; border-color:rgba(34,48,47,.26);}
-      .lib-door:focus-visible{outline:2px solid #EDA72E; outline-offset:2px;}
+      .lib-door:focus-visible,.lib-series:focus-visible{outline:2px solid #EDA72E; outline-offset:2px;}
       .lib-door-label{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600;}
       .lib-door-line{font-family:var(--head-font); color:var(--head-color); font-weight:700;
-        font-size:clamp(17px,1.9vw,20px); line-height:1.4; text-wrap:balance;}
-      .lib-door-go{margin-top:auto; font-size:12px; font-weight:600; letter-spacing:.08em; color:#EDA72E;}
+        font-size:clamp(19px,2.2vw,23px); line-height:1.35; text-wrap:balance;}
+      .lib-door-new{font-family:'Frank Ruhl Libre',serif; font-size:15px; line-height:1.6; color:#6E7C78; margin-top:auto;}
+      /* A different kind of door: it leads to what the series argues, not to
+         what the library holds. Same surface as the cards, but it spans both
+         and has no gold edge, so it reads as a note above the two shelves
+         rather than a third shelf. */
+      .lib-series{grid-column:1 / -1; display:flex; align-items:center; justify-content:center; gap:12px;
+        text-decoration:none; background:#F0F4F1; border:1px solid rgba(34,48,47,.16); border-radius:4px;
+        padding:clamp(16px,2.4vw,20px) clamp(18px,3vw,26px); text-align:center;
+        font-family:var(--head-font); font-weight:600; font-size:clamp(17px,1.9vw,20px); color:var(--head-color);
+        transition:border-color .15s ease, background .15s ease;}
+      .lib-series:hover{background:#E8EFEA; border-color:rgba(34,48,47,.26);}
       @media (max-width:640px){ .lib-doors{grid-template-columns:1fr;} }
     </style>
-    <!-- Three doors, first in reading order the one a newcomer needs and a
-         returning reader skips. The two lines that change — the newest article
-         and the number of voices — are filled from the data, never typed. -->
+    <!-- One note spanning the shelves — what the series sets out to argue — and
+         two shelves: the articles and the voices. The newest article's title is
+         filled from the data, never typed. -->
     <ul class="lib-doors">
-      <li><a class="lib-door" href="/about-series">
-        <span class="lib-door-label">על הסדרה</span>
-        <span class="lib-door-line" data-cms="door1-title">למה בית הילדים מעולם לא יכול היה למלא את המטרה שלשמה נבנה?</span>
-        <span class="lib-door-go">לקריאה ←</span>
+      <li class="lib-series-li" style="grid-column:1 / -1;"><a class="lib-series" href="/about-series">
+        <span data-cms="door-series">לקריאת הטיעון שסדרת המאמרים בוחנת</span>
       </a></li>
-      <li><a class="lib-door" id="door-articles" href="#articles">
+      <li><a class="lib-door" href="/library">
         <span class="lib-door-label">המאמרים</span>
-        <span class="lib-door-line" id="door-articles-line">כל המאמרים בסדרה</span>
-        <span class="lib-door-go">לקריאה ←</span>
+        <span class="lib-door-line" data-cms="door-articles">לקריאת המאמרים</span>
+        <span class="lib-door-new" id="door-articles-line"></span>
       </a></li>
-      <li><a class="lib-door" href="#community">
+      <li><a class="lib-door" href="/voices">
         <span class="lib-door-label">הקהילה</span>
-        <span class="lib-door-line" id="door-community-line">מכתבים וקולות מכם</span>
-        <span class="lib-door-go">לקריאה ←</span>
+        <span class="lib-door-line" data-cms="door-voices">לקריאת הסיפורים שהגיעו מכם</span>
       </a></li>
     </ul>
 
-    <section style="padding:clamp(40px,5vw,60px) 0 80px; border-top:1px solid rgba(34,48,47,.12);">
-      <style>
-        .door > summary{ list-style:none; }
-        .door > summary::-webkit-details-marker{ display:none; }
-        .door > summary::marker{ content:""; }
-        .door > summary{ cursor:pointer; display:flex; align-items:flex-start; gap:16px; justify-content:space-between; padding:clamp(24px,4vw,32px) clamp(22px,4vw,30px); transition:background .15s ease; }
-        .door > summary:hover{ background:rgba(237,167,46,.06); }
-        .door > summary:focus-visible{ outline:2px solid #EDA72E; outline-offset:-3px; }
-        .door .door-arrow{ transition:transform .25s ease; }
-        .door[open] .door-arrow{ transform:rotate(180deg); }
-      </style>
-      <div style="max-width:66ch; margin:0 auto; display:flex; flex-direction:column; gap:16px;">
-
-        <section id="articles" class="lib-section" style="border:1px solid rgba(34,48,47,.16); border-inline-start:4px solid #EDA72E; background:#F0F4F1; border-radius:4px; padding:clamp(24px,4vw,32px) clamp(22px,4vw,30px);">
-          <h2 style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 14px;">המאמרים</h2>
-          <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0; text-wrap:pretty;" data-cms="articles-note">הכתיבה שתובא כאן נבנית גם מהסיפורים שיעלו בקבוצות. הספרייה הזו תיבנה בהדרגה, ותאפשר לתיאוריה ולשטח להעשיר ולדייק זה את זו.</p>
-          <div id="articles-grid" style="margin-top:26px"></div>
-        </section>
-
-        <section id="community" class="lib-section" style="border:1px solid rgba(34,48,47,.16); border-inline-start:4px solid #EDA72E; background:#F0F4F1; border-radius:4px; padding:clamp(24px,4vw,32px) clamp(22px,4vw,30px);">
-          <div style="margin-bottom:22px;">
-              <h2 style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 10px;">הקהילה</h2>
-              <div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(20px,2.6vw,28px); line-height:1.32; text-wrap:balance;" data-cms="door2-title">הסיפורים, המחשבות והקולות שלכם</div>
-              <div data-cms="door2-sub" style="font-family:'Frank Ruhl Libre',serif; font-size:16px; line-height:1.7; color:#6E7C78; margin-top:10px;">הספרייה נבנית גם מהחיים עצמם — קִראו את הקולות שכבר נאספו.</div>
-          </div>
-            <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 22px; text-wrap:pretty;" data-cms="p23">לצד הניתוח התיאורטי והמאמרים, הספרייה המשותפת נבנית מהחיים עצמם.</p>
-      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 22px; text-wrap:pretty;" data-cms="p24">אני מזמינה אתכם – ילדים שהיו שם, הורים שגידלו, ובני משפחה – להפוך לחלק מהספרייה הזו, ולשלוח את הסיפורים, הזיכרונות והמחשבות שלכם.</p>
-      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0 0 14px; text-wrap:pretty;" data-cms="p25">הספרייה פתוחה ומזמינה לקבל את כל גווני הקולות:</p>
-      <ul style="font-family:'Frank Ruhl Libre',serif; font-size:18px; line-height:1.9; color:#3A4744; margin:0 0 22px; padding-inline-start:1.2em; list-style:none;">
-        <li style="margin:0 0 12px; text-wrap:pretty;" data-cms="li1"><span style="color:var(--accent);">—</span>&nbsp; סיפורים המהדהדים את מה שהמאמרים מתארים, ומביאים את הזיכרונות והחוויות האישיות שלכם בתוך המבנה הזה.</li>
-        <li style="margin:0; text-wrap:pretty;" data-cms="li2"><span style="color:var(--accent);">—</span>&nbsp; סיפורים ומחשבות שמציגים זווית אחרת, קולות שונים, או חוויות נוספות שהמאמרים אינם נוגעים בהם או מפספסים אותם.</li>
-      </ul>
-      <p style="font-family:'Frank Ruhl Libre',serif; font-weight:400; font-size:19px; line-height:2; color:#3A4744; margin:0; text-wrap:pretty;" data-cms="p26">כי כדי להבין באמת את המציאות שגדלנו בתוכה, אנחנו זקוקים גם לתיאוריה שתמפה אותה – וגם לסיפורים ולשפה של מי שחיו אותה.</p>
-            <div id="stories-heading" style="display:none; margin:40px 0 16px;">
-              <div data-cms="stories-eyebrow" style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:4px;">מן הספרייה</div>
-              <div data-cms="stories-title" style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(18px,2vw,22px);">קולות שכבר נאספו</div>
-            </div>
-            <div id="stories-anthology"></div>
-        </section>
-
-      </div>
-
-      <div style="max-width:66ch; margin:34px auto 0;">
-        <div style="background:#EEF3EF; border:1px solid rgba(34,48,47,.12); border-radius:4px; padding:clamp(26px,4vw,36px) clamp(22px,4vw,34px); margin:30px 0 0;">
-        <div style="font-size:13px; letter-spacing:.04em; color:var(--accent); font-weight:600; margin-bottom:16px;">שליחת סיפור, מחשבה או עמדה לספרייה המשותפת</div>
-        <form id="story-submit-form" style="display:flex; flex-direction:column; gap:14px;">
-          <div style="display:flex; flex-wrap:wrap; gap:14px;">
-            <input name="sender" type="text" placeholder="שם (לא חובה)" style="flex:1 1 180px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
-            <input name="email" type="email" placeholder="אימייל לחזרה (לא חובה)" style="flex:1 1 180px; background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
-          </div>
-          <input name="title" type="text" placeholder="כותרת (לא חובה)" style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit;">
-          <textarea name="story" rows="7" placeholder="הסיפור, הזיכרון או המחשבה שלכם..." style="background:#FBF7EC; border:1px solid rgba(34,48,47,.22); color:#22302F; padding:14px 16px; border-radius:2px; font-size:16px; font-family:inherit; resize:vertical;"></textarea>
-          <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
-            <label for="story-file" style="display:inline-flex; align-items:center; gap:8px; background:#FBF7EC; border:1px solid rgba(61,116,104,.55); color:var(--accent); padding:11px 20px; border-radius:2px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit;">צירוף קובץ</label>
-            <input id="story-file" name="file" type="file" accept=".pdf,.doc,.docx,.txt,.rtf,.odt,.jpg,.jpeg,.png,.heic,.gif" style="position:absolute; width:1px; height:1px; opacity:0; overflow:hidden;">
-            <span id="story-file-name" style="font-size:14px; color:#6E7C78;">לא נבחר קובץ</span>
-          </div>
-          <span style="font-size:12px; color:#8A9692;">מסמך או תמונה (PDF, Word, תמונה וכד׳), עד 3MB.</span>
-          <label style="display:flex; gap:10px; align-items:flex-start; font-family:'Frank Ruhl Libre',serif; font-size:15px; line-height:1.7; color:#3A4744; cursor:pointer; margin-top:6px;">
-            <input id="story-consent" name="consent" type="checkbox" value="1" style="margin-top:5px; width:17px; height:17px; accent-color:var(--accent); flex:0 0 auto;">
-            <span>אני מאשר/ת שהסיפור יצטרף לספרייה המשותפת באתר. רונית תעבור על הדברים ותבחר מה ומתי לפרסם. ללא סימון — הסיפור יישלח לרונית בלבד.</span>
-          </label>
-          <div style="font-family:'Frank Ruhl Libre',serif; font-size:14px; color:#6E7C78; margin-top:2px;">אם יפורסם — כיצד לייחס אליי?</div>
-          <div style="display:flex; flex-wrap:wrap; gap:18px;">
-            <label style="display:inline-flex; gap:7px; align-items:center; font-size:15px; color:#3A4744; cursor:pointer;"><input type="radio" name="attribution" value="full" style="accent-color:var(--accent);">בשמי המלא</label>
-            <label style="display:inline-flex; gap:7px; align-items:center; font-size:15px; color:#3A4744; cursor:pointer;"><input type="radio" name="attribution" value="first" style="accent-color:var(--accent);">בשם פרטי בלבד</label>
-            <label style="display:inline-flex; gap:7px; align-items:center; font-size:15px; color:#3A4744; cursor:pointer;"><input type="radio" name="attribution" value="anonymous" style="accent-color:var(--accent);">באופן אנונימי</label>
-          </div>
-          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-top:4px;">
-            <button type="submit" style="background:var(--accent); color:#F4F8F4; border:none; padding:14px 34px; border-radius:2px; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit;">שליחה לספרייה</button>
-            <span style="font-size:13px; color:#8A7C64;">* הסיפור נשלח לרונית. שום דבר לא מתפרסם באתר ללא אישורך.</span>
-          </div>
-          <div id="story-msg" style="font-size:14px; color:#8b4513;"></div>
-        </form>
-      </div>
-      </div>
-    </section>
+    <div style="height:clamp(50px,7vw,80px)"></div>
 
   </main>
 
@@ -224,291 +158,32 @@
 
 <script>
 (function(){
-  var MAX=3*1024*1024;
-  function setMsg(m,color,text){ if(m){ m.style.color=color; m.textContent=text; } }
-
-  function setDefaultAttribution(){
-    // A link that points into a closed door should open the door. Browsers only
-  // began doing this for <details> recently, and the people who follow these
-  // links from an email are not all on recent browsers — so do it explicitly.
-  function openToHash(){
-    var id=(location.hash||'').slice(1); if(!id) return;
-    var el=document.getElementById(id); if(!el) return;
-    var d=el.closest('details'); if(d) d.open=true;
-    // The article cards arrive after a fetch, so a single early jump can land
-    // short of the target. Settle once now and once after the paint.
-    var land=function(){ el.scrollIntoView({block:'start'}) };
-    requestAnimationFrame(land);
-    setTimeout(land,400);
+  // Links into the old one-page library are already out in emails
+  // (/materials#articles, /materials#story-submit-form). Send each on to the
+  // page that now holds what it pointed at.
+  var MOVED={'articles':'/library','community':'/voices','story-submit-form':'/voices#story-submit-form'};
+  function forward(){
+    var h=(location.hash||'').slice(1);
+    if(MOVED[h]){ location.replace(MOVED[h]); return true; }
   }
-  window.addEventListener('hashchange',openToHash);
-  openToHash();
+  if(forward()) return;
+  window.addEventListener('hashchange', forward);
 
-  var form=document.getElementById('story-submit-form');
-    if(!form) return;
-    var radios=form.querySelectorAll('input[name="attribution"]');
-    var any=false, i;
-    for(i=0;i<radios.length;i++){ if(radios[i].checked) any=true; }
-    if(!any){ for(i=0;i<radios.length;i++){ if(radios[i].value==='anonymous') radios[i].checked=true; } }
-  }
-  setDefaultAttribution();
-  document.addEventListener('DOMContentLoaded', setDefaultAttribution);
-  window.addEventListener('load', setDefaultAttribution);
-  setTimeout(setDefaultAttribution, 60);
-  setTimeout(setDefaultAttribution, 300);
-
-  document.addEventListener('change', function(e){
-    if(!e.target || e.target.id!=='story-file') return;
-    var span=document.getElementById('story-file-name');
-    var f=e.target.files && e.target.files[0];
-    if(span) span.textContent = f ? f.name : 'לא נבחר קובץ';
-  });
-
-  document.addEventListener('submit', function(e){
-    if(!e.target || e.target.id!=='story-submit-form') return;
-    e.preventDefault();
-    var form=e.target, el=form.elements;
-    function v(n){return el[n]&&el[n].value?el[n].value.trim():'';}
-    var sender=v('sender'), email=v('email'), title=v('title'), story=v('story');
-    var msg=document.getElementById('story-msg');
-    var fileInput=document.getElementById('story-file');
-    var file=fileInput && fileInput.files && fileInput.files[0];
-
-    var consent=!!(el['consent'] && el['consent'].checked);
-    var attribution='anonymous';
-    var radios=form.querySelectorAll('input[name="attribution"]');
-    for(var ri=0;ri<radios.length;ri++){ if(radios[ri].checked) attribution=radios[ri].value; }
-
-    if(!story && !file){ setMsg(msg,'#8b4513','נא לכתוב סיפור או לצרף קובץ לפני השליחה.'); return; }
-    if(file && file.size>MAX){ setMsg(msg,'#8b4513','הקובץ גדול מדי (מעל 3MB). נא לצרף קובץ קטן יותר.'); return; }
-
-    var btn=form.querySelector('button[type="submit"]');
-
-    function send(payload){
-      if(btn){ btn.disabled=true; btn.textContent='שולח…'; }
-      setMsg(msg,'#6E7C78','שולח…');
-      fetch('/api/story',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-        .then(function(r){ return r.json().catch(function(){return {};}).then(function(d){ return {ok:r.ok, d:d}; }); })
-        .then(function(res){
-          if(res.ok){
-            setMsg(msg,'#2F5248','תודה. הסיפור נשלח לרונית. אם אישרת פרסום — הוא יצטרף לספרייה לאחר עיון.');
-            form.reset();
-            setDefaultAttribution();
-            var span=document.getElementById('story-file-name'); if(span) span.textContent='לא נבחר קובץ';
-          } else if(res.d && res.d.error==='toolarge'){
-            setMsg(msg,'#8b4513','הקובץ גדול מדי. נא לצרף קובץ קטן יותר.');
-          } else {
-            setMsg(msg,'#8b4513','השליחה נכשלה. נסו שוב, או שלחו לנו במייל ל־ronit@beityeladim.co.il');
-          }
-        })
-        .catch(function(){ setMsg(msg,'#8b4513','השליחה נכשלה. בדקו את החיבור ונסו שוב.'); })
-        .then(function(){ if(btn){ btn.disabled=false; btn.textContent='שליחה לספרייה'; } });
-    }
-
-    var payload={sender:sender,email:email,title:title,story:story,consent:consent,attribution:attribution};
-    if(file){
-      var reader=new FileReader();
-      reader.onload=function(){
-        var base64=String(reader.result||'').split(',')[1]||'';
-        payload.file={name:file.name, type:file.type, data:base64};
-        send(payload);
-      };
-      reader.onerror=function(){ setMsg(msg,'#8b4513','לא הצלחנו לקרוא את הקובץ. נסו שוב.'); };
-      reader.readAsDataURL(file);
-    } else {
-      send(payload);
-    }
-  });
-})();
-</script>
-<script>
-(function(){
-  var wrap=document.getElementById('stories-anthology');
-  if(!wrap) return;
-  var MONTHS=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  function fmt(d){ if(!d) return ''; var x=new Date(d); if(isNaN(x.getTime())) return ''; return x.getDate()+' ב'+MONTHS[x.getMonth()]+' '+x.getFullYear(); }
-  function paras(t){ return String(t).split(/\n\n+/).map(function(p){ return '<p>'+esc(p).replace(/\n/g,'<br>')+'</p>'; }).join(''); }
-
-  fetch('/api/story').then(function(r){return r.json();}).then(function(d){
-    if(!d || !d.ok || !d.stories || !d.stories.length) return;
-    var STORIES=d.stories;
-    function count(){
-      var line=document.getElementById('door-community-line');
-      if(line) line.textContent=STORIES.length+' מכתבים וקולות מכם';
-    }
-    count(); [50,200,500,1200].forEach(function(ms){ setTimeout(count, ms); });
-    window.addEventListener('load', count);
-
-    // A card per story, not one long column. Someone scanning the library should
-    // see how many voices are here and choose one, rather than falling into the
-    // first and scrolling past the rest.
-    function label(s){
-      if(s.title) return s.title;
-      var t=(s.body||'').replace(/\s+/g,' ').trim();
-      var cut=t.split(' ').slice(0,9).join(' ');
-      return cut + (cut.length < t.length ? '…' : '');
-    }
-    // The headings live in the page, not here, so the CMS can find and edit
-    // them. They stay hidden until there is something to head.
-    var html='<div>';
-    STORIES.forEach(function(s,i){
-      var byline=[s.author, fmt(s.date)].filter(Boolean).join(' · ');
-      html+='<button type="button" class="story-card" data-i="'+i+'">'+
-        '<div class="story-card-title">'+esc(label(s))+'</div>'+
-        (byline?'<div class="story-card-by">'+esc(byline)+'</div>':'')+
-        '<div class="story-card-cta">לקריאה ←</div>'+
-      '</button>';
-    });
-    html+='</div>';
-
-    // Each story may carry a band behind its text, positioned as a percentage
-    // of the text area so it scrolls with the words rather than hanging behind.
-    function accentEl(a){
-      if(!a || !a.on) return '';
-      function n(v,d){ v=parseFloat(v); return isFinite(v)?Math.max(-20,Math.min(140,v)):d; }
-      // Records saved before modes existed carry only x/y/w/h. Defaulting them
-      // to a vertical band silently discards y and h, so infer instead: anything
-      // that starts below the top or stops short of the bottom was a shape.
-      // Records saved before modes existed carry only x/y/w/h. Read the geometry
-      // for what it describes: full height is a vertical band, full width a
-      // horizontal one, anything else a free shape. Guessing wrong here means a
-      // band that stops short of the frame, which is the thing being fixed.
-      var m=a.mode;
-      if(!m){
-        var X=n(a.x,0), Y=n(a.y,0), W=n(a.w,100), H=n(a.h,100);
-        if(H>=98 && Y<=2)      m='v';
-        else if(W>=98 && X<=2) m='h';
-        else                   m='free';
-      }
-      // inset-inline-start, not left: in RTL that is the right edge, which is
-      // what "מימין" in the editor promises.
-      if(m==='v') return '<div class="story-accent story-accent-v" style="inset-inline-start:'+
-        n(a.x,4)+'%;width:'+n(a.w,20)+'%"></div>';
-      if(m==='h') return '<div class="story-accent story-accent-h" style="top:'+
-        n(a.y,0)+'%;height:'+n(a.h,18)+'%"></div>';
-      return '<div class="story-accent story-accent-free" style="inset-inline-start:'+n(a.x,4)+
-        '%;top:'+n(a.y,0)+'%;width:'+n(a.w,20)+'%;height:'+n(a.h,40)+'%"></div>';
-    }
-
-    // One story at a time, in a window over the page. Esc, the ✕ or the
-    // backdrop all close it.
-    function openStory(i){
-      var s=STORIES[i]; if(!s) return;
-      var byline=[s.author, fmt(s.date)].filter(Boolean).join(' · ');
-      var ov=document.createElement('div');
-      ov.className='story-overlay';
-      ov.innerHTML='<div class="story-window" role="dialog" aria-modal="true" tabindex="-1">'+
-        '<button type="button" class="story-close" aria-label="סגירה">&#10005;</button>'+
-        '<div class="story-window-inner">'+
-          accentEl(s.accent)+
-          (s.title?'<div class="story-window-title">'+esc(s.title)+'</div>':'')+
-          (byline?'<div class="story-window-by">'+esc(byline)+'</div>':'')+
-          '<div class="a-story">'+paras(s.body)+'</div>'+
-        '</div>'+
-      '</div>';
-      function close(){
-        ov.remove();
-        document.removeEventListener('keydown',onKey);
-        document.body.style.overflow='';
-      }
-      function onKey(e){ if(e.key==='Escape') close(); }
-      ov.addEventListener('click',function(e){
-        if(e.target===ov || e.target.classList.contains('story-close')) close();
-      });
-      document.addEventListener('keydown',onKey);
-      document.body.style.overflow='hidden';
-      document.body.appendChild(ov);
-      var w=ov.querySelector('.story-window'); if(w) w.focus();
-    }
-
-    function bind(el){
-      Array.prototype.forEach.call(el.querySelectorAll('.story-card'),function(b){
-        b.onclick=function(){ openStory(parseInt(b.getAttribute('data-i'),10)); };
-      });
-    }
-    // Re-assert if the x-dc framework rebuilds the DOM (a fast fetch can resolve
-    // during its initial render and get wiped).
-    function paint(){
-      var el=document.getElementById('stories-anthology');
-      if(el && !el.querySelector('.story-card')){
-        el.innerHTML=html; bind(el);
-        var h=document.getElementById('stories-heading'); if(h) h.style.display='';
-      }
-    }
-    paint();
-    [50,200,500,1200].forEach(function(ms){ setTimeout(paint, ms); });
-    window.addEventListener('load', paint);
-  }).catch(function(){});
-})();
-</script>
-<script>(function(){
+  // The articles door names the newest article: what a returning reader came for.
   fetch('/api/article').then(function(r){return r.json()}).then(function(d){
-    if(!d||!d.ok||!d.articles||!d.articles.length)return;
-    function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-    // The series and the one piece published elsewhere are listed apart: the
-    // זמן קיבוץ article is not one of the series and is not counted with it.
-    // The series is the numbered articles; anything else (the זמן קיבוץ piece,
-    // hosted here or elsewhere) stands outside it.
-    function inSeries(a){return /^article-\d+$/.test(a.slug||'') && !a.external_url}
-    var series=d.articles.filter(inSeries);
-    var outside=d.articles.filter(function(a){return !inSeries(a)});
-    // "בקרוב" marks only the next article to come. On thirteen at once it would
-    // promise a timetable and age badly (library-decisions §5).
-    var next=null;
-    var lastLive=-1; series.forEach(function(a,i){ if(a.status==='published') lastLive=i; });
-    for(var ni=lastLive+1; ni<series.length; ni++){ if(series[ni].status!=='published'){ next=series[ni]; break; } }
-    // The door at the top names the newest article, which is what a returning
-    // reader came for.
-    var newest=series.filter(function(a){return a.status==='published'})
-      .sort(function(x,y){return new Date(y.published_at||0)-new Date(x.published_at||0)})[0];
-
-    function card(a){
-      var live=a.status==='published';
-      var ext=a.external_url||'';
-      var lead=a.title_lead||a.title_topic||'';
-      var sub=a.title_lead?(a.title_topic||''):'';
-      var inner=
-        '<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(17px,2vw,20px); line-height:1.35; margin:0 0 4px;">'+esc(lead)+'</div>'+
-        (sub?'<div style="font-family:\'Frank Ruhl Libre\',serif; font-size:15px; line-height:1.6; color:#6E7C78;">'+esc(sub)+'</div>':'')+
-        (a.summary?'<div style="font-family:\'Frank Ruhl Libre\',serif; font-size:15px; line-height:1.7; color:#6E7C78; margin-top:8px;">'+esc(a.summary)+'</div>':'')+
-        (live
-          ? (ext?'<div style="font-size:12px; font-weight:600; letter-spacing:.08em; color:#EDA72E; margin-top:10px;">לקריאה ↗</div>'
-                :'<div style="font-size:12px; font-weight:600; letter-spacing:.08em; color:#EDA72E; margin-top:10px;">לקריאה ←</div>')
-          : (a===next?'<div style="font-size:12px; font-weight:600; letter-spacing:.08em; color:#EDA72E; margin-top:10px;">בקרוב</div>':''));
-      var box='display:block; text-decoration:none; background:#fff; border:1px solid rgba(34,48,47,.14);'+
-        'border-top:2px solid '+(live?'#EDA72E':'rgba(237,167,46,.35)')+'; border-radius:3px;'+
-        'padding:18px 20px; margin-bottom:10px;'+(live?'':'opacity:.72;');
-      if(!live) return '<div style="'+box+'">'+inner+'</div>';
-      // An article hosted elsewhere (the זמן קיבוץ piece) links out; everything
-      // else goes to its page in the library.
-      return ext
-        ? '<a href="'+esc(ext)+'" target="_blank" rel="noopener" style="'+box+'">'+inner+'</a>'
-        : '<a href="/library/'+esc(a.slug)+'" style="'+box+'">'+inner+'</a>';
-    }
-    var html=series.map(card).join('')+
-      (outside.length
-        ? '<div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:30px 0 12px;">פורסם על הסדרה</div>'+
-          outside.map(card).join('')
-        : '');
-
-    // Same guard the stories list has: the x-dc framework can rebuild the DOM
-    // after a fast fetch resolves, wiping what was just painted. Re-assert, and
-    // only when the grid is empty so nothing is redrawn under the reader.
-    function paint(){
-      var el=document.getElementById('articles-grid');
-      if(el && !el.firstElementChild) el.innerHTML=html;
-      if(newest){
-        var door=document.getElementById('door-articles'), line=document.getElementById('door-articles-line');
-        if(door) door.setAttribute('href','/library/'+newest.slug);
-        if(line) line.textContent='המאמר החדש: '+(newest.title_lead||newest.title_topic||'');
-      }
-    }
-    paint();
-    [50,200,500,1200].forEach(function(ms){ setTimeout(paint, ms); });
+    if(!d||!d.ok||!d.articles) return;
+    var newest=d.articles.filter(function(a){
+        return a.status==='published' && /^article-\d+$/.test(a.slug||'') && !a.external_url;
+      }).sort(function(x,y){return new Date(y.published_at||0)-new Date(x.published_at||0)})[0];
+    if(!newest) return;
+    var text='המאמר החדש: '+(newest.title_lead||newest.title_topic||'');
+    // The x-dc framework can rebuild the DOM after a fast fetch; re-assert.
+    function paint(){ var el=document.getElementById('door-articles-line'); if(el) el.textContent=text; }
+    paint(); [50,200,500,1200].forEach(function(ms){ setTimeout(paint, ms); });
     window.addEventListener('load', paint);
   }).catch(function(){});
-})();</script>
+})();
+</script>
 <script>(function(){fetch('/api/content?page=materials').then(function(r){return r.json()}).then(function(d){if(!d.blocks)return;d.blocks.forEach(function(b){var el=document.querySelector('[data-cms="'+b.block_id+'"]');if(!el)return;
   var t=(b.content||'').trim();
   // An empty override hides the element: emptying a field in the CMS is how a
