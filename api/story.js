@@ -85,7 +85,8 @@ function feedItem(r) {
   return {
     id: r.id,
     title: r.title || '',
-    body: r.body || '',
+    // ◆ paragraphs are seams on a story's own page, not words of the story
+    body: String(r.body || '').replace(/(^|\n\n)[◆◇](?=\n\n|$)/g, '$1').replace(/\n{3,}/g, '\n\n').trim(),
     accent: r.accent || null,
     author: displayName(r.sender, r.attribution),
     date: r.published_at || r.created_at,
@@ -147,9 +148,17 @@ async function storyPage(req, res) {
     '<article class="s-page">' +
       '<div class="s-eyebrow">מן הקהילה</div>' +
       '<h1 class="s-title">' + esc(row.title || '') + '</h1>' +
-      '<div class="s-by">' + esc([author, when].filter(Boolean).join(' · ')) + '</div>' +
+      // The writer's name as a signature: the gold diamond and a hairline, as
+      // the byline in the designed PDF.
+      '<div class="s-by" aria-label="' + esc([author, when].filter(Boolean).join(' · ')) + '">' +
+        '<b aria-hidden="true"></b><span>' + esc([author, when].filter(Boolean).join(' · ')) + '</span><i aria-hidden="true"></i></div>' +
       '<div class="a-story">' + text.split(/\n{2,}/).map(function (p) {
-        return '<p>' + esc(p.trim()).replace(/\n/g, '<br>') + '</p>';
+        p = p.trim();
+        // A paragraph that is only ◆ is a seam: where the piece turns, set by
+        // Ronit in the stories screen. Structure and breath, never emphasis —
+        // no line of the writer's is marked.
+        if (/^[◆◇]$/.test(p)) return '<div class="a-seam" aria-hidden="true"><i></i><b></b><i></i></div>';
+        return '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>';
       }).join('') + '</div>' +
       // Not a response form: this is someone's own life, not an argument to
       // answer. The invitation is to add a voice, not to comment on hers.
@@ -184,7 +193,10 @@ function storyShell(title, description, canonical, noindex, body) {
     // A voice, not an article: the eyebrow says whose it is before anything else.
     '.s-eyebrow{font-family:Assistant,sans-serif;font-size:13px;font-weight:700;letter-spacing:.14em;color:#A8801F;margin:0 0 14px}' +
     '.s-title{font-family:Assistant,sans-serif;font-weight:300;font-size:clamp(28px,4.6vw,40px);line-height:1.25;color:#2F5248;margin:0 0 12px;text-wrap:balance}' +
-    '.s-by{font-family:Assistant,sans-serif;font-size:15px;color:#8A9490;margin:0 0 34px}' +
+    '.s-by{display:flex;align-items:center;gap:12px;font-family:Assistant,sans-serif;font-size:15px;color:#6E7C78;margin:0 0 38px}' +
+    '.s-by b{width:6px;height:6px;background:#EDA72E;transform:rotate(45deg);flex:none}' +
+    '.s-by span{flex:none}.s-by i{flex:1 1 auto;height:1px;background:#EAE4D6;min-width:20px}' +
+    '.s-page .a-seam{margin:40px 0 34px}' +
     '.s-page .a-story{max-width:none;padding:0;margin:0}' +
     '.s-invite{margin:48px 0 0;padding-top:20px;border-top:1px solid #EAE4D6;font-family:Assistant,sans-serif;font-size:16px}' +
     '.s-invite a{color:#2F5248}.s-missing{font-family:Assistant,sans-serif;font-size:17px;color:#5E706B;margin:60px 0 10px}' +
