@@ -313,6 +313,12 @@
 .a-landing ul{list-style:none; margin:0; padding:0}
 .a-landing li{margin:0 0 8px; font-size:16px; line-height:1.6}
 .a-landing a{color:#2F5248; text-decoration:underline; text-underline-offset:3px}
+/* The way in for a reader who arrived here first. Quiet: one line, and set off
+   from the article's own apparatus above it by a rule when there is any. */
+.a-landing-new{margin:0; font-size:16px; line-height:1.6}
+.a-landing ul + .a-landing-new{
+  margin-top:22px; padding-top:16px; border-top:1px solid rgba(47,82,72,.16);
+}
 
 /* ── print: ⌘P → Save as PDF is how Ronit produces the article's PDF ─────── */
 @media print{

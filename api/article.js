@@ -195,30 +195,9 @@ function articlePage(a, related, echoes, texts) {
 
   body += renderBlocks(a.blocks) + '\n</article>\n';
 
-  // Offered where a reader finishes, not before they have started.
-  body += '<div class="a-pdf no-print">' +
-    '<button type="button" onclick="window.print()">שמירה כ-PDF</button>' +
-    '<p>נפתח חלון ההדפסה — בחרו בו ״שמירה כ-PDF״.</p></div>\n';
-
-  // The landing. When the last domino falls the reader should feel it land, and
-  // then the apparatus arrives as a distinctly separate zone.
-  // ── הדים ──────────────────────────────────────────────────────────────────
-  // Visitors see only what has been published, and cannot reply to each other.
-  // A collection of voices, not a conversation between strangers — which is
-  // what makes a pile-on structurally impossible rather than merely discouraged.
-  if (Array.isArray(echoes) && echoes.length) {
-    body += '<section class="a-echoes"><h2 data-cms="echo-published">' +
-      esc((texts && texts['echo-published']) || 'תגובות מכם') + '</h2>' +
-      echoes.map(function (e) {
-        return '<article class="a-echo">' +
-          renderBlocks([{ type: 'text', body: e.body || '' }]) +
-          '<div class="a-echo-by">' +
-          esc(displayName(e.sender, e.attribution)) + '</div></article>';
-      }).join('') + '</section>\n';
-  }
-
-  body += echoForm(a.id, texts || {});
-
+  // The landing comes straight after the last domino: the reader feels it land,
+  // then the apparatus arrives as a distinctly separate zone, before the
+  // responses and the invitation to write one.
   const pubs = Array.isArray(a.external_pubs) ? a.external_pubs : [];
   let landing = '';
   if (a.term_name) {
@@ -238,11 +217,36 @@ function articlePage(a, related, echoes, texts) {
         : label) + (p.date ? ' · ' + esc(p.date) : '') + '</li>';
     }).join('') + '</ul>';
   }
-  if (landing) {
-    body += '<aside class="a-landing no-print">' +
-      '<div class="a-landing-bar" aria-hidden="true"><i></i><b></b></div>' +
-      landing + '</aside>\n';
+  // A reader who arrived straight on this page from a forwarded link has met no
+  // framing for the series. The way in is offered here, where they finish —
+  // never above the opening, which must not be pre-empted.
+  landing += '<p class="a-landing-new"><a href="/about-series" data-cms="echo-newhere">' +
+    esc((texts && texts['echo-newhere']) || 'חדשים כאן? על הסדרה ←') + '</a></p>';
+  body += '<aside class="a-landing no-print">' +
+    '<div class="a-landing-bar" aria-hidden="true"><i></i><b></b></div>' +
+    landing + '</aside>\n';
+
+  // Offered where a reader finishes, not before they have started.
+  body += '<div class="a-pdf no-print">' +
+    '<button type="button" onclick="window.print()">שמירה כ-PDF</button>' +
+    '<p>נפתח חלון ההדפסה — בחרו בו ״שמירה כ-PDF״.</p></div>\n';
+
+  // ── הדים ──────────────────────────────────────────────────────────────────
+  // Visitors see only what has been published, and cannot reply to each other.
+  // A collection of voices, not a conversation between strangers — which is
+  // what makes a pile-on structurally impossible rather than merely discouraged.
+  if (Array.isArray(echoes) && echoes.length) {
+    body += '<section class="a-echoes"><h2 data-cms="echo-published">' +
+      esc((texts && texts['echo-published']) || 'תגובות מכם') + '</h2>' +
+      echoes.map(function (e) {
+        return '<article class="a-echo">' +
+          renderBlocks([{ type: 'text', body: e.body || '' }]) +
+          '<div class="a-echo-by">' +
+          esc(displayName(e.sender, e.attribution)) + '</div></article>';
+      }).join('') + '</section>\n';
   }
+
+  body += echoForm(a.id, texts || {});
 
   return shell(titleText(a), description, canonical, image, body);
 }
