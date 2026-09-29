@@ -223,6 +223,30 @@
 </div>
 
 <!-- Send email modal -->
+<!-- a personal letter to one person; stays open while you copy things -->
+<div id="oneModal" class="modal-overlay">
+  <div class="modal">
+    <h2>שליחה לאדם אחד</h2>
+    <div class="field" style="font-size:14px;color:#6E7C78">נושא: <span id="oneSubject"></span></div>
+    <div class="field"><label>הסיפור</label>
+      <select id="oneStory" onchange="oneFill()"></select></div>
+    <div class="field"><label>כתובת המייל</label>
+      <input id="oneEmail" type="email" dir="ltr"></div>
+    <div class="field"><label>הקישור האישי (התצוגה המקדימה)</label>
+      <input id="oneLink" type="text" dir="ltr"></div>
+    <div class="field"><label>לאישור השליחה, הקלידי: שלח</label>
+      <input id="oneConfirm" type="text"></div>
+    <div id="oneMsg" style="font-size:14px;color:#8b4513;min-height:20px;margin-bottom:10px"></div>
+    <div class="modal-actions" style="display:flex;gap:10px">
+      <button class="btn btn-danger" onclick="doSendOne()">שליחה</button>
+      <button class="btn btn-secondary" onclick="closeOne()">ביטול</button>
+    </div>
+    <div style="font-size:12px;color:#8A9692;margin-top:12px;line-height:1.6">
+      נשלח מייל אמיתי, לכתובת אחת בלבד. אף אחד מהנרשמים לא יקבל אותו.
+    </div>
+  </div>
+</div>
+
 <div id="sendModal" class="modal-overlay">
   <div class="modal">
     <h2 id="sendTitle">שליחת אימייל</h2>
@@ -934,33 +958,55 @@ function sendTestEmail(id){
     .catch(function(){showMsg('שגיאת חיבור.',false)});
 }
 
-// A personal letter: one name, one address, and the link that is theirs.
-// Typed confirmation, as for any real send — it reaches a real person.
+// A personal letter: one address, and the link that is theirs. In a dialog
+// that stays open — browser prompts vanish the moment you switch windows to
+// copy something. Choosing the story fills in the writer's address and the
+// private preview link; both stay editable.
+var oneTpl=null, oneStories=[];
 function sendToOne(id){
   var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
   // The name is typed into the letter itself, by hand, before sending.
   if(/___/.test((t.body||'')+(t.subject||''))){
     showMsg('במכתב נשארו מקומות ריקים (___). השלימי אותם בעריכה, ואז שלחי.',false,true);return}
-  var name='';
-  var to=window.prompt('שליחה לאדם אחד\n\nכתובת המייל:','');
-  if(to===null)return; to=to.trim();
-  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){showMsg('כתובת לא תקינה — לא נשלח דבר.',false);return}
-  var link=window.prompt('הקישור האישי (למשל הקישור לתצוגה המקדימה מ״ניהול סיפורים״):','');
-  if(link===null)return; link=link.trim();
-  if(!/^https?:\/\//.test(link)){showMsg('הקישור חסר או לא תקין — לא נשלח דבר.',false);return}
-  var typed=window.prompt('שליחה אל '+(name||to)+' <'+to+'>\n\nנושא: '+t.subject+'\n\n'+
-    'נשלח מייל אמיתי, לאדם אחד בלבד. להמשך הקלידי:  שלח');
-  if(typed===null)return;
-  if(typed.trim()!=='שלח'){showMsg('בוטל — לא נשלח דבר.',false);return}
-  showMsg('שולח…',true);
+  oneTpl=t;
+  document.getElementById('oneSubject').textContent=t.subject||'';
+  ['oneEmail','oneLink','oneConfirm'].forEach(function(k){document.getElementById(k).value=''});
+  document.getElementById('oneMsg').textContent='';
+  var sel=document.getElementById('oneStory');
+  sel.innerHTML='<option value="">טוען סיפורים…</option>';
+  document.getElementById('oneModal').classList.add('active');
+  fetch(API+'/admin/stories',{headers:headers()}).then(function(r){return r.json()}).then(function(d){
+    oneStories=(d&&d.stories||[]).filter(function(x){return x.slug&&x.preview_token});
+    sel.innerHTML='<option value="">— בחירת סיפור (ממלא מייל וקישור) —</option>'+
+      oneStories.map(function(x,i){
+        return '<option value="'+i+'">'+esc((x.title||'(ללא כותרת)')+' · '+(x.sender||''))+'</option>'}).join('');
+  }).catch(function(){sel.innerHTML='<option value="">לא נטענו סיפורים — אפשר למלא ידנית</option>'});
+}
+function oneFill(){
+  var i=document.getElementById('oneStory').value; var x=oneStories[i]; if(!x)return;
+  document.getElementById('oneEmail').value=x.email||'';
+  document.getElementById('oneLink').value='https://www.beityeladim.co.il/voices/'+x.slug+'?preview='+x.preview_token;
+  if(!x.email)document.getElementById('oneMsg').textContent='לסיפור הזה לא נשמרה כתובת מייל — יש להקליד אותה.';
+}
+function closeOne(){document.getElementById('oneModal').classList.remove('active');oneTpl=null}
+function doSendOne(){
+  var t=oneTpl; if(!t)return;
+  var to=document.getElementById('oneEmail').value.trim();
+  var link=document.getElementById('oneLink').value.trim();
+  var ok=document.getElementById('oneConfirm').value.trim();
+  var m=document.getElementById('oneMsg');
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){m.textContent='כתובת המייל אינה תקינה.';return}
+  if(!/^https?:\/\//.test(link)){m.textContent='הקישור חסר או אינו תקין.';return}
+  if(ok!=='שלח'){m.textContent='כדי לשלוח, הקלידי ״שלח״ בשדה האישור.';return}
+  m.textContent='שולח…';
   fetch(API+'/admin/send-email',{method:'POST',headers:headers(),
-    body:JSON.stringify({template_type:t.template_type,template_id:t.id,to_one:{name:name,email:to,link:link}})})
+    body:JSON.stringify({template_type:t.template_type,template_id:t.id,to_one:{name:'',email:to,link:link}})})
     .then(function(r){return r.json()})
     .then(function(d){
-      if(d&&d.ok&&d.sent)showMsg('נשלח אל '+to+'.',true,true);
-      else showMsg((d&&d.message)||'השליחה נכשלה.',false,true);
+      if(d&&d.ok&&d.sent){closeOne();showMsg('נשלח אל '+to+'.',true,true)}
+      else m.textContent=(d&&d.message)||'השליחה נכשלה.';
     })
-    .catch(function(){showMsg('שגיאת חיבור.',false)});
+    .catch(function(){m.textContent='שגיאת חיבור.'});
 }
 
 // A standalone update: no meeting, every active participant, optionally with
