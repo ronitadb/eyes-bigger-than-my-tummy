@@ -985,16 +985,27 @@ function sendToOne(id){
   sel.innerHTML='<option value="">טוען סיפורים…</option>';
   document.getElementById('oneModal').classList.add('active');
   fetch(API+'/admin/stories',{headers:headers()}).then(function(r){return r.json()}).then(function(d){
-    oneStories=(d&&d.stories||[]).filter(function(x){return x.slug&&x.preview_token});
+    // Stories with a page (published or waiting for approval), and any story
+    // already in the anthology — its writer may be told it is up.
+    oneStories=(d&&d.stories||[]).filter(function(x){
+      return (x.slug&&x.preview_token)||(x.status==='published'&&!x.article_id)});
     sel.innerHTML='<option value="">— בחירת סיפור (ממלא מייל וקישור) —</option>'+
       oneStories.map(function(x,i){
         return '<option value="'+i+'">'+esc((x.title||'(ללא כותרת)')+' · '+(x.sender||''))+'</option>'}).join('');
   }).catch(function(){sel.innerHTML='<option value="">לא נטענו סיפורים — אפשר למלא ידנית</option>'});
 }
+// The link follows the story's state: its private preview while it waits for
+// approval, its public page once published, and the voices page for a short
+// story that lives in the anthology.
 function oneFill(){
   var i=document.getElementById('oneStory').value; var x=oneStories[i]; if(!x)return;
+  var SITE='https://www.beityeladim.co.il';
   document.getElementById('oneEmail').value=x.email||'';
-  document.getElementById('oneLink').value='https://www.beityeladim.co.il/voices/'+x.slug+'?preview='+x.preview_token;
+  document.getElementById('oneLink').value=
+    !x.slug ? SITE+'/voices'
+    : (x.status==='published'&&x.approved_at) ? SITE+'/voices/'+x.slug
+    : SITE+'/voices/'+x.slug+'?preview='+x.preview_token;
+  document.getElementById('oneMsg').textContent='';
   if(!x.email)document.getElementById('oneMsg').textContent='לסיפור הזה לא נשמרה כתובת מייל — יש להקליד אותה.';
 }
 function closeOne(){document.getElementById('oneModal').classList.remove('active');oneTpl=null}
