@@ -108,7 +108,7 @@ function hebDate(d) {
   const p = {};
   new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jerusalem', day: 'numeric', month: 'numeric', year: 'numeric' })
     .formatToParts(x).forEach(function (q) { p[q.type] = q.value; });
-  return p.day + ' ב' + MONTHS[parseInt(p.month, 10) - 1] + ' ' + p.year;
+  return parseInt(p.day, 10) + ' ב' + MONTHS[parseInt(p.month, 10) - 1] + ' ' + p.year;
 }
 
 async function storyPage(req, res) {
