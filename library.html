@@ -123,6 +123,12 @@
     var lastLive=-1; series.forEach(function(a,i){ if(a.status==='published') lastLive=i; });
     for(var ni=lastLive+1; ni<series.length; ni++){ if(series[ni].status!=='published'){ next=series[ni]; break; } }
 
+    // A source in brackets at the end of the title — ״…״ (בראשית מד, ל) — is
+    // set small, as on the article page itself.
+    function leadHtml(t){
+      var m=String(t).match(/^(.*\S)\s+(\([^()]+\))\s*$/);
+      return m ? esc(m[1])+' <span style="font-size:.62em; font-weight:400; color:#8A9490; white-space:nowrap;">'+esc(m[2])+'</span>' : esc(t);
+    }
     function card(a){
       var live=a.status==='published';
       var ext=a.external_url||'';
@@ -131,7 +137,7 @@
       var n=series.indexOf(a);
       var inner=
         (n>-1?'<div class="art-num">'+(n+1)+'</div>':'')+
-        '<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(17px,2vw,20px); line-height:1.35; margin:0 0 4px;">'+esc(lead)+'</div>'+
+        '<div style="font-family:var(--head-font); color:var(--head-color); font-weight:700; font-size:clamp(17px,2vw,20px); line-height:1.35; margin:0 0 4px;">'+leadHtml(lead)+'</div>'+
         (sub?'<div style="font-family:\'Frank Ruhl Libre\',serif; font-size:15px; line-height:1.6; color:#6E7C78;">'+esc(sub)+'</div>':'')+
         (a.summary?'<div style="font-family:\'Frank Ruhl Libre\',serif; font-size:15px; line-height:1.7; color:#6E7C78; margin-top:8px;">'+esc(a.summary)+'</div>':'')+
         (live

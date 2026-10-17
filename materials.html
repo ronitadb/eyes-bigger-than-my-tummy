@@ -190,7 +190,9 @@
         return a.status==='published' && /^article-\d+$/.test(a.slug||'') && !a.external_url;
       }).sort(function(x,y){return new Date(y.published_at||0)-new Date(x.published_at||0)})[0];
     if(!newest) return;
-    var text='המאמר החדש: '+(newest.title_lead||newest.title_topic||'');
+    // A bracketed source at the end of the title (בראשית מד, ל) is left out
+    // of this one short line.
+    var text='המאמר החדש: '+String(newest.title_lead||newest.title_topic||'').replace(/\s+\([^()]+\)\s*$/,'');
     // The x-dc framework can rebuild the DOM after a fast fetch; re-assert.
     function paint(){ var el=document.getElementById('door-articles-line'); if(el) el.textContent=text; }
     paint(); [50,200,500,1200].forEach(function(ms){ setTimeout(paint, ms); });
