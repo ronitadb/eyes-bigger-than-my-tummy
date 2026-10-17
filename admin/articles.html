@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/article.css">
+<script src="/assets/article-notes.js" defer></script>
 <style>
 :root{--edge:#DCE6E0;--head:#2F5248;--gold:#EDA72E;--muted:#8A9490;--paper:#FAF8F4}
 *{box-sizing:border-box}
@@ -166,6 +167,8 @@ html[data-authing] .login{display:none}
             <select id="newType">
               <option value="opening">פתיחה</option>
               <option value="domino">קטע (אבן דומינו)</option>
+              <option value="part">חלק (כותרת גדולה)</option>
+              <option value="unit">יחידה (בית שיר או כותרת)</option>
               <option value="text">טקסט</option>
               <option value="subheading">תת-כותרת</option>
               <option value="quote">ציטוט</option>
@@ -178,12 +181,18 @@ html[data-authing] .login{display:none}
               <option value="image">תמונה</option>
               <option value="divider">מפריד</option>
               <option value="footnotes">הערות שוליים</option>
+              <option value="sidenotes">הערות צד</option>
+              <option value="sources">מקורות</option>
             </select>
             <button onclick="addBlock()">+ הוספת בלוק</button>
           </div>
           <p class="note">בתוך טקסט: שורה ריקה מפרידה פסקאות ·
             <code>[טקסט](כתובת)</code> לקישור · <code>*נטוי*</code> להדגשה ·
-            <code>[^1]</code> להערת שוליים. מודגש שמור לתת-כותרות.</p>
+            <code>**מודגש**</code> ·
+            <code>[^1]</code> להערת שוליים (או להערת צד, אם במאמר יש בלוק ״הערות צד״) ·
+            <code>[מאמר 2](/library/article-02)</code> לקישור למאמר אחר, עם חלונית הכותרת.</p>
+          <p class="note">״חלק״ ו״יחידה״ פותחים את מה שאחריהם: יחידה נמשכת עד היחידה הבאה,
+            חלק, קטע או מפריד; חלק נמשך עד החלק הבא או מפריד. יחידה ריקה רק סוגרת את הקודמת.</p>
         </div>
 
         <div class="card">
@@ -419,7 +428,8 @@ function addChain(){state.chain.push('');drawChain()}
 /* ── blocks ── */
 var LABEL={opening:'פתיחה',domino:'קטע',text:'טקסט',subheading:'תת-כותרת',quote:'ציטוט',
   term:'תיבת מונח',fact:'תיבת עובדה',list:'רשימה',image:'תמונה',divider:'מפריד',footnotes:'הערות שוליים',
-  motto:'מוטו',voices:'קולות',keyline:'שורת מפתח'};
+  motto:'מוטו',voices:'קולות',keyline:'שורת מפתח',
+  part:'חלק',unit:'יחידה',sidenotes:'הערות צד',sources:'מקורות'};
 function fld(i,k,label,val,ta){
   var v=esc(val==null?'':val);
   return '<div class="f"><label>'+label+'</label>'+
@@ -428,7 +438,7 @@ function fld(i,k,label,val,ta){
 }
 function setB(i,k,v){state.blocks[i][k]=v;schedulePreview()}
 function setV(i,j,k,v){state.blocks[i].items[j][k]=v;schedulePreview()}
-function addV(i){(state.blocks[i].items=state.blocks[i].items||[]).push({name:'',body:''});drawBlocks()}
+function addV(i){(state.blocks[i].items=state.blocks[i].items||[]).push(state.blocks[i].type==='sidenotes'?{label:'',body:''}:{name:'',body:''});drawBlocks()}
 function delV(i,j){state.blocks[i].items.splice(j,1);drawBlocks();schedulePreview()}
 function setItems(i,v){state.blocks[i].items=v.split('\n').filter(function(x){return x.trim()});schedulePreview()}
 function drawBlocks(){
@@ -449,9 +459,29 @@ function drawBlocks(){
       fld(i,'body','הטקסט',b.body,1)}
     else if(b.type==='keyline'){h+=fld(i,'body','המשפט',b.body,1)+
       '<div class="f"><label>עיצוב</label><select onchange="setB('+i+',\'style\',this.value)">'+
-      [['center','ממורכז בתוך הטקסט'],['box','בתיבה לבנה']].map(function(o){
+      [['center','ממורכז בתוך הטקסט'],['box','בתיבה לבנה'],['band','רצועת סיום — יוצאת מעבר לעמודה']].map(function(o){
         return '<option value="'+o[0]+'"'+((b.style||'center')===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></div>'}
     else if(b.type==='motto'){h+=fld(i,'body','השורה',b.body,1)+fld(i,'attribution','מקור',b.attribution)}
+    else if(b.type==='part'){h+=fld(i,'heading','הכותרת — שורה חדשה נשמרת',b.heading,1)+fld(i,'cite','מקור — אם הכותרת היא ציטוט (מוסיף מירכאות)',b.cite,1)+fld(i,'sub','שורה מתחת לכותרת (לא חובה)',b.sub)}
+    else if(b.type==='unit'){h+=fld(i,'verse','בית שיר — ממורכז',b.verse,1)+
+      fld(i,'cite','מקור הבית — בקטן מתחתיו (מוסיף מירכאות)',b.cite,1)+
+      fld(i,'heading','או כותרת יחידה',b.heading)+
+      '<p class="note">בית שיר או כותרת, לא שניהם. בלי אף אחד — היחידה רק סוגרת את הקודמת.</p>'}
+    else if(b.type==='sidenotes'){
+      h+='<p class="note">כל הערה: כותרת מודגשת ואחריה הטקסט. המספרים לפי הסדר — [^1] בטקסט היא הראשונה.</p>';
+      h+=(b.items||[]).map(function(v,j){
+        return '<div class="f" style="border-top:1px solid #EAE4D6;padding-top:8px">'+
+          '<div class="two"><span class="note" style="flex:0 0 auto;margin:0">'+(j+1)+'</span>'+
+          '<input type="text" placeholder="כותרת ההערה" value="'+esc(v.label||'')+'" oninput="setV('+i+','+j+',\'label\',this.value)">'+
+          '<button onclick="delV('+i+','+j+')" title="מחיקת הערה" style="flex:0 0 auto">✕</button></div>'+
+          '<textarea placeholder="הטקסט, כולל ההפניה בסוגריים" oninput="setV('+i+','+j+',\'body\',this.value)">'+esc(v.body||'')+'</textarea></div>';
+      }).join('');
+      h+='<button onclick="addV('+i+')">+ הערה</button>';
+    }
+    else if(b.type==='sources'){h+=fld(i,'title','כותרת (ברירת מחדל: מקורות)',b.title)+
+      '<div class="f"><label>רשימת מקורות (APA) — מקור אחד בכל שורה, *נטוי* לשם כתב העת או הספר</label>'+
+      '<textarea oninput="setItems('+i+',this.value)">'+esc((b.items||[]).join('\n'))+'</textarea></div>'+
+      (b.body?fld(i,'body','שורת מקורות קצרה (במקום הרשימה)',b.body,1):'')}
     else if(b.type==='voices'){
       h+=fld(i,'source','תווית מקור (לא חובה)',b.source);
       h+=(b.items||[]).map(function(v,j){
@@ -473,7 +503,9 @@ function drawBlocks(){
         [['full','רוחב מלא — לתמונה לרוחב'],
          ['inset','מוקטנת וממורכזת — לתמונה לאורך'],
          ['side','לצד טקסט — עמודה צרה'],
-         ['panel','תיבה עם טקסט — רקע קרם']].map(function(o){
+         ['panel','תיבה עם טקסט — רקע קרם'],
+         ['float','בצד, והטקסט זורם סביבה'],
+         ['margin','בשוליים, כמו הערות הצד — בטלפון בתוך הטקסט']].map(function(o){
           return '<option value="'+o[0]+'"'+((b.layout||'full')===o[0]?' selected':'')+'>'+o[1]+'</option>';
         }).join('')+'</select></div>';
       if(b.layout==='panel'){h+=fld(i,'title','כותרת קטנה (זהב, מעל הטקסט)',b.title);
@@ -485,6 +517,9 @@ function drawBlocks(){
     else if(b.type==='list'||b.type==='footnotes'){
       h+='<div class="f"><label>'+(b.type==='list'?'פריטים':'הערות')+' — שורה לכל אחד</label>'+
         '<textarea oninput="setItems('+i+',this.value)">'+esc((b.items||[]).join('\n'))+'</textarea></div>';
+      if(b.type==='list')h+='<div class="f"><label>עיצוב</label><select onchange="setB('+i+',\'style\',this.value)">'+
+        [['','יהלומים זהובים בתוך הטקסט'],['hang','שורות מקבילות — יהלום ירוק, יוצאות לשוליים']].map(function(o){
+          return '<option value="'+o[0]+'"'+((b.style||'')===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></div>';
     }
     return h+'</div>';
   }).join('');
@@ -492,6 +527,7 @@ function drawBlocks(){
 function addBlock(){var t=el('newType').value;var b={type:t};
   if(t==='opening')b.source='book';if(t==='list'||t==='footnotes')b.items=[];
   if(t==='voices')b.items=[{name:'',body:''}];
+  if(t==='sidenotes')b.items=[{label:'',body:''}];
   state.blocks.push(b);drawBlocks();schedulePreview()}
 function delB(i){state.blocks.splice(i,1);drawBlocks();schedulePreview()}
 function moveB(i,d){var j=i+d;if(j<0||j>=state.blocks.length)return;
@@ -530,15 +566,23 @@ function toggleRel(id,on){var i=state.related.indexOf(id);
   if(on&&i<0)state.related.push(id);if(!on&&i>-1)state.related.splice(i,1)}
 
 /* ── preview: rendered by the SAME server code that publishes ── */
+// As titleLead in lib/articles-render.js: a source in brackets at the end of
+// the title is set small.
+function titleLead(t){var m=String(t||'').match(/^(.*\S)\s+(\([^()]+\))\s*$/);
+  return m?esc(m[1])+' <span class="a-title-cite">'+esc(m[2])+'</span>':esc(t)}
 var pvTimer=null;
 function schedulePreview(){clearTimeout(pvTimer);pvTimer=setTimeout(preview,400)}
 function preview(){
   fetch(API,{method:'POST',headers:headers(),body:JSON.stringify({action:'preview',blocks:state.blocks})})
     .then(function(r){return r.json()}).then(function(d){
       var head='<header class="a-title">'+
-        (el('title_lead').value?'<h1 class="a-title-lead">'+esc(el('title_lead').value)+'</h1>':'')+
+        (el('title_lead').value?'<h1 class="a-title-lead">'+titleLead(el('title_lead').value)+'</h1>':'')+
         (el('title_topic').value?'<p class="a-title-topic">'+esc(el('title_topic').value)+'</p>':'')+'</header>';
       el('preview').innerHTML='<article class="a-article">'+head+(d.html||'')+'</article>';
+      // The same script as the public page: side notes, and popovers on links
+      // to other articles. The preview column is narrow, so notes open as
+      // popovers here; widen the window to see them in the margins.
+      if(window.ArticleNotes)window.ArticleNotes.init(el('preview'));
     }).catch(function(){});
 }
 ['title_lead','title_topic'].forEach(function(f){

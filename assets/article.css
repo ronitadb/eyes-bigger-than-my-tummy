@@ -320,6 +320,239 @@
   margin-top:22px; padding-top:16px; border-top:1px solid rgba(47,82,72,.16);
 }
 
+/* ── מקור הכותרת — ״…״ (בראשית מד, ל): small, after the line ──────────── */
+.a-title-cite{
+  font-size:.4em; font-weight:400; color:var(--muted);
+  white-space:nowrap; letter-spacing:0;
+}
+
+/* ── חלק — a part of the article, opened by a large heading ─────────────────
+   The largest heading inside an article: the opening's light voice at nearly
+   the title's size, held to the reading edge by a green bar. Everything after
+   it up to the next part is inside its section. */
+.a-part{display:flow-root}
+.a-part-head{
+  margin:0 0 34px; padding-inline-start:clamp(14px,2.4vw,20px);
+  border-inline-start:3px solid var(--head);
+}
+.a-part-title{
+  font-family:'Assistant',sans-serif; font-weight:300;
+  font-size:clamp(25px,3.7vw,33px); line-height:1.3;
+  color:var(--head); margin:0; text-wrap:balance;
+}
+/* the source of a quoted heading or verse: small, under it */
+.a-article .a-part-cite,.a-article .a-verse-cite{
+  font-family:'Assistant',sans-serif; font-weight:400; font-size:13px;
+  line-height:1.6; color:var(--muted); margin:.5em 0 0;
+}
+.a-article .a-verse-cite{text-align:center; margin-top:.7em}
+.a-part-sub{
+  font-family:'Assistant',sans-serif; font-weight:600;
+  font-size:clamp(18px,2.2vw,21px); line-height:1.4;
+  color:var(--head); margin:.6em 0 0; text-wrap:balance;
+}
+
+/* ── יחידה — opened by a verse or a heading, running to the next one ────────
+   The opener is the top of its unit, not a pause between paragraphs, and the
+   design shows the reach: a verse heads a cream zone that holds its text and
+   ends where the next verse begins; a heading hangs from a rule that runs down
+   the reading edge beside its paragraphs. */
+.a-unit{display:flow-root}
+
+.a-unit-verse{
+  --bleed:clamp(14px,3vw,30px);
+  background:#F5F0E5; border-radius:4px;
+  margin:0 calc(-1 * var(--bleed)) 26px;
+  padding:0 var(--bleed) calc(var(--bleed) * .6);
+}
+.a-unit-verse + .a-unit-verse{margin-top:30px}
+.a-unit-verse .a-unit-head{
+  margin:0 calc(-1 * var(--bleed)) 26px;
+  padding:clamp(24px,3.6vw,32px) var(--bleed) 0;
+  background:linear-gradient(#EDE4D1, #F5F0E5);
+  border-radius:4px 4px 0 0;
+}
+.a-verse{
+  font-family:'Assistant',sans-serif; font-weight:300;
+  font-size:clamp(18px,2.2vw,21px); line-height:1.7;
+  color:var(--head); text-align:center; margin:0 !important;
+}
+.a-unit-mark{
+  display:flex; align-items:center; gap:10px;
+  width:min(150px,40%); margin:0 auto; padding:16px 0 0;
+}
+.a-unit-mark i{flex:1 1 auto; height:1px; background:var(--gold); opacity:.45}
+.a-unit-mark b{width:5px; height:5px; background:var(--gold); transform:rotate(45deg); flex:none}
+/* the white card keeps its step over the cream */
+.a-unit-verse .a-keyline-box{border-color:#E6DECD}
+
+.a-unit-heading{
+  border-inline-start:2px solid rgba(47,82,72,.2);
+  padding-inline-start:clamp(16px,3vw,24px);
+  margin:0 0 30px;
+}
+.a-unit-heading .a-unit-head{position:relative}
+.a-unit-heading .a-unit-head::before{
+  content:""; position:absolute; top:.62em;
+  inset-inline-start:calc(-1 * clamp(16px,3vw,24px) - 5px);
+  width:8px; height:8px; background:var(--gold); transform:rotate(45deg);
+}
+.a-unit-title{
+  font-family:'Assistant',sans-serif; font-weight:600;
+  font-size:1em; line-height:1.45; color:var(--head);
+  margin:0 0 .45em; text-wrap:balance;
+}
+.a-unit-heading p:last-child{margin-bottom:0}
+
+/* ── a closing band, for the paragraphs that end the article ─────────────── */
+.a-article .a-keyline-band{
+  --band-bleed:clamp(20px,5vw,32px);
+  background:var(--panel); border-radius:3px;
+  margin:44px calc(-1 * var(--band-bleed)) 0; max-width:none;
+  padding:8px var(--band-bleed) 30px;
+  /* whole paragraphs keep the reading edge, as in the white box */
+  text-align:start; text-wrap:initial;
+  font-size:clamp(19px,2.2vw,22px); line-height:1.65;
+}
+@media (min-width:900px){ .a-article .a-keyline-band{--band-bleed:40px} }
+.a-keyline-band p{margin:0 0 .8em; text-wrap:pretty}
+.a-keyline-band p:last-child{margin-bottom:0}
+.a-band-mark{display:flex; align-items:center; gap:12px; width:min(180px,50%); margin:18px auto 22px}
+.a-band-mark i{flex:1 1 auto; height:1px; background:var(--gold); opacity:.5}
+.a-band-mark b{width:6px; height:6px; background:var(--gold); transform:rotate(45deg); flex:none}
+
+/* ── an image to one side, the text flowing round it ───────────────────────
+   Left in the page, which in Hebrew is the far side from where lines begin. */
+.a-figure-float{float:left; width:40%; margin:.4em 0 18px 26px}
+/* In the page margin beside its place in the text, like a side note, where
+   the screen has margins (article-notes.js places it). Without them it sits
+   in the column, centred and smaller than the column. */
+.a-figure-margin{max-width:56%; margin:26px auto}
+.a-figure-margin figcaption{font-size:12px}
+.a-article.sn-margin .a-figure-margin{
+  position:absolute; width:var(--fig-w,240px); max-width:none; margin:0;
+}
+.a-article.sn-margin .a-figure-margin.is-measuring{top:auto !important; left:auto !important}
+.a-figure-float figcaption, .a-figure-inset figcaption{font-size:12px}
+.a-unit-verse .a-figure-inset{max-width:56%}
+/* blocks with a surface stop short of the image instead of running under it */
+.a-keyline-box,.a-quote,.a-term,.a-fact{display:flow-root}
+.a-keyline:not(.a-keyline-box):not(.a-keyline-band){clear:both}
+@media (max-width:560px){
+  .a-figure-float{float:none; width:auto; max-width:78%; margin:26px auto}
+  .a-unit-verse .a-figure-inset{max-width:78%}
+  .a-figure-margin{max-width:78%}
+}
+
+/* ── שורות מקבילות — a run of short lines, each one a case ────────────────
+   They step out past the reading edge into the right margin, so the column's
+   rectangle breaks where the text turns from argument to examples, and each
+   hangs on a green diamond: green, not the list's gold, because these are
+   voices, not points. A phone has no margin to step into. */
+.a-article .a-list-hang{
+  margin:1.4em 0 1.5em; padding:0;
+  margin-inline-start:-2.4em; padding-inline-start:2.4em;
+}
+.a-list-hang li{margin:0 0 .75em; color:var(--head)}
+.a-list-hang li:last-child{margin-bottom:0}
+.a-list-hang li::before{
+  inset-inline-start:-1.5em; top:.72em;
+  width:7px; height:7px; background:var(--head);
+}
+@media (max-width:560px){
+  .a-article .a-list-hang{margin-inline-start:0; padding-inline-start:1.4em}
+  .a-list-hang li::before{inset-inline-start:-1.3em}
+}
+
+/* ── מקורות ──────────────────────────────────────────────────────────────── */
+.a-article .a-sources{
+  font-family:'Assistant',sans-serif; font-size:14px; line-height:1.75;
+  color:var(--muted); margin:30px 0 0;
+}
+.a-sources strong{color:var(--head); font-weight:600}
+.a-refs{margin:34px 0 0}
+.a-article .a-refs-title{
+  font-family:'Assistant',sans-serif; font-size:14px; font-weight:600;
+  color:var(--head); margin:0 0 10px;
+}
+.a-refs ul{list-style:none; margin:0; padding:0; text-align:left}
+.a-refs li{
+  font-family:'Assistant',sans-serif; font-size:14px; line-height:1.65;
+  color:var(--muted); margin:0 0 .55em;
+  padding-left:2.2em; text-indent:-2.2em;   /* APA's hanging indent */
+}
+.a-refs em{color:inherit}
+
+/* ── קישור למאמר אחר — the popover gives its title ──────────────────────── */
+.a-article a.a-xref{
+  text-decoration:underline dotted; text-decoration-color:var(--gold);
+  text-decoration-thickness:2px; text-underline-offset:4px;
+  white-space:nowrap;
+}
+
+/* ── הערות צד ───────────────────────────────────────────────────────────────
+   The marker is a small gold number. article-notes.js puts each note in the
+   margin nearer its marker (.sn-margin) or, where there is no margin, opens it
+   in a popover (.sn-pop). Without the script, and on paper, the notes stand
+   at their place in the article as a numbered list. */
+.sn-ref{font-size:.66em; line-height:0; font-family:'Assistant',sans-serif; font-weight:700}
+.a-article .sn-ref a{
+  color:#A8801F; text-decoration:none; padding:0 2px; border-radius:2px;
+}
+.a-article .sn-ref a:hover,.a-article .sn-ref a.is-hot{background:rgba(237,167,46,.2)}
+/* a finger needs more than the number: the target grows, the line does not */
+.a-article.sn-pop .sn-ref a{position:relative; cursor:pointer}
+.a-article.sn-pop .sn-ref a::after{content:""; position:absolute; inset:-12px -10px}
+
+.a-sidenotes{margin:40px 0 0; padding-top:18px; border-top:1px solid var(--rule)}
+.a-sidenotes ol{list-style:none; margin:0; padding:0}
+.a-sn{
+  position:relative; padding-inline-start:1.6em; margin:0 0 .8em;
+  font-family:'Assistant',sans-serif; font-size:15px; line-height:1.7; color:#5E706B;
+}
+.a-sn-num{
+  position:absolute; inset-inline-start:0; color:#A8801F; font-weight:700;
+}
+.a-sn-label{color:var(--head); font-weight:600}
+/* the reference moves to the next line whole rather than breaking inside */
+.a-sn-src{display:inline-block; max-width:100%}
+
+.a-article.sn-pop .a-sidenotes{display:none}
+.a-article.sn-margin{position:relative}
+.a-article.sn-margin .a-sidenotes{margin:0; padding:0; border:0}
+.a-article.sn-margin .a-sn{
+  position:absolute; width:var(--sn-w,220px); margin:0; box-sizing:border-box;
+  font-size:13.5px; line-height:1.62; padding-inline-start:1.4em;
+  transition:color .2s ease;
+}
+.a-article.sn-margin .a-sn.is-hot{color:var(--head)}
+.a-article.sn-margin .a-sn.is-hot .a-sn-num{background:rgba(237,167,46,.2); border-radius:2px}
+.a-article.sn-margin .a-sn.sn-orphan{display:none}
+
+/* the popover: side notes on a phone, and links to other articles. Lives on
+   <body>, outside the article, so its colours are written out. */
+.a-pop{
+  position:absolute; z-index:60; box-sizing:border-box;
+  width:max-content; max-width:min(330px, calc(100vw - 24px));
+  background:#fff; border:1px solid #DCE6E0; border-top:2px solid #EDA72E;
+  border-radius:3px; box-shadow:0 12px 34px rgba(20,34,31,.16);
+  padding:14px 16px 15px; direction:rtl; text-align:right;
+  font-family:'Assistant',sans-serif; font-size:15px; line-height:1.65; color:#3E4B47;
+}
+.a-pop[hidden]{display:none}
+.a-pop .a-sn-num{position:static; margin-inline-end:.45em}
+.a-pop .a-sn-label{color:#2F5248; font-weight:600}
+.a-pop-title{
+  display:block; font-weight:400; font-size:18px; line-height:1.4;
+  color:#2F5248; text-wrap:balance;
+}
+.a-pop-topic{display:block; font-size:14px; color:#5E706B; margin-top:4px}
+.a-pop-link{
+  display:inline-block; margin-top:10px; font-size:14px; font-weight:600;
+  color:#2F5248; text-decoration:underline; text-underline-offset:3px;
+}
+.a-pop-wait{color:#8A9490}
+
 /* ── print: ⌘P → Save as PDF is how Ronit produces the article's PDF ─────── */
 @media print{
   @page{size:A4; margin:18mm 16mm}
@@ -343,6 +576,23 @@
      conversation that has moved on — and they were given to the library,
      not to a document that travels on its own. */
   .a-landing,.a-echoes,.no-print{display:none !important}
+  /* parts, units and the closing band keep their colour on paper; a unit
+     runs long, so it may break, but never straight after its opener */
+  .a-unit-verse,.a-unit-verse .a-unit-head,.a-keyline-band{
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .a-part-head,.a-unit-head{break-after:avoid; break-inside:avoid}
+  .a-keyline-band{break-inside:avoid}
+  /* on paper there is no margin to hold them: the side notes stand as a list */
+  .a-sidenotes{display:block !important; margin:24px 0 0 !important;
+    padding-top:12px !important; border-top:1px solid #EAE4D6 !important}
+  .a-sn{position:relative !important; top:auto !important; left:auto !important;
+    width:auto !important; font-size:9.5pt !important; display:block !important}
+  .sn-ref a{color:inherit !important; background:none !important}
+  .a-pop{display:none !important}
+  .a-refs li{font-size:9pt; break-inside:avoid}
+  .a-figure-margin{position:static !important; width:auto !important;
+    max-width:46% !important; margin:18px auto !important}
   .a-footnotes{break-before:auto}
 }
 

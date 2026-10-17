@@ -11,7 +11,7 @@
 // so they cannot leak into the source. Hidden-with-CSS would still be in ⌘U.
 
 const { sql } = require('../lib/db');
-const { renderBlocks, esc, inline } = require('../lib/articles-render');
+const { renderBlocks, esc, inline, titleLead } = require('../lib/articles-render');
 
 const SITE = 'https://www.beityeladim.co.il';
 const PUBLIC_COLUMNS = `id, slug, title_lead, title_topic, summary, blocks,
@@ -170,7 +170,11 @@ function shell(title, description, canonical, image, body) {
     '.a-back{max-width:34em;margin:0 auto 26px;padding:0 clamp(20px,5vw,32px);' +
     'direction:rtl;text-align:right;font-family:\'Assistant\',sans-serif;font-size:15px}' +
     '.a-back a{color:#2F5248;text-decoration:none}.a-back a:hover{text-decoration:underline}' +
-    '</style>\n</head>\n<body>\n' + body + '\n</body>\n</html>';
+    '</style>\n</head>\n<body>\n' + body +
+    // Side notes and the popovers on links to other articles. Without it the
+    // notes stand as a list and the links are ordinary links.
+    '\n<script src="/assets/article-notes.js" defer></script>' +
+    '\n</body>\n</html>';
 }
 
 function articlePage(a, related, echoes, texts) {
@@ -183,7 +187,7 @@ function articlePage(a, related, echoes, texts) {
   let body = '<div class="a-back no-print"><a href="/materials">← הספרייה המשותפת</a></div>\n';
 
   body += '<article class="a-article">\n<header class="a-title">' +
-    (a.title_lead ? '<h1 class="a-title-lead">' + esc(a.title_lead) + '</h1>' : '') +
+    (a.title_lead ? '<h1 class="a-title-lead">' + titleLead(a.title_lead) + '</h1>' : '') +
     (a.title_topic ? '<p class="a-title-topic">' + esc(a.title_topic) + '</p>' : '') +
     '</header>\n';
 
