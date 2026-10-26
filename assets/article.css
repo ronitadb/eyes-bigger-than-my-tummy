@@ -176,6 +176,65 @@
   font-size:14px; text-decoration:none; color:var(--gold); font-weight:600;
 }
 
+/* ── תיבה יפנית — terms from Japanese culture (article 4) ────────────────────
+   The cream reading surface, each term's characters in a red-ink seal (a
+   hanko) that runs the height of its entry, and a fine line in the same ink
+   just outside the box's reading edge, hung on a diamond at its middle: the
+   seam motif in this box's colour. The ink is the one colour that is new, and
+   it lives only here. */
+.a-article .a-ja{font-family:'Noto Serif JP',serif; font-style:normal}
+.a-jbox{
+  --seal:#B44A33;
+  position:relative; display:flow-root;
+  background:var(--panel); border-radius:3px;
+  padding:24px clamp(18px,3vw,28px); margin:34px 0;
+}
+.a-jbox::before{
+  content:""; position:absolute; inset-inline-start:-11px; top:6px; bottom:6px;
+  width:1px; background:var(--seal); opacity:.55;
+}
+.a-jbox::after{
+  content:""; position:absolute; inset-inline-start:-14px; top:50%;
+  width:7px; height:7px; margin-top:-3.5px;
+  background:var(--seal); transform:rotate(45deg);
+}
+.a-jbox p{font-size:.94em; line-height:1.8; margin:0 0 .8em}
+.a-jbox p:last-child{margin-bottom:0}
+.a-jbox > p + .a-jbox-row{margin-top:16px}
+.a-jbox .a-ja{color:var(--seal); font-size:.92em}
+.a-jbox-title{
+  font-family:'Assistant',sans-serif; font-weight:600; font-size:17px;
+  color:var(--head); margin:0 0 10px;
+}
+.a-jbox .a-jbox-lead{color:var(--head)}
+.a-jbox-row{
+  display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:stretch;
+  padding:16px 0; border-top:1px solid rgba(47,82,72,.14);
+}
+.a-jbox-row:first-child{padding-top:0; border-top:0}
+.a-jbox-row:last-child{padding-bottom:0}
+.a-jbox-noseal{grid-template-columns:1fr}
+/* the seal: written top to bottom, as on a hanko, centred along its entry */
+.a-jbox-seal{
+  font-family:'Noto Serif JP',serif; color:var(--seal);
+  border:1.5px solid var(--seal); border-radius:2px; background:rgba(255,255,255,.35);
+  font-size:19px; line-height:1.2; letter-spacing:.08em;
+  padding:6px 7px; min-width:2.2em; box-sizing:border-box; margin:3px 0 4px;
+  writing-mode:vertical-rl; text-orientation:upright;
+  display:flex; justify-content:center; align-items:center;
+}
+.a-jbox-name{
+  font-family:'Assistant',sans-serif; font-weight:700; font-size:18px;
+  line-height:1.4; color:var(--head); margin:0 0 4px;
+}
+
+/* ── סריקה מהספר — a page of the book; an empty frame until it is in ─────── */
+.a-scan{margin:32px 7%}
+.a-scan img{display:block; width:100%; height:auto}
+.a-scan figcaption{font-family:'Assistant',sans-serif; font-size:13px; color:var(--muted); margin-top:8px}
+.a-scan-empty{aspect-ratio:3 / 2; border:1px solid var(--rule); background:#fff; border-radius:2px}
+@media (max-width:560px){ .a-scan{margin-inline:0} }
+
 /* ── רשימה — the bullet is the gold diamond, tying lists to the seam motif ── */
 .a-list{list-style:none; margin:0 0 1.3em; padding-inline-start:1.5em}
 .a-list li{position:relative; margin:0 0 .6em}
@@ -564,7 +623,7 @@
   .a-sub,.a-motto{break-after:avoid}
   .a-keyline{break-inside:avoid}
   .a-voice{break-inside:avoid}
-  .a-opening,.a-quote,.a-term,.a-fact,.a-figure{
+  .a-opening,.a-quote,.a-term,.a-fact,.a-figure,.a-jbox,.a-scan{
     break-inside:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact;
   }
   .a-figure-inset{max-width:52%}

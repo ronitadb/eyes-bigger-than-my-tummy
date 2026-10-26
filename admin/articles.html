@@ -8,7 +8,7 @@
 <script>try{if(sessionStorage.getItem("cms-auth"))document.documentElement.setAttribute("data-authing","");}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/article.css">
 <script src="/assets/article-notes.js" defer></script>
 <style>
@@ -177,6 +177,8 @@ html[data-authing] .login{display:none}
               <option value="keyline">שורת מפתח</option>
               <option value="term">תיבת מונח</option>
               <option value="fact">תיבת עובדה</option>
+              <option value="jbox">תיבה יפנית (חותמות)</option>
+              <option value="scan">סריקה מהספר</option>
               <option value="list">רשימה</option>
               <option value="image">תמונה</option>
               <option value="divider">מפריד</option>
@@ -429,7 +431,8 @@ function addChain(){state.chain.push('');drawChain()}
 var LABEL={opening:'פתיחה',domino:'קטע',text:'טקסט',subheading:'תת-כותרת',quote:'ציטוט',
   term:'תיבת מונח',fact:'תיבת עובדה',list:'רשימה',image:'תמונה',divider:'מפריד',footnotes:'הערות שוליים',
   motto:'מוטו',voices:'קולות',keyline:'שורת מפתח',
-  part:'חלק',unit:'יחידה',sidenotes:'הערות צד',sources:'מקורות'};
+  part:'חלק',unit:'יחידה',sidenotes:'הערות צד',sources:'מקורות',
+  jbox:'תיבה יפנית',scan:'סריקה מהספר'};
 function fld(i,k,label,val,ta){
   var v=esc(val==null?'':val);
   return '<div class="f"><label>'+label+'</label>'+
@@ -438,7 +441,7 @@ function fld(i,k,label,val,ta){
 }
 function setB(i,k,v){state.blocks[i][k]=v;schedulePreview()}
 function setV(i,j,k,v){state.blocks[i].items[j][k]=v;schedulePreview()}
-function addV(i){(state.blocks[i].items=state.blocks[i].items||[]).push(state.blocks[i].type==='sidenotes'?{label:'',body:''}:{name:'',body:''});drawBlocks()}
+function addV(i){var t=state.blocks[i].type;(state.blocks[i].items=state.blocks[i].items||[]).push(t==='sidenotes'?{label:'',body:''}:t==='jbox'?{seal:'',name:'',body:''}:{name:'',body:''});drawBlocks()}
 function delV(i,j){state.blocks[i].items.splice(j,1);drawBlocks();schedulePreview()}
 function setItems(i,v){state.blocks[i].items=v.split('\n').filter(function(x){return x.trim()});schedulePreview()}
 function drawBlocks(){
@@ -477,6 +480,23 @@ function drawBlocks(){
           '<textarea placeholder="הטקסט, כולל ההפניה בסוגריים" oninput="setV('+i+','+j+',\'body\',this.value)">'+esc(v.body||'')+'</textarea></div>';
       }).join('');
       h+='<button onclick="addV('+i+')">+ הערה</button>';
+    }
+    else if(b.type==='jbox'){
+      h+=fld(i,'title','כותרת קטנה (לא חובה)',b.title)+fld(i,'lead','פסקת פתיחה (לא חובה)',b.lead,1)+
+        fld(i,'body','טקסט רציף (לתיבה בלי מונחים)',b.body,1);
+      h+='<p class="note">מונחים: הסימנים היפניים נכנסים לחותמת. מונח בלי סימנים — בלי חותמת.</p>';
+      h+=(b.items||[]).map(function(v,j){
+        return '<div class="f" style="border-top:1px solid #EAE4D6;padding-top:8px">'+
+          '<div class="two"><input type="text" lang="ja" placeholder="סימנים יפניים" value="'+esc(v.seal||'')+'" oninput="setV('+i+','+j+',\'seal\',this.value)" style="flex:0 1 140px">'+
+          '<input type="text" placeholder="השם בעברית, מנוקד" value="'+esc(v.name||'')+'" oninput="setV('+i+','+j+',\'name\',this.value)">'+
+          '<button onclick="delV('+i+','+j+')" title="מחיקת מונח" style="flex:0 0 auto">✕</button></div>'+
+          '<textarea placeholder="ההסבר" oninput="setV('+i+','+j+',\'body\',this.value)">'+esc(v.body||'')+'</textarea></div>';
+      }).join('');
+      h+='<button onclick="addV('+i+')">+ מונח</button>';
+    }
+    else if(b.type==='scan'){
+      h+=fld(i,'src','כתובת הסריקה — ריק: ריבוע ריק במקומה',b.src)+fld(i,'alt','תיאור',b.alt)+fld(i,'credit','קרדיט (לא חובה)',b.credit)+
+        fld(i,'text','טקסט הקטע — שמור כאן, לא מוצג בעמוד',b.text,1);
     }
     else if(b.type==='sources'){h+=fld(i,'title','כותרת (ברירת מחדל: מקורות)',b.title)+
       '<div class="f"><label>רשימת מקורות (APA) — מקור אחד בכל שורה, *נטוי* לשם כתב העת או הספר</label>'+

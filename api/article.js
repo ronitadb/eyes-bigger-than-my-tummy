@@ -164,7 +164,7 @@ function shell(title, description, canonical, image, body) {
     '<link rel="icon" href="/favicon.svg" type="image/svg+xml">\n' +
     '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
     '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
-    '<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600;700&display=swap" rel="stylesheet">\n' +
+    '<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">\n' +
     '<link rel="stylesheet" href="/assets/article.css">\n' +
     '<style>body{margin:0;background:#FAF8F4;padding:clamp(28px,6vw,64px) 0 80px}' +
     '.a-back{max-width:34em;margin:0 auto 26px;padding:0 clamp(20px,5vw,32px);' +
