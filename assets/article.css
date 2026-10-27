@@ -476,6 +476,14 @@
 @media (min-width:900px){ .a-article .a-keyline-band{--band-bleed:40px} }
 .a-keyline-band p{margin:0 0 .8em; text-wrap:pretty}
 .a-keyline-band p:last-child{margin-bottom:0}
+.a-band-list{list-style:none; margin:0; padding:0; padding-inline-start:1.4em}
+.a-band-list li{position:relative; margin:0 0 .7em; color:var(--head)}
+.a-band-list li:last-child{margin-bottom:0}
+.a-band-list li::before{
+  content:""; position:absolute; inset-inline-start:-1.4em; top:.68em;
+  width:7px; height:7px; background:var(--head); transform:rotate(45deg);
+}
+.a-keyline-band p + .a-band-list{margin-top:.2em}
 .a-band-mark{display:flex; align-items:center; gap:12px; width:min(180px,50%); margin:18px auto 22px}
 .a-band-mark i{flex:1 1 auto; height:1px; background:var(--gold); opacity:.5}
 .a-band-mark b{width:6px; height:6px; background:var(--gold); transform:rotate(45deg); flex:none}
