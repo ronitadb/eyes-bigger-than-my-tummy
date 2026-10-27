@@ -6,7 +6,8 @@
 --
 -- Run after article-04-gidi-vignette.sql: it expects the paragraph
 -- ״גם אם לא זכינו…״ as its own block, which that file made. Touches those two
--- blocks only; if either is not exactly as expected, UPDATE 0.
+-- blocks only, so the book-pages file may come before or after it; if either
+-- is not exactly as expected, UPDATE 0.
 
 UPDATE articles SET
   blocks = (
