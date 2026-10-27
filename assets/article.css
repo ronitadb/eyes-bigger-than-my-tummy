@@ -235,6 +235,39 @@
 .a-scan-empty{aspect-ratio:3 / 2; border:1px solid var(--rule); background:#fff; border-radius:2px}
 @media (max-width:560px){ .a-scan{margin-inline:0} }
 
+/* ── דפי הספר — the passage as the pages it is printed on (article 4) ───────
+   The whole page, on its paper, with the spine's shadow on its inner edge;
+   the ink outside the passage is lighter in the image itself, so paper and
+   shadow are one surface. A gold line beside the passage. Two pages are an
+   open spread that steps out past the column, each page the size of a single
+   one; where there is no room they stand one under the other. */
+.a-book{margin:36px 0}
+.a-book-pages{display:flex; justify-content:center; filter:drop-shadow(0 6px 16px rgba(60,50,30,.16))}
+.a-book-page{position:relative; flex:none; width:min(100%,400px); background:#FBF8F1}
+.a-book-r{background:linear-gradient(to left,#FBF8F1 0,#FBF8F1 78%,#F2EBDD 92%,#E3D9C5 100%)}
+.a-book-l{background:linear-gradient(to right,#FBF8F1 0,#FBF8F1 78%,#F2EBDD 92%,#E3D9C5 100%)}
+.a-book-page img{display:block; width:100%; height:auto; mix-blend-mode:multiply}
+.a-book-mark{position:absolute; width:3px; background:var(--gold); border-radius:2px}
+.a-book-r .a-book-mark{right:-10px}
+.a-book-l .a-book-mark{left:-10px}
+.a-book figcaption{
+  font-family:'Assistant',sans-serif; font-size:13px; color:var(--muted);
+  margin-top:12px; text-align:center;
+}
+.a-book figcaption b{font-weight:600; color:var(--head)}
+@media (min-width:900px){
+  .a-book-spread{margin-inline:calc(50% - 410px)}
+  .a-book-spread .a-book-page{width:400px}
+}
+@media (max-width:899px){
+  .a-book-spread .a-book-pages{flex-direction:column; align-items:center; gap:18px; filter:none}
+  .a-book-spread .a-book-page{filter:drop-shadow(0 6px 16px rgba(60,50,30,.16))}
+}
+/* the admin preview is a narrow column on a wide screen */
+.pv .a-book-spread{margin-inline:0}
+.pv .a-book-spread .a-book-pages{flex-direction:column; align-items:center; gap:18px; filter:none}
+.pv .a-book-spread .a-book-page{width:min(100%,400px); filter:drop-shadow(0 6px 16px rgba(60,50,30,.16))}
+
 /* ── רשימה — the bullet is the gold diamond, tying lists to the seam motif ── */
 .a-list{list-style:none; margin:0 0 1.3em; padding-inline-start:1.5em}
 .a-list li{position:relative; margin:0 0 .6em}
@@ -631,7 +664,10 @@
   .a-sub,.a-motto{break-after:avoid}
   .a-keyline{break-inside:avoid}
   .a-voice{break-inside:avoid}
-  .a-opening,.a-quote,.a-term,.a-fact,.a-figure,.a-jbox,.a-scan{
+  .a-book-spread{margin-inline:0 !important}
+  .a-book-spread .a-book-page{width:50% !important}
+  .a-book-page,.a-book-pages{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .a-opening,.a-quote,.a-term,.a-fact,.a-figure,.a-jbox,.a-scan,.a-book{
     break-inside:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact;
   }
   .a-figure-inset{max-width:52%}

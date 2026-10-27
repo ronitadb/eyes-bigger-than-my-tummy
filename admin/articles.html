@@ -497,7 +497,8 @@ function drawBlocks(){
       h+='<button onclick="addV('+i+')">+ מונח</button>';
     }
     else if(b.type==='scan'){
-      h+=fld(i,'src','כתובת הסריקה — ריק: ריבוע ריק במקומה',b.src)+fld(i,'alt','תיאור',b.alt)+fld(i,'credit','קרדיט (לא חובה)',b.credit)+
+      if((b.pages||[]).length)h+='<p class="note">עמודים בספר: '+b.pages.map(function(p){return p.page}).join(', ')+' — הסריקות והסימון מוכנים.</p>'+fld(i,'text','טקסט הקטע — תיאור הסריקה לקוראי מסך, לא מוצג בעמוד',b.text,1);
+      else h+=fld(i,'src','כתובת הסריקה — ריק: ריבוע ריק במקומה',b.src)+fld(i,'alt','תיאור',b.alt)+fld(i,'credit','קרדיט (לא חובה)',b.credit)+
         fld(i,'text','טקסט הקטע — שמור כאן, לא מוצג בעמוד',b.text,1);
     }
     else if(b.type==='sources'){h+=fld(i,'title','כותרת (ברירת מחדל: מקורות)',b.title)+
