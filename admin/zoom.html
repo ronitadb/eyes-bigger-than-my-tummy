@@ -82,6 +82,29 @@
   .custom-select-option{padding:9px 16px;font-size:14px;color:#3A4744;cursor:pointer;transition:background .1s;white-space:nowrap}
   .custom-select-option:hover{background:rgba(61,116,104,.08)}
   .custom-select-option.selected{color:#3D7468;font-weight:600;background:rgba(61,116,104,.06)}
+  .sx-row{display:flex;gap:12px;flex-wrap:wrap}
+  .sx-row .field{flex:1 1 220px}
+  .sx-presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .sx-chip{padding:6px 12px;border:1px solid #c8cdc9;border-radius:16px;background:#FAF8F4;font-family:inherit;font-size:13px;color:#2F5248;cursor:pointer}
+  .sx-chip:hover{border-color:#3D7468}
+  .sx-chip.on{background:#3D7468;border-color:#3D7468;color:#fff}
+  .sx-list{border:1px solid #ddd;border-radius:4px;max-height:260px;overflow-y:auto;margin-top:8px;background:#fff}
+  .field label.sx-item,.sx-item{display:flex;margin:0;font-weight:400;align-items:center;gap:10px;padding:7px 10px;border-bottom:1px solid #f0f0ec;cursor:pointer;font-size:14px}
+  .sx-item:last-child{border-bottom:0}
+  .sx-item:hover{background:#f7f8f6}
+  .sx-item input{width:auto;margin:0}
+  .sx-item .sx-name{flex:1 1 auto;color:#22302F}
+  .sx-item .sx-mail{color:#6E7C78;font-size:12px;direction:ltr}
+  .sx-item .sx-grp{font-size:12px;color:#3D7468;min-width:74px;text-align:left}
+  .sx-note{font-size:13px;color:#6E7C78;margin-top:6px;line-height:1.6}
+  .sx-note .bad{color:#9B3B2F}
+  .sx-count{margin:14px 0 4px;padding:12px 14px;background:#EEF3EF;border-radius:4px;font-size:15px;color:#2F5248;font-weight:600}
+  .sx-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+  .sx-tools input{padding:6px 8px;border:1px solid #ccc;border-radius:4px;font-family:inherit;font-size:13px;width:220px}
+  .sx-frame{width:100%;height:460px;border:1px solid #ddd;border-radius:4px;margin-top:8px;background:#FAF8F4}
+  .sx-msg{font-size:14px;color:#8b4513;min-height:20px;margin-top:6px}
+  .sx-check{display:flex;align-items:center;gap:8px;font-size:14px;color:#3A4744;margin-top:10px}
+  .sx-check input{width:auto}
   .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
   .stat-card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:20px;text-align:center}
   .stat-card .num{font-size:32px;font-weight:700;color:#3D7468}
@@ -247,24 +270,45 @@
   </div>
 </div>
 
+<!-- One send window for every email: pick the email, the meeting it is about
+     (for reminders), and exactly who gets it — registrants ticked by hand,
+     plus addresses typed in for people who never registered. -->
 <div id="sendModal" class="modal-overlay">
-  <div class="modal">
-    <h2 id="sendTitle">שליחת אימייל</h2>
-    <p id="sendInfo" style="font-size:14px;color:#6E7C78;margin-bottom:16px"></p>
-    <div class="field">
-      <label>סוג הודעה</label>
-      <div class="custom-select" id="sendTypeWrap" data-value="meeting_reminder">
-        <button type="button" class="custom-select-trigger" style="width:100%;justify-content:space-between"><span class="custom-select-label">תזכורת ראשונה (5 ימים לפני)</span><span class="custom-select-arrow">▾</span></button>
-        <div class="custom-select-menu" style="left:0;right:0">
-          <div class="custom-select-option selected" data-value="meeting_reminder">תזכורת ראשונה (5 ימים לפני)</div>
-          <div class="custom-select-option" data-value="meeting_reminder_1d">תזכורת שנייה (יום לפני)</div>
-          <div class="custom-select-option" data-value="meeting_followup">הודעה לאחר מפגש</div>
-        </div>
-      </div>
+  <div class="modal" style="max-width:760px">
+    <h2>שליחת אימייל</h2>
+    <div class="sx-row">
+      <div class="field"><label>מה שולחים</label><select id="sxTemplate" onchange="sxTemplateChanged()"></select></div>
+      <div class="field" id="sxMeetingField"><label>על איזה מפגש</label><select id="sxMeeting" onchange="sxMeetingChanged()"></select></div>
     </div>
+    <div class="field">
+      <label>למי — נרשמים</label>
+      <div class="sx-presets" id="sxPresets"></div>
+      <input id="sxSearch" type="text" placeholder="חיפוש לפי שם או מייל" oninput="sxRenderList()">
+      <div id="sxList" class="sx-list"></div>
+    </div>
+    <div class="field">
+      <label>כתובות נוספות — אנשים שלא נרשמו</label>
+      <textarea id="sxExtra" dir="auto" oninput="sxUpdateCount()" placeholder="כתובת אחת בכל שורה. אפשר להוסיף שם אחרי פסיק, למשל:&#10;dana@gmail.com, דנה"></textarea>
+      <div class="sx-note">הם מקבלים את המייל הזה בלבד ולא נוספים לרשימת הנרשמים. כל אחד מקבל מייל נפרד. מי שאין לו שם יקבל ״שלום,״.</div>
+      <div id="sxExtraNote" class="sx-note"></div>
+    </div>
+    <label id="sxAttachRow" class="sx-check" style="display:none"><input type="checkbox" id="sxAttach"> לצרף את הקובץ שהמכתב מקשר אליו: <span id="sxAttachName"></span></label>
+    <div id="sxCount" class="sx-count"></div>
+    <div class="sx-tools">
+      <button class="btn btn-small btn-secondary" onclick="sxPreview()">תצוגה מקדימה</button>
+      <span style="flex:1 1 auto"></span>
+      <input id="sxTestTo" type="email" dir="ltr" value="ronit@beityeladim.co.il">
+      <button class="btn btn-small" onclick="sxTest()">שליחת בדיקה אליי</button>
+    </div>
+    <div id="sxPreviewWrap" style="display:none">
+      <div class="sx-note" id="sxPreviewInfo"></div>
+      <iframe id="sxPreviewFrame" class="sx-frame" title="תצוגה מקדימה"></iframe>
+    </div>
+    <div class="field" style="margin-top:18px"><label>לאישור השליחה, הקלידי: שלח</label><input id="sxConfirm" type="text"></div>
+    <div id="sxMsg" class="sx-msg"></div>
     <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeSendModal()">ביטול</button>
-      <button class="btn" id="sendBtn" onclick="doSendEmail()">שלח לכל המשתתפים הפעילים</button>
+      <button class="btn btn-secondary" onclick="sxClose()">ביטול</button>
+      <button class="btn btn-danger" id="sxSendBtn" onclick="sxSend()">שליחה</button>
     </div>
   </div>
 </div>
@@ -277,8 +321,9 @@
     <div class="field"><label>נושא</label><input type="text" id="tplSubject"></div>
     <div class="field"><label>תוכן ההודעה</label><textarea id="tplBody" style="min-height:300px;font-size:16px;line-height:1.7;direction:rtl;text-align:right"></textarea></div>
     <p style="font-size:12px;color:#8A9692;margin-top:4px">
-      משתנים זמינים: <code>{{name}}</code> שם המשתתף/ת · <code>{{title}}</code> שם המפגש · <code>{{date}}</code> תאריך · <code>{{time}}</code> שעה · <code>{{zoom_link}}</code> קישור · <code>{{materials}}</code> חומרים<br><code>{{link}}</code> קישור אישי — נכנס בזמן ״שליחה לאדם אחד״. להשאיר כמו שהוא, לא להדביק במקומו כתובת: הוא מה שהופך את המכתב לאישי.<br>פסקה בין <code>[[</code> ל-<code>]]</code> מופיעה בתוך קופסה.
-      <br>פרטי המפגש (תאריך, שעה, קישור) וקישור ההסרה מתווספים אוטומטית — אין צורך לכלול אותם בגוף ההודעה.
+      משתנים זמינים: <code>{{first_name}}</code> שם פרטי · <code>{{name}}</code> שם מלא · <code>{{title}}</code> שם המפגש · <code>{{date}}</code> תאריך · <code>{{time}}</code> שעה · <code>{{zoom_link}}</code> קישור · <code>{{materials}}</code> חומרים<br><code>{{link}}</code> קישור אישי — נכנס בזמן ״שליחה לאדם אחד״. להשאיר כמו שהוא, לא להדביק במקומו כתובת: הוא מה שהופך את המכתב לאישי.<br>פסקה בין <code>[[</code> ל-<code>]]</code> מופיעה בתוך קופסה.
+      <br>פרטי המפגש (תאריך, שעה, קישור) מתווספים בקופסה. כדי לקבוע איפה היא תופיע, כתבי <code>{{details}}</code> בשורה נפרדת במקום הרצוי. בלי זה, הקופסה מופיעה אחרי הפסקה השנייה.
+      <br>קישור ההסרה מהרשימה מתווסף אוטומטית בסוף.
     </p>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeTemplateModal()">ביטול</button>
@@ -305,7 +350,6 @@ var allMeetings=[], allParticipants=[], allTemplates=[];
 // Active participants only, kept separate from the participants tab's list
 // (which can be filtered to unsubscribed) and used for the registration counts.
 var activeParticipants=[];
-var sendMeetingId=null;
 
 function confirmDialog(opts){
   return new Promise(function(resolve){
@@ -563,7 +607,7 @@ function renderMeetings(){
       (m.followups_sent?' | '+m.followups_sent+' הודעות מעקב':'')+'</div>'+
       (m.description?'<p style="font-size:14px;color:#3A4744;margin-bottom:12px;overflow-wrap:break-word;word-break:break-word">'+esc(m.description)+'</p>':'')+
       '<div class="actions"><button class="btn btn-small" onclick="editMeeting('+m.id+')">עריכה</button>'+
-      '<button class="btn btn-small btn-secondary" onclick="openSendModal('+m.id+',\''+esc(m.title)+'\')">שליחת אימייל</button></div></div>'
+      '<button class="btn btn-small btn-secondary" onclick="openSend({meetingId:'+m.id+'})">שליחת אימייל</button></div></div>'
   }).join('');
 }
 
@@ -608,29 +652,230 @@ function saveMeeting(btn){
     }).catch(function(){btnDone(btn,false)});
 }
 
-// Send email
-function openSendModal(meetingId,title){
-  sendMeetingId=meetingId;
-  document.getElementById('sendTitle').textContent='שליחת אימייל — '+title;
-  document.getElementById('sendInfo').textContent='ההודעה תישלח לכל המשתתפים הפעילים ברשימה.';
-  document.getElementById('sendBtn').disabled=false;
-  document.getElementById('sendModal').classList.add('active');
-}
-function closeSendModal(){document.getElementById('sendModal').classList.remove('active');sendMeetingId=null}
+// ── Send window ─────────────────────────────────────────────────────────────
+// One window for every email. Exactly the people ticked here get it, plus any
+// addresses typed in — no hidden group rule decides for her. A group button
+// only ticks boxes; what is ticked is what goes out.
+var MEETING_TYPES=['meeting_reminder','meeting_reminder_1d','meeting_followup'];
+var sx={people:[],picked:{},preset:'',missing:null};
 
-async function doSendEmail(){
-  if(!sendMeetingId)return;
-  var type=csGetValue('sendTypeWrap');
-  var typeHe=(type==='meeting_reminder'||type==='meeting_reminder_1d')?'תזכורת':'הודעת מעקב';
-  var ok=await confirmDialog({title:'שליחת '+typeHe,message:'לשלוח '+typeHe+' לכל המשתתפים הפעילים?',confirmText:'שלח',cancelText:'חזרה'});
-  if(!ok)return;
-  document.getElementById('sendBtn').disabled=true;
-  fetch(API+'/admin/send-email',{method:'POST',headers:headers(),body:JSON.stringify({meeting_id:sendMeetingId,template_type:type})})
-    .then(function(r){return r.json()}).then(function(data){
-      if(!data.ok){showMsg('שגיאה בשליחה',false);return}
-      showMsg('נשלחו '+data.sent+' הודעות'+(data.failed?' ('+data.failed+' נכשלו)':''),data.failed===0);
-      closeSendModal();loadAll();
-    }).catch(function(){showMsg('שגיאת חיבור',false)});
+function groupOf(p){
+  var t=p.participant_type||'';
+  if(t.indexOf('שתי הקבוצות')>-1)return 'both';
+  if(t.indexOf('להורים')>-1)return 'parents';
+  if(t.indexOf('לילדי')>-1||t.indexOf('ביתלדים')>-1)return 'children';
+  return 'other';
+}
+var GROUP_HE={both:'שתי הקבוצות',parents:'הורים',children:'ילדים',other:'—'};
+var SX_PRESETS=[
+  ['all','כל הנרשמים',function(g){return true}],
+  ['children_only','ילדים בלבד',function(g){return g==='children'}],
+  ['parents_only','הורים בלבד',function(g){return g==='parents'}],
+  ['both_only','שתי הקבוצות בלבד',function(g){return g==='both'}],
+  ['children','ילדים + שתי הקבוצות',function(g){return g==='children'||g==='both'}],
+  ['parents','הורים + שתי הקבוצות',function(g){return g==='parents'||g==='both'}]
+];
+
+function sxTemplate(){var id=parseInt(document.getElementById('sxTemplate').value,10);return allTemplates.find(function(t){return t.id===id})||null}
+function sxNeedsMeeting(t){return !!t&&(MEETING_TYPES.indexOf(t.template_type)>-1||/\{\{\s*(title|date|time|zoom_link|details)\s*\}\}/.test((t.body||'')+(t.subject||'')))}
+function sxMeeting(){var id=parseInt(document.getElementById('sxMeeting').value,10);return allMeetings.find(function(m){return m.id===id})||null}
+
+// Opened from a meeting card (meetingId) or from an email's card (templateId).
+function openSend(opts){
+  opts=opts||{};
+  var go=function(){
+    var sel=document.getElementById('sxTemplate');
+    var letters=allTemplates.filter(function(t){return t.template_type==='update'&&!t.archived&&!/\{\{\s*link\s*\}\}/.test((t.body||'')+(t.subject||''))});
+    var meet=allTemplates.filter(function(t){return MEETING_TYPES.indexOf(t.template_type)>-1});
+    sel.innerHTML='<option value="">— בחירה —</option>'+
+      (meet.length?'<optgroup label="מיילים על מפגש">'+meet.map(function(t){return '<option value="'+t.id+'">'+esc(TPL_NAMES[t.template_type]||t.template_type)+'</option>'}).join('')+'</optgroup>':'')+
+      (letters.length?'<optgroup label="מכתבים">'+letters.map(function(t){return '<option value="'+t.id+'">'+esc(t.name||'מכתב ללא שם')+'</option>'}).join('')+'</optgroup>':'');
+    var msel=document.getElementById('sxMeeting');
+    var ms=allMeetings.slice().sort(function(a,b){return String(a.meeting_date).localeCompare(String(b.meeting_date))});
+    msel.innerHTML='<option value="">— בחירת מפגש —</option>'+ms.map(function(m){
+      return '<option value="'+m.id+'">'+esc(m.title)+' · '+esc(fmtDate(m.meeting_date))+'</option>'}).join('');
+    var tid=opts.templateId;
+    if(!tid&&opts.meetingId){var r=meet.find(function(t){return t.template_type==='meeting_reminder'});tid=r&&r.id}
+    sel.value=tid?String(tid):'';
+    msel.value=opts.meetingId?String(opts.meetingId):'';
+    document.getElementById('sxSearch').value='';
+    document.getElementById('sxExtra').value='';
+    document.getElementById('sxConfirm').value='';
+    document.getElementById('sxMsg').textContent='';
+    document.getElementById('sxPreviewWrap').style.display='none';
+    sx.picked={};sx.preset='';sx.missing=null;
+    sxTemplateChanged(true);
+    var m=sxMeeting();
+    sxApplyPreset(m?(m.audience==='parents'?'parents':m.audience==='children'?'children':'all'):'all');
+    document.getElementById('sendModal').classList.add('active');
+  };
+  // Always the current list: someone may have registered since the page loaded.
+  Promise.all([
+    fetch(API+'/admin/participants?status=active',{headers:headers()}).then(function(r){return r.json()}),
+    allTemplates.length?Promise.resolve(null):fetch(API+'/admin/templates',{headers:headers()}).then(function(r){return r.json()})
+  ]).then(function(res){
+    if(res[0]&&res[0].ok){sx.people=res[0].participants||[];activeParticipants=sx.people}
+    if(res[1]&&res[1].ok)allTemplates=res[1].templates;
+    go();
+  }).catch(function(){showMsg('שגיאת חיבור — לא נטענה רשימת הנרשמים.',false)});
+}
+function sxClose(){document.getElementById('sendModal').classList.remove('active')}
+
+function sxTemplateChanged(quiet){
+  var t=sxTemplate();
+  document.getElementById('sxMeetingField').style.display=sxNeedsMeeting(t)?'':'none';
+  var pdf=t&&t.template_type==='update'?pdfInTemplate(t.body):null;
+  document.getElementById('sxAttachRow').style.display=pdf?'':'none';
+  document.getElementById('sxAttach').checked=false;
+  document.getElementById('sxAttachName').textContent=pdf?pdf.filename:'';
+  sx.missing=null;
+  document.getElementById('sxPreviewWrap').style.display='none';
+  sxRenderPresets();
+  if(!quiet)sxUpdateCount();
+}
+function sxMeetingChanged(){
+  var m=sxMeeting();
+  if(m)sxApplyPreset(m.audience==='parents'?'parents':m.audience==='children'?'children':'all');
+  document.getElementById('sxPreviewWrap').style.display='none';
+}
+
+function sxRenderPresets(){
+  var t=sxTemplate();
+  var html=SX_PRESETS.map(function(p){
+    var n=sx.people.filter(function(x){return p[2](groupOf(x))}).length;
+    return '<button type="button" class="sx-chip'+(sx.preset===p[0]?' on':'')+'" onclick="sxApplyPreset(\''+p[0]+'\')">'+p[1]+' ('+n+')</button>';
+  }).join('');
+  // A letter may already have gone out; "who hasn't had it" is the usual next step.
+  if(t&&t.template_type==='update')
+    html+='<button type="button" class="sx-chip'+(sx.preset==='missing'?' on':'')+'" onclick="sxApplyPreset(\'missing\')">מי שטרם קיבל את המכתב'+(sx.missing?' ('+sx.missing.length+')':'')+'</button>';
+  html+='<button type="button" class="sx-chip" onclick="sxApplyPreset(\'none\')">ניקוי</button>';
+  document.getElementById('sxPresets').innerHTML=html;
+}
+
+function sxApplyPreset(key){
+  if(key==='missing'){
+    var t=sxTemplate();if(!t)return;
+    fetch(API+'/admin/send-log?missing='+t.id,{headers:headers()}).then(function(r){return r.json()}).then(function(d){
+      if(!d||!d.ok){document.getElementById('sxMsg').textContent='שגיאה בבדיקה מי טרם קיבל.';return}
+      sx.missing=d.missing||[];
+      sx.picked={};sx.missing.forEach(function(p){sx.picked[p.id]=true});
+      sx.preset='missing';sxRenderPresets();sxRenderList();
+    });
+    return;
+  }
+  sx.picked={};
+  var def=SX_PRESETS.find(function(p){return p[0]===key});
+  if(def)sx.people.forEach(function(p){if(def[2](groupOf(p)))sx.picked[p.id]=true});
+  sx.preset=key==='none'?'':key;
+  sxRenderPresets();sxRenderList();
+}
+
+function sxRenderList(){
+  var q=(document.getElementById('sxSearch').value||'').trim().toLowerCase();
+  var rows=sx.people.slice().sort(function(a,b){return String(a.name||'').localeCompare(String(b.name||''),'he')})
+    .filter(function(p){return !q||String(p.name||'').toLowerCase().indexOf(q)>-1||String(p.email||'').toLowerCase().indexOf(q)>-1});
+  document.getElementById('sxList').innerHTML=rows.length?rows.map(function(p){
+    return '<label class="sx-item"><input type="checkbox" '+(sx.picked[p.id]?'checked ':'')+'onchange="sxToggle('+p.id+',this.checked)">'+
+      '<span class="sx-name">'+esc(p.name||'')+'</span><span class="sx-mail">'+esc(p.email||'')+'</span>'+
+      '<span class="sx-grp">'+GROUP_HE[groupOf(p)]+'</span></label>';
+  }).join(''):'<div class="sx-item" style="cursor:default;color:#6E7C78">אין תוצאות.</div>';
+  sxUpdateCount();
+}
+function sxToggle(id,on){
+  if(on)sx.picked[id]=true;else delete sx.picked[id];
+  sx.preset='';sxRenderPresets();sxUpdateCount();
+}
+
+// "dana@gmail.com, דנה" per line. Also accepts "דנה <dana@gmail.com>".
+function sxParseExtra(){
+  var good=[],bad=[],dup=[],seen={};
+  var mine={};sx.people.forEach(function(p){if(sx.picked[p.id])mine[String(p.email||'').toLowerCase()]=true});
+  (document.getElementById('sxExtra').value||'').split(/\n/).forEach(function(line){
+    line=line.trim();if(!line)return;
+    var email='',name='';
+    var m=line.match(/^(.*)<([^>]+)>\s*$/);
+    if(m){name=m[1].trim().replace(/,$/,'').trim();email=m[2].trim()}
+    else{var parts=line.split(/[,;\t]/);email=parts[0].trim();name=parts.slice(1).join(' ').trim()}
+    email=email.toLowerCase();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){bad.push(line);return}
+    if(seen[email]||mine[email]){dup.push(email);return}
+    seen[email]=true;good.push({email:email,name:name});
+  });
+  return {good:good,bad:bad,dup:dup};
+}
+function sxPickedIds(){return Object.keys(sx.picked).map(function(k){return parseInt(k,10)})}
+
+function sxUpdateCount(){
+  var ids=sxPickedIds(), ex=sxParseExtra(), total=ids.length+ex.good.length;
+  var note='';
+  if(ex.bad.length)note+='<div class="bad">לא תקינות, לא יישלחו: '+ex.bad.map(esc).join(' · ')+'</div>';
+  if(ex.dup.length)note+='<div>כבר ברשימה, לא יקבלו פעמיים: '+ex.dup.map(esc).join(' · ')+'</div>';
+  document.getElementById('sxExtraNote').innerHTML=note;
+  document.getElementById('sxMsg').textContent='';
+  document.getElementById('sxCount').textContent=!total?'לא נבחרו נמענים.'
+    :(total===1?'יישלח לנמען אחד':'יישלח ל-'+total+' נמענים')+
+     (ex.good.length?' — '+ids.length+' מהנרשמים ו-'+ex.good.length+' מהכתובות הנוספות':'');
+  document.getElementById('sxSendBtn').textContent=total?'שליחה ל-'+total:'שליחה';
+}
+
+function sxPayload(){
+  var t=sxTemplate(),m=sxMeeting();
+  var p={template_type:t.template_type,template_id:t.id};
+  if(sxNeedsMeeting(t)&&m)p.meeting_id=m.id;
+  if(document.getElementById('sxAttach').checked){var pdf=pdfInTemplate(t.body);if(pdf)p.attachments=[pdf]}
+  return p;
+}
+function sxCheck(){
+  var t=sxTemplate(),msg=document.getElementById('sxMsg');
+  if(!t){msg.textContent='יש לבחור מה שולחים.';return false}
+  if(sxNeedsMeeting(t)&&!sxMeeting()){msg.textContent='המייל הזה מדבר על מפגש — יש לבחור על איזה.';return false}
+  msg.textContent='';return true;
+}
+
+function sxPreview(){
+  if(!sxCheck())return;
+  var p=sxPayload();p.preview=true;p.recipient_ids=sxPickedIds().slice(0,1);
+  var ex=sxParseExtra();if(!p.recipient_ids.length&&ex.good.length)p.extra=ex.good.slice(0,1);
+  fetch(API+'/admin/send-email',{method:'POST',headers:headers(),body:JSON.stringify(p)})
+    .then(function(r){return r.json()}).then(function(d){
+      if(!d||!d.ok){document.getElementById('sxMsg').textContent=(d&&d.message)||'שגיאה בתצוגה המקדימה.';return}
+      document.getElementById('sxPreviewInfo').textContent='נושא: '+d.subject+' · כך זה ייראה אצל '+d.shown_for;
+      document.getElementById('sxPreviewFrame').srcdoc=d.html;
+      document.getElementById('sxPreviewWrap').style.display='';
+    }).catch(function(){document.getElementById('sxMsg').textContent='שגיאת חיבור.'});
+}
+
+function sxTest(){
+  if(!sxCheck())return;
+  var to=document.getElementById('sxTestTo').value.trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){document.getElementById('sxMsg').textContent='כתובת הבדיקה לא תקינה.';return}
+  var p=sxPayload();p.test_to=to;
+  document.getElementById('sxMsg').textContent='שולח בדיקה…';
+  fetch(API+'/admin/send-email',{method:'POST',headers:headers(),body:JSON.stringify(p)})
+    .then(function(r){return r.json()}).then(function(d){
+      document.getElementById('sxMsg').textContent=d&&d.ok?'נשלחה בדיקה אחת אל '+to+'. לא נשלח לאיש מהנרשמים.':((d&&d.message)||'שגיאה בשליחת הבדיקה.');
+    }).catch(function(){document.getElementById('sxMsg').textContent='שגיאת חיבור.'});
+}
+
+function sxSend(){
+  if(!sxCheck())return;
+  var msg=document.getElementById('sxMsg');
+  var ids=sxPickedIds(), ex=sxParseExtra(), total=ids.length+ex.good.length;
+  if(!total){msg.textContent='לא נבחרו נמענים.';return}
+  if(ex.bad.length){msg.textContent='יש כתובות לא תקינות — תקני או מחקי אותן לפני השליחה.';return}
+  if(document.getElementById('sxConfirm').value.trim()!=='שלח'){msg.textContent='כדי לשלוח, הקלידי ״שלח״ בשדה האישור.';return}
+  var p=sxPayload();p.recipient_ids=ids;p.extra=ex.good;
+  var btn=document.getElementById('sxSendBtn');btn.disabled=true;
+  msg.textContent='שולח ל-'+total+'… זה לוקח כחצי שנייה לכל מייל. לא לסגור את החלון.';
+  fetch(API+'/admin/send-email',{method:'POST',headers:headers(),body:JSON.stringify(p)})
+    .then(function(r){return r.json()}).then(function(d){
+      btn.disabled=false;
+      if(!d||!d.ok){msg.textContent=(d&&d.message)||'שגיאה בשליחה.';return}
+      sxClose();
+      showMsg('נשלח ל-'+d.sent+(d.failed?' · '+d.failed+' נכשלו':'')+'.'+
+        (d.unlogged?' ('+d.unlogged+' כתובות נוספות לא נרשמו בהיסטוריה.)':''),d.failed===0,true);
+      loadAll();
+    }).catch(function(){btn.disabled=false;msg.textContent='שגיאת חיבור — ייתכן שחלק מהמיילים כן נשלחו. כדאי לבדוק בהיסטוריית השליחות לפני ששולחים שוב.'});
 }
 
 // Participants
@@ -799,12 +1044,18 @@ function renderTemplates(){
     // that is theirs alone (a story's private preview). It can only go to one
     // named address; the send-to-everyone button is not offered at all.
     var personal=/\{\{\s*link\s*\}\}/.test((t.body||'')+(t.subject||''));
-    var sendBtn=!standalone ? ''
+    var sendBtn=MEETING_TYPES.indexOf(t.template_type)>-1
+      ? '<button class="btn btn-small btn-danger" onclick="openSend({templateId:'+t.id+'})">שליחה…</button>'
+      : !standalone ? ''
+      // The join confirmation goes to each person as they register; sending it
+      // to the list would welcome everyone again.
+      : t.template_type==='join_confirmation'
+      ? '<button class="btn btn-small" onclick="sendTestEmail('+t.id+')">שליחת בדיקה אליי</button>'
       : personal
       ? '<button class="btn btn-small" onclick="sendTestEmail('+t.id+')">שליחת בדיקה אליי</button>'+
         '<button class="btn btn-small btn-danger" onclick="sendToOne('+t.id+')">שליחה לאדם אחד</button>'
       : '<button class="btn btn-small" onclick="sendTestEmail('+t.id+')">שליחת בדיקה אליי</button>'+
-        '<button class="btn btn-small btn-danger" onclick="sendUpdateToAll('+t.id+')">שליחה לכל הנרשמים</button>';
+        '<button class="btn btn-small btn-danger" onclick="openSend({templateId:'+t.id+'})">שליחה…</button>';
     var extra=isLetter
       ? (personal?'':'<button class="btn btn-small" onclick="showMissing('+t.id+')">מי טרם קיבל?</button>')+
         '<button class="btn btn-small" onclick="duplicateLetter('+t.id+')">שכפול</button>'+
@@ -840,7 +1091,8 @@ function renderTemplates(){
       '<div class="meta">אין עדיין מכתבים.</div>')+
     '<h3 style="margin:26px 0 4px">תבניות אוטומטיות</h3>'+
     '<p style="color:#6E7C78;font-size:14px;margin:0 0 12px;line-height:1.7">'+
-      'נשלחות מעצמן — אישור הצטרפות ותזכורות. אחת מכל סוג, ואי אפשר למחוק אותן.</p>'+
+      'אישור ההצטרפות נשלח מעצמו למי שנרשם. התזכורות וההודעה שאחרי מפגש נשלחות רק כשלוחצים ״שליחה…״ — '+
+      'שם בוחרים מפגש ונמענים, רואים תצוגה מקדימה ושולחים בדיקה. אחת מכל סוג, ואי אפשר למחוק אותן.</p>'+
     auto.map(function(t){return card(t,false)}).join('');
 }
 
@@ -1042,30 +1294,6 @@ function pdfInTemplate(body){
   return {filename:name+'.pdf', path:links[0].url};
 }
 
-function sendUpdateToAll(id){
-  var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
-  var pdf=pdfInTemplate(t.body);
-  var attach=pdf?window.confirm('לצרף את הקובץ שהמכתב מקשר אליו?\n\n'+pdf.filename+
-                                '\n\nאישור = עם הקובץ · ביטול = בלי.'):false;
-  var typed=window.prompt(
-    'שליחה לכל '+(allParticipants.filter(function(p){return p.status==="active"}).length)+' הנרשמים הפעילים.\n\n'+
-    'נושא: '+t.subject+'\n'+
-    (attach?'כולל קובץ מצורף: '+pdf.filename:'בלי קובץ מצורף.')+'\n\n'+
-    'נשלחים מיילים אמיתיים ואי אפשר לבטל.\n'+
-    'להמשך הקלידי:  שלח');
-  if(typed===null)return;
-  if(typed.trim()!=='שלח'){showMsg('בוטל — לא נשלח דבר.',false);return}
-  var payload={template_type:t.template_type,template_id:t.id};
-  if(attach)payload.attachments=[pdf];
-  showMsg('שולח…',true);
-  fetch(API+'/admin/send-email',{method:'POST',headers:headers(),body:JSON.stringify(payload)})
-    .then(function(r){return r.json()})
-    .then(function(d){
-      if(d&&d.ok)showMsg('נשלח ל-'+d.sent+' נרשמים'+(d.failed?' · '+d.failed+' נכשלו':'')+'.',true);
-      else showMsg((d&&d.message)||'שגיאה בשליחה.',false);
-    })
-    .catch(function(){showMsg('שגיאת חיבור.',false)});
-}
 function editTemplate(id){
   var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
   document.getElementById('tplTitle').textContent='עריכת תבנית — '+(TPL_NAMES[t.template_type]||t.template_type);

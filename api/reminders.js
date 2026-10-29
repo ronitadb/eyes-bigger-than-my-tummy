@@ -1,5 +1,10 @@
-// Automatic Zoom-meeting reminders. Triggered once a day by Vercel Cron
-// (see vercel.json). For every meeting happening in ~5 days and ~1 day, it emails
+// SWITCHED OFF (October 2026). Ronit sends every reminder by hand from
+// /admin/zoom, after checking it; nothing goes out on its own. The daily cron
+// was removed from vercel.json, and this handler returns before doing
+// anything, so even a stray request to the URL sends nothing.
+//
+// What it used to do: Automatic Zoom-meeting reminders. Triggered once a day
+// by Vercel Cron. For every meeting happening in ~5 days and ~1 day, it emails
 // that meeting's group (parents / children / everyone) with the meeting's own
 // title, date, time and Zoom link. Idempotent: each meeting+offset is sent once.
 
@@ -28,6 +33,9 @@ function addDays(isoDate, n) {
 }
 
 module.exports = async (req, res) => {
+  return res.status(200).json({ ok: true, disabled: true, sent: 0 });
+
+  // eslint-disable-next-line no-unreachable
   // Vercel Cron sends Authorization: Bearer <CRON_SECRET> when CRON_SECRET is set.
   const secret = process.env.CRON_SECRET;
   if (secret && (req.headers['authorization'] || '') !== 'Bearer ' + secret) {
