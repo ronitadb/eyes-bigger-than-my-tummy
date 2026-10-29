@@ -280,6 +280,7 @@
       <div class="field"><label>מה שולחים</label><select id="sxTemplate" onchange="sxTemplateChanged()"></select></div>
       <div class="field" id="sxMeetingField"><label>על איזה מפגש</label><select id="sxMeeting" onchange="sxMeetingChanged()"></select></div>
     </div>
+    <div id="sxGroupNote" class="sx-note" style="margin:-6px 0 12px"></div>
     <div class="field">
       <label>למי — נרשמים</label>
       <div class="sx-presets" id="sxPresets"></div>
@@ -318,6 +319,14 @@
   <div class="modal" style="max-width:640px">
     <h2 id="tplTitle">עריכת תבנית</h2>
     <input type="hidden" id="tplId">
+    <div class="field" id="tplAudienceField"><label>נכתב לקבוצה</label>
+      <select id="tplAudience">
+        <option value="">כל הקבוצות</option>
+        <option value="children">ילדים</option>
+        <option value="parents">הורים</option>
+      </select>
+      <div class="sx-note">קובע מי מסומן כשפותחים את חלון השליחה. אפשר תמיד לשנות שם את הסימון.</div>
+    </div>
     <div class="field"><label>נושא</label><input type="text" id="tplSubject"></div>
     <div class="field"><label>תוכן ההודעה</label><textarea id="tplBody" style="min-height:300px;font-size:16px;line-height:1.7;direction:rtl;text-align:right"></textarea></div>
     <p style="font-size:12px;color:#8A9692;margin-top:4px">
@@ -686,16 +695,25 @@ function openSend(opts){
   var go=function(){
     var sel=document.getElementById('sxTemplate');
     var letters=allTemplates.filter(function(t){return t.template_type==='update'&&!t.archived&&!/\{\{\s*link\s*\}\}/.test((t.body||'')+(t.subject||''))});
-    var meet=allTemplates.filter(function(t){return MEETING_TYPES.indexOf(t.template_type)>-1});
+    var meet=allTemplates.filter(function(t){return MEETING_TYPES.indexOf(t.template_type)>-1})
+      .sort(function(a,b){return MEETING_TYPES.indexOf(a.template_type)-MEETING_TYPES.indexOf(b.template_type)||a.id-b.id});
     sel.innerHTML='<option value="">— בחירה —</option>'+
-      (meet.length?'<optgroup label="מיילים על מפגש">'+meet.map(function(t){return '<option value="'+t.id+'">'+esc(TPL_NAMES[t.template_type]||t.template_type)+'</option>'}).join('')+'</optgroup>':'')+
+      (meet.length?'<optgroup label="מיילים על מפגש">'+meet.map(function(t){return '<option value="'+t.id+'">'+esc(tplLabel(t)+' · '+tplGroupHe(t))+'</option>'}).join('')+'</optgroup>':'')+
       (letters.length?'<optgroup label="מכתבים">'+letters.map(function(t){return '<option value="'+t.id+'">'+esc(t.name||'מכתב ללא שם')+'</option>'}).join('')+'</optgroup>':'');
     var msel=document.getElementById('sxMeeting');
     var ms=allMeetings.slice().sort(function(a,b){return String(a.meeting_date).localeCompare(String(b.meeting_date))});
     msel.innerHTML='<option value="">— בחירת מפגש —</option>'+ms.map(function(m){
       return '<option value="'+m.id+'">'+esc(m.title)+' · '+esc(fmtDate(m.meeting_date))+'</option>'}).join('');
     var tid=opts.templateId;
-    if(!tid&&opts.meetingId){var r=meet.find(function(t){return t.template_type==='meeting_reminder'});tid=r&&r.id}
+    // From a meeting card: the first reminder written for that meeting's
+    // group, else one written for everyone, else any first reminder.
+    if(!tid&&opts.meetingId){
+      var om=allMeetings.find(function(m){return m.id===opts.meetingId});
+      var aud=om&&om.audience!=='all'?om.audience:null;
+      var rs=meet.filter(function(t){return t.template_type==='meeting_reminder'});
+      var r=rs.find(function(t){return aud&&t.audience===aud})||rs.find(function(t){return !t.audience||t.audience==='all'})||rs[0];
+      tid=r&&r.id;
+    }
     sel.value=tid?String(tid):'';
     msel.value=opts.meetingId?String(opts.meetingId):'';
     document.getElementById('sxSearch').value='';
@@ -705,8 +723,7 @@ function openSend(opts){
     document.getElementById('sxPreviewWrap').style.display='none';
     sx.picked={};sx.preset='';sx.missing=null;
     sxTemplateChanged(true);
-    var m=sxMeeting();
-    sxApplyPreset(m?(m.audience==='parents'?'parents':m.audience==='children'?'children':'all'):'all');
+    sxAutoPreset();
     document.getElementById('sendModal').classList.add('active');
   };
   // Always the current list: someone may have registered since the page loaded.
@@ -731,12 +748,37 @@ function sxTemplateChanged(quiet){
   sx.missing=null;
   document.getElementById('sxPreviewWrap').style.display='none';
   sxRenderPresets();
-  if(!quiet)sxUpdateCount();
+  if(!quiet){
+    // An email written for one group ticks that group; one written for
+    // everyone leaves what is ticked alone.
+    if(t&&(t.audience==='children'||t.audience==='parents'))sxAutoPreset();
+    else sxUpdateCount();
+  }
+  sxGroupNote();
 }
 function sxMeetingChanged(){
-  var m=sxMeeting();
-  if(m)sxApplyPreset(m.audience==='parents'?'parents':m.audience==='children'?'children':'all');
+  if(sxMeeting())sxAutoPreset();
   document.getElementById('sxPreviewWrap').style.display='none';
+  sxGroupNote();
+}
+// Who is ticked to begin with: the group the email was written for, else the
+// meeting's group, else everyone. Only boxes — what is ticked is what goes out.
+function sxAutoPreset(){
+  var t=sxTemplate(),m=sxMeeting();
+  var a=(t&&(t.audience==='children'||t.audience==='parents')&&t.audience)||(m&&sxNeedsMeeting(t)&&m.audience)||'all';
+  sxApplyPreset(a==='parents'?'parents':a==='children'?'children':'all');
+}
+// Says which group the email was written for, and warns when the meeting
+// chosen belongs to the other group — the parents' text going to the children.
+function sxGroupNote(){
+  var t=sxTemplate(),m=sxMeeting(),el=document.getElementById('sxGroupNote');
+  if(!t||t.template_type==='update'&&!t.audience){el.innerHTML='';return}
+  var html='המייל הזה נכתב ל: <b>'+esc(tplGroupHe(t))+'</b>.';
+  var ta=t.audience==='children'||t.audience==='parents'?t.audience:null;
+  var ma=m&&sxNeedsMeeting(t)&&(m.audience==='children'||m.audience==='parents')?m.audience:null;
+  if(ta&&ma&&ta!==ma)
+    html+=' <span class="bad">שימי לב: המפגש שנבחר הוא של קבוצת ה'+AUD_HE[ma]+'.</span>';
+  el.innerHTML=html;
 }
 
 function sxRenderPresets(){
@@ -1020,6 +1062,11 @@ function loadTemplates(){
     });
 }
 var TPL_NAMES={join_confirmation:'אישור הצטרפות',meeting_reminder:'תזכורת ראשונה (5 ימים לפני)',meeting_reminder_1d:'תזכורת שנייה (יום לפני)',meeting_followup:'הודעה לאחר מפגש',update:'עדכון לנרשמים (לא קשור למפגש)'};
+var AUD_HE={children:'ילדים',parents:'הורים'};
+function isPersonal(t){return /\{\{\s*link\s*\}\}/.test((t.body||'')+(t.subject||''))}
+// A meeting email with no name of its own is called by its kind.
+function tplLabel(t){return t.name||(t.template_type==='update'?'מכתב ללא שם':(TPL_NAMES[t.template_type]||t.template_type))}
+function tplGroupHe(t){return AUD_HE[t.audience]||'כל הקבוצות'}
 // The email renderer only linkifies [text](http…). Listing links with the same
 // pattern means a relative or malformed URL shows up here as missing — which is
 // precisely the mistake worth catching before a send.
@@ -1031,10 +1078,14 @@ function templateLinks(body){
 
 function renderTemplates(){
   var el=document.getElementById('templatesList');
-  var auto=allTemplates.filter(function(t){return t.template_type!=='update'});
   var letters=allTemplates.filter(function(t){return t.template_type==='update'});
+  var join=allTemplates.filter(function(t){return t.template_type==='join_confirmation'});
+  var countOf={};
+  allTemplates.forEach(function(t){countOf[t.template_type]=(countOf[t.template_type]||0)+1});
 
-  function card(t,isLetter){
+  function card(t){
+    var isLetter=t.template_type==='update';
+    var isMeeting=MEETING_TYPES.indexOf(t.template_type)>-1;
     // Only a template with no meeting placeholders can go to everyone at once;
     // the rest are meaningless without a specific meeting behind them.
     var standalone=!/\{\{\s*(title|date|time|zoom_link)\s*\}\}/.test((t.body||'')+(t.subject||''));
@@ -1043,8 +1094,8 @@ function renderTemplates(){
     // A letter with {{link}} is personal — written to one person, with a link
     // that is theirs alone (a story's private preview). It can only go to one
     // named address; the send-to-everyone button is not offered at all.
-    var personal=/\{\{\s*link\s*\}\}/.test((t.body||'')+(t.subject||''));
-    var sendBtn=MEETING_TYPES.indexOf(t.template_type)>-1
+    var personal=isPersonal(t);
+    var sendBtn=isMeeting
       ? '<button class="btn btn-small btn-danger" onclick="openSend({templateId:'+t.id+'})">שליחה…</button>'
       : !standalone ? ''
       // The join confirmation goes to each person as they register; sending it
@@ -1056,13 +1107,16 @@ function renderTemplates(){
         '<button class="btn btn-small btn-danger" onclick="sendToOne('+t.id+')">שליחה לאדם אחד</button>'
       : '<button class="btn btn-small" onclick="sendTestEmail('+t.id+')">שליחת בדיקה אליי</button>'+
         '<button class="btn btn-small btn-danger" onclick="openSend({templateId:'+t.id+'})">שליחה…</button>';
-    var extra=isLetter
-      ? (personal?'':'<button class="btn btn-small" onclick="showMissing('+t.id+')">מי טרם קיבל?</button>')+
-        '<button class="btn btn-small" onclick="duplicateLetter('+t.id+')">שכפול</button>'+
-        '<button class="btn btn-small" onclick="renameLetter('+t.id+')">שם</button>'+
-        '<button class="btn btn-small" onclick="deleteLetter('+t.id+')">מחיקה</button>'
-      : '';
-    var title=isLetter?(t.name||'מכתב ללא שם'):(TPL_NAMES[t.template_type]||t.template_type);
+    // A meeting email can be copied into a version for another group, and a
+    // copy deleted, but the last one of its kind always stays.
+    var extra=(isLetter&&!personal?'<button class="btn btn-small" onclick="showMissing('+t.id+')">מי טרם קיבל?</button>':'')+
+      (isLetter||isMeeting
+        ? '<button class="btn btn-small" onclick="duplicateLetter('+t.id+')">שכפול</button>'+
+          '<button class="btn btn-small" onclick="renameLetter('+t.id+')">שם</button>'+
+          (isLetter||countOf[t.template_type]>1?'<button class="btn btn-small" onclick="deleteLetter('+t.id+')">מחיקה</button>':'')
+        : '');
+    var group=isMeeting||(isLetter&&!personal)
+      ? '<div class="meta">נכתב ל: '+esc(tplGroupHe(t))+'</div>' : '';
     var links=templateLinks(t.body);
     var linkRow=links.length
       ? '<div class="meta" style="margin-top:8px">קישורים במכתב — כדאי לפתוח ולוודא: '+
@@ -1073,9 +1127,11 @@ function renderTemplates(){
       : '<div class="meta" style="margin-top:8px; color:#8A6560">אין קישורים במכתב.</div>';
     return '<div class="card"'+(t.archived?' style="opacity:.55"':'')+
       '><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">'+
-      '<h3>'+esc(title)+(t.archived?' · בארכיון':'')+'</h3>'+
+      '<h3>'+esc(tplLabel(t))+(t.archived?' · בארכיון':'')+'</h3>'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap">'+sendBtn+extra+
       '<button class="btn btn-small" onclick="editTemplate('+t.id+')">עריכה</button></div></div>'+
+      (isMeeting&&t.name?'<div class="meta">סוג: '+esc(TPL_NAMES[t.template_type])+'</div>':'')+
+      group+
       '<div class="meta">נושא: '+esc(t.subject)+'</div>'+
       '<div class="meta">עודכן: '+fmtDate(t.updated_at)+'</div>'+linkRow+
       '<div id="missing-'+t.id+'"></div></div>';
@@ -1087,13 +1143,19 @@ function renderTemplates(){
       'כל מכתב נשמר בנפרד ואפשר לשלוח אותו שוב בסדרות הבאות. '+
       '״שכפול״ יוצר עותק לעריכה בלי לגעת במקור.</p>'+
     '<button class="btn btn-small" style="margin-bottom:12px" onclick="newLetter()">+ מכתב חדש</button>'+
-    (letters.length?letters.map(function(t){return card(t,true)}).join(''):
+    (letters.length?letters.map(card).join(''):
       '<div class="meta">אין עדיין מכתבים.</div>')+
-    '<h3 style="margin:26px 0 4px">תבניות אוטומטיות</h3>'+
+    '<h3 style="margin:26px 0 4px">מיילים על מפגש</h3>'+
     '<p style="color:#6E7C78;font-size:14px;margin:0 0 12px;line-height:1.7">'+
-      'אישור ההצטרפות נשלח מעצמו למי שנרשם. התזכורות וההודעה שאחרי מפגש נשלחות רק כשלוחצים ״שליחה…״ — '+
-      'שם בוחרים מפגש ונמענים, רואים תצוגה מקדימה ושולחים בדיקה. אחת מכל סוג, ואי אפשר למחוק אותן.</p>'+
-    auto.map(function(t){return card(t,false)}).join('');
+      'תזכורות והודעה אחרי מפגש. נשלחות רק כשלוחצים ״שליחה…״ — שם בוחרים מפגש ונמענים, '+
+      'רואים תצוגה מקדימה ושולחים בדיקה. לנוסח לקבוצה אחרת: ״שכפול״, ואז בעריכה בוחרים לאיזו קבוצה הוא נכתב.</p>'+
+    MEETING_TYPES.map(function(type){
+      return allTemplates.filter(function(t){return t.template_type===type}).map(card).join('');
+    }).join('')+
+    '<h3 style="margin:26px 0 4px">אישור הצטרפות</h3>'+
+    '<p style="color:#6E7C78;font-size:14px;margin:0 0 12px;line-height:1.7">'+
+      'נשלח מעצמו לכל מי שנרשם, ברגע ההרשמה. המייל היחיד שיוצא בלי לחיצה.</p>'+
+    join.map(card).join('');
 }
 
 // Who never received a given letter. People register between mailings, so
@@ -1168,18 +1230,22 @@ function newLetter(){
 }
 function duplicateLetter(id){
   var t=allTemplates.find(function(x){return x.id===id});
-  var name=window.prompt('שם לעותק:', (t&&t.name?t.name+' — עותק':'מכתב חדש'));
+  var name=window.prompt('שם לעותק:', (t?tplLabel(t)+' — עותק':'מכתב חדש'));
   if(!name)return;
   fetch(API+'/admin/templates',{method:'POST',headers:headers(),
     body:JSON.stringify({name:name,copy_from:id})})
     .then(function(r){return r.json()}).then(function(d){
-      if(!d.ok)return showMsg((d&&d.message)||'לא שוכפל.',false);
-      loadTemplates();showMsg('שוכפל. המקור לא נגע.',true);
+      if(!d.ok)return showMsg((d&&d.message)||'לא שוכפל.',false,true);
+      showMsg('שוכפל. המקור לא נגע.',true);
+      // A copy of a meeting email is usually the version for another group,
+      // so it opens straight in the editor, where the group is chosen.
+      allTemplates.push(d.template);renderTemplates();
+      if(MEETING_TYPES.indexOf(d.template.template_type)>-1)editTemplate(d.template.id);
     });
 }
 function renameLetter(id){
   var t=allTemplates.find(function(x){return x.id===id});
-  var name=window.prompt('שם המכתב:', (t&&t.name)||'');
+  var name=window.prompt('שם:', t?(t.name||(t.template_type==='update'?'':tplLabel(t))):'');
   if(name===null)return;
   fetch(API+'/admin/templates',{method:'PUT',headers:headers(),
     body:JSON.stringify({id:id,name:name})})
@@ -1190,7 +1256,7 @@ function renameLetter(id){
 }
 function deleteLetter(id){
   var t=allTemplates.find(function(x){return x.id===id});
-  if(!window.confirm('למחוק את המכתב ״'+((t&&t.name)||'')+'״? '+
+  if(!window.confirm('למחוק את ״'+(t?tplLabel(t):'')+'״? '+
      'ההיסטוריה של שליחות קודמות נשמרת.'))return;
   fetch(API+'/admin/templates',{method:'DELETE',headers:headers(),
     body:JSON.stringify({id:id})})
@@ -1296,8 +1362,13 @@ function pdfInTemplate(body){
 
 function editTemplate(id){
   var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
-  document.getElementById('tplTitle').textContent='עריכת תבנית — '+(TPL_NAMES[t.template_type]||t.template_type);
+  document.getElementById('tplTitle').textContent='עריכה — '+tplLabel(t);
   document.getElementById('tplId').value=t.id;
+  // The join confirmation goes to whoever registers, and a personal letter to
+  // one person, so neither is written for a group.
+  var grouped=t.template_type!=='join_confirmation'&&!isPersonal(t);
+  document.getElementById('tplAudienceField').style.display=grouped?'':'none';
+  document.getElementById('tplAudience').value=t.audience==='children'||t.audience==='parents'?t.audience:'';
   document.getElementById('tplSubject').value=t.subject;
   document.getElementById('tplBody').value=t.body;
   document.getElementById('templateModal').classList.add('active');
@@ -1306,9 +1377,11 @@ function closeTemplateModal(){document.getElementById('templateModal').classList
 function saveTemplate(btn){
   var id=document.getElementById('tplId').value;
   var body={id:parseInt(id,10),subject:document.getElementById('tplSubject').value,body:document.getElementById('tplBody').value};
+  if(document.getElementById('tplAudienceField').style.display!=='none')body.audience=document.getElementById('tplAudience').value;
   fetch(API+'/admin/templates',{method:'PUT',headers:headers(),body:JSON.stringify(body)})
     .then(function(r){return r.json()}).then(function(data){
       if(!data.ok){btnDone(btn,false);return}
+      if(data.warning)showMsg(data.warning,false,true);
       btnDone(btn,true);setTimeout(function(){closeTemplateModal();loadTemplates()},700);
     }).catch(function(){btnDone(btn,false)});
 }
