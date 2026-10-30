@@ -144,17 +144,17 @@
       <a href="/admin/articles" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">מאמרים</a>
       <a href="/admin/stories" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">סיפורים</a>
       <span aria-hidden="true" style="color:#C8D2CE">|</span>
-      <a href="/admin/zoom" style="font-size:14px;color:#2F5248;text-decoration:none;font-weight:700;border-bottom:2px solid #3D7468;padding-bottom:2px">מפגשים</a>
-      <a href="/admin/network" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">הפצה</a>
+      <a id="navZoom" href="/admin/zoom" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">מפגשים</a>
+      <a id="navEmails" href="/admin/emails" style="font-size:14px;color:#3D7468;text-decoration:none;font-weight:600">אימיילים</a>
       <button class="btn-small btn-secondary" style="border:1px solid #ccc;background:none;color:#666" onclick="doLogout()">יציאה</button>
     </nav>
   </div>
   <div class="tabs">
-    <button class="tab active" onclick="showTab('dashboard')">סקירה</button>
-    <button class="tab" onclick="showTab('meetings')">מפגשים</button>
-    <button class="tab" onclick="showTab('participants')">משתתפים</button>
-    <button class="tab" onclick="showTab('templates')">אימיילים</button>
-    <button class="tab" onclick="showTab('sendlog')">היסטוריית שליחות</button>
+    <button class="tab active" data-tab="dashboard" onclick="showTab('dashboard')">סקירה</button>
+    <button class="tab" data-tab="meetings" onclick="showTab('meetings')">מפגשים</button>
+    <button class="tab" data-tab="participants" onclick="showTab('participants')">משתתפים</button>
+    <button class="tab" data-tab="templates" onclick="showTab('templates')">אימיילים</button>
+    <button class="tab" data-tab="sendlog" onclick="showTab('sendlog')">היסטוריית שליחות</button>
   </div>
   <div id="msg"></div>
 
@@ -477,7 +477,15 @@ function enterApp(){
   document.getElementById('login').style.display='none';
   document.getElementById('app').style.display='block';
   loadAll();
+  if(PAGE==='emails')showTab('templates');
 }
+// From a meeting card: the reminder is written on the emails page, which opens
+// the form for that meeting once the meetings have loaded (see loadAll).
+function newReminder(id){
+  if(PAGE==='emails')openCompose({meetingId:id});
+  else location.href='/admin/emails?reminder='+id;
+}
+var pendingReminder=parseInt(new URLSearchParams(location.search).get('reminder'),10);
 function doLogin(){
   PW=document.getElementById('pw').value;
   fetch(API+'/admin/meetings',{headers:{'x-admin-password':PW}})
@@ -561,10 +569,29 @@ function loadSendLog(){
     .catch(function(){box.textContent='שגיאת חיבור.'});
 }
 
-function showTab(name){
-  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',['dashboard','meetings','participants','templates','sendlog'][i]===name)});
+// One page, two addresses: /admin/zoom shows the meetings and their
+// registrants; /admin/emails (a rewrite in vercel.json) shows the emails and
+// the send history. Emails reach every registrant and draw on articles and
+// stories too, so they are their own item in the menu; the code stays here
+// because the send window needs the meetings and the registrant list.
+var PAGE=/^\/admin\/emails/.test(location.pathname)?'emails':'zoom';
+var PAGE_TABS={zoom:['dashboard','meetings','participants'],emails:['templates','sendlog']};
+(function setupPage(){
+  var nav=document.getElementById(PAGE==='emails'?'navEmails':'navZoom');
+  nav.style.color='#2F5248';nav.style.fontWeight='700';nav.style.borderBottom='2px solid #3D7468';nav.style.paddingBottom='2px';
+  if(PAGE==='emails'){
+    document.title='אימיילים';
+    document.querySelector('.header h1').textContent='אימיילים';
+  }
+  document.querySelectorAll('.tab').forEach(function(t){if(PAGE_TABS[PAGE].indexOf(t.dataset.tab)<0)t.style.display='none'});
+  showTab(PAGE_TABS[PAGE][0],true);
+})();
+
+function showTab(name,noLoad){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('active',t.dataset.tab===name)});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
   document.getElementById('panel-'+name).classList.add('active');
+  if(noLoad)return;
   if(name==='participants')loadParticipants();
   if(name==='templates')loadTemplates();
   if(name==='sendlog')loadSendLog();
@@ -582,6 +609,11 @@ function loadAll(){
     allMeetings=data.meetings;
     renderDashboard();
     renderMeetings();
+    if(PAGE==='emails'&&Number.isInteger(pendingReminder)){
+      var id=pendingReminder;pendingReminder=NaN;
+      history.replaceState(null,'','/admin/emails');
+      openCompose({meetingId:id});
+    }
   });
   fetch(API+'/admin/participants?status=active',{headers:{'x-admin-password':PW}}).then(function(r){return r.json()}).then(function(data){
     if(!data.ok)return;
@@ -646,7 +678,7 @@ function renderMeetings(){
       (m.followups_sent?' | '+m.followups_sent+' הודעות מעקב':'')+'</div>'+
       (m.description?'<p style="font-size:14px;color:#3A4744;margin-bottom:12px;overflow-wrap:break-word;word-break:break-word">'+esc(m.description)+'</p>':'')+
       '<div class="actions"><button class="btn btn-small" onclick="editMeeting('+m.id+')">עריכה</button>'+
-      '<button class="btn btn-small btn-secondary" onclick="openCompose({meetingId:'+m.id+'})">תזכורת חדשה</button></div></div>'
+      '<button class="btn btn-small btn-secondary" onclick="newReminder('+m.id+')">תזכורת חדשה</button></div></div>'
   }).join('');
 }
 
