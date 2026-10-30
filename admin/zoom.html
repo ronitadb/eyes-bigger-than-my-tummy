@@ -1148,7 +1148,7 @@ function emailRow(t){
          '<button class="btn btn-small btn-danger" onclick="sendToOne('+t.id+')">שליחה לאדם אחד</button>'+
          '<button class="btn btn-small" onclick="editTemplate('+t.id+')">עריכה</button>';
   }else{
-    btns=(s
+    btns='<button class="btn btn-small" onclick="sendTestEmail('+t.id+')">שליחת בדיקה אליי</button>'+(s
       ? '<button class="btn btn-small btn-danger" onclick="openSend({templateId:'+t.id+',missing:true})">שליחה למי שטרם קיבל</button>'
       : '<button class="btn btn-small btn-danger" onclick="openSend({templateId:'+t.id+'})">שליחה…</button>')+
       '<button class="btn btn-small" onclick="openCompose({id:'+t.id+'})">'+(s?'צפייה ועריכה':'עריכה')+'</button>'+
@@ -1335,13 +1335,17 @@ function cmSave(thenSend){
 // even if the address happens to belong to a registrant.
 function sendTestEmail(id){
   var t=allTemplates.find(function(x){return x.id===id});if(!t)return;
+  // A reminder carries its meeting. An older one without a meeting is tested
+  // from the send window, where the meeting is picked.
+  var mid=ownMeetingId(t);
+  if(sxNeedsMeeting(t)&&!mid){openSend({templateId:id});return}
   var to=window.prompt('שליחת בדיקה — כתובת אחת בלבד.\n\nאף אחד מהנרשמים לא יקבל דבר.','ronit@beityeladim.co.il');
   if(to===null)return;
   to=to.trim();
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){showMsg('כתובת לא תקינה — לא נשלח דבר.',false);return}
   showMsg('שולח בדיקה…',true);
   fetch(API+'/admin/send-email',{method:'POST',headers:headers(),
-    body:JSON.stringify({template_type:t.template_type,template_id:t.id,test_to:to})})
+    body:JSON.stringify({template_type:t.template_type,template_id:t.id,meeting_id:mid,test_to:to})})
     .then(function(r){return r.json()})
     .then(function(d){
       if(d&&d.ok)showMsg('נשלחה בדיקה אחת אל '+to+'. לא נשלח לאיש מהנרשמים.',true);
