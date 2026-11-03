@@ -188,6 +188,7 @@
           </div>
         </div>
         <button class="btn btn-small btn-secondary" onclick="exportCSV()">ייצוא CSV</button>
+        <button class="btn btn-small" onclick="openAddPerson()">+ רישום משתתף</button>
       </div>
     </div>
     <div id="participantsList"></div>
@@ -258,6 +259,25 @@
 
 <!-- Send email modal -->
 <!-- a personal letter to one person; stays open while you copy things -->
+<!-- Registering someone who asked by hand, instead of sending them to the form. -->
+<div id="addModal" class="modal-overlay">
+  <div class="modal">
+    <h2>רישום משתתף</h2>
+    <div class="field"><label>שם מלא</label><input id="apName" type="text" oninput="apNameTyped()"></div>
+    <div class="field"><label>שם בברכה במייל</label><input id="apFirst" type="text"></div>
+    <div class="field"><label>אימייל</label><input id="apEmail" type="email" dir="ltr"></div>
+    <div class="field"><label>קבוצה</label><select id="apType"></select></div>
+    <div class="field" style="display:flex;gap:8px;align-items:center">
+      <input id="apConfirm" type="checkbox" checked style="width:auto">
+      <label for="apConfirm" style="margin:0">לשלוח לו/לה את מייל אישור ההצטרפות</label></div>
+    <div id="apMsg" style="font-size:14px;color:#8b4513;min-height:20px;margin-bottom:10px"></div>
+    <div class="modal-actions" style="display:flex;gap:10px">
+      <button class="btn" id="apSave" onclick="doAddPerson()">רישום</button>
+      <button class="btn btn-secondary" onclick="closeAddPerson()">ביטול</button>
+    </div>
+  </div>
+</div>
+
 <div id="oneModal" class="modal-overlay">
   <div class="modal">
     <h2>שליחה לאדם אחד</h2>
@@ -1048,6 +1068,43 @@ function groupSelect(p){
   return '<select onchange="changeParticipantGroup('+p.id+',this)" data-prev="'+esc(cur)+'" '+
     'style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-family:inherit;font-size:13px;background:#fff">'+opts+'</select>';
 }
+var apFirstTouched=false;
+function openAddPerson(){
+  ['apName','apFirst','apEmail'].forEach(function(k){document.getElementById(k).value=''});
+  apFirstTouched=false;
+  document.getElementById('apType').innerHTML='<option value="">בחירה…</option>'+PARTICIPANT_TYPES.map(function(t){
+    return '<option value="'+esc(t[0])+'">'+esc(t[1])+'</option>'}).join('');
+  document.getElementById('apConfirm').checked=true;
+  document.getElementById('apMsg').textContent='';
+  document.getElementById('apFirst').oninput=function(){apFirstTouched=true};
+  document.getElementById('addModal').classList.add('active');
+  document.getElementById('apName').focus();
+}
+// The greeting name follows the first word of the full name until edited.
+function apNameTyped(){
+  if(!apFirstTouched)document.getElementById('apFirst').value=document.getElementById('apName').value.trim().split(/\s+/)[0]||'';
+}
+function closeAddPerson(){document.getElementById('addModal').classList.remove('active')}
+function doAddPerson(){
+  var m=document.getElementById('apMsg');
+  var b={name:document.getElementById('apName').value.trim(),first_name:document.getElementById('apFirst').value.trim(),
+    email:document.getElementById('apEmail').value.trim(),participant_type:document.getElementById('apType').value,
+    send_confirmation:document.getElementById('apConfirm').checked};
+  if(b.name.length<2){m.textContent='צריך שם.';return}
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(b.email)){m.textContent='כתובת המייל אינה תקינה.';return}
+  if(!b.participant_type){m.textContent='צריך לבחור קבוצה.';return}
+  var btn=document.getElementById('apSave');btn.disabled=true;m.textContent='רושם…';
+  fetch(API+'/admin/participants',{method:'POST',headers:headers(),body:JSON.stringify(b)})
+    .then(function(r){return r.json()}).then(function(d){
+      btn.disabled=false;
+      if(!d||!d.ok){m.textContent=(d&&d.message)||'שגיאה ברישום.';return}
+      closeAddPerson();
+      showMsg(b.name+(d.reactivated?' חזר/ה לרשימה':' נרשם/ה')+'. '+
+        (b.send_confirmation?(d.confirmation_sent?'נשלח מייל אישור הצטרפות.':'מייל האישור לא נשלח.'):'לא נשלח מייל.'),true);
+      loadAll();loadParticipants();
+    }).catch(function(){btn.disabled=false;m.textContent='שגיאת חיבור.'});
+}
+
 function changeParticipantGroup(id,sel){
   var val=sel.value;
   if(!val){sel.value='';return}
