@@ -871,3 +871,122 @@
 .story-window-inner > .a-seam,
 .story-window-inner > .a-story{ position:relative; z-index:1; }
 @media print{ .story-accent{display:none} }
+
+/* ── חוזה ─────────────────────────────────────────────────────────────────────
+   Article 5 is written as a contract: an official document of the 1970s,
+   a printed form filled in on an office typewriter. It stands on its own
+   sheet of yellowed paper that steps out past the column, so the prose after
+   it returns to the article's own column and voice and the turn is seen.
+   Printed parts (title, labels, chapter headings) are Frank Ruhl; what was
+   typed is Miriam Libre, the office face of Israeli documents, proportional
+   because a fixed-width Hebrew face leaves gaps after י and ו that make a
+   long text hard to read. The typed ink is uneven, like a worn ribbon: a
+   texture clipped to the letters, light bands across them and a fine grain.
+   The fading is capped at half (filter c): a light band no longer erases a
+   word (״יימנע״ did), while the average fading drops only by about a tenth.
+   Numbers hang in the margin outside a double margin rule. */
+.a-article .a-contract{
+  --ct-w:min(860px, calc(100vw - 32px));
+  --ct-ink:#2B2A28;
+  --ct-start:84px; --ct-end:48px;
+  position:relative; box-sizing:border-box;
+  width:var(--ct-w); margin:40px calc((100% - var(--ct-w)) / 2) 0;
+  padding:56px var(--ct-end) 56px var(--ct-start);
+  padding-inline:var(--ct-start) var(--ct-end);
+  background:#F3EBD8 radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(170,140,80,.13) 100%);
+  border:1px solid #E6D9BC;
+  box-shadow:0 1px 2px rgba(60,40,10,.08), 0 8px 24px rgba(60,40,10,.08);
+  font-family:'Miriam Libre',sans-serif; font-size:17px; line-height:1.85; color:var(--ct-ink);
+}
+/* the double margin rule, on the reading edge */
+/* the admin preview is a narrow pane: the sheet keeps to its column */
+.pv .a-article .a-contract{--ct-w:100%}
+.a-contract::before,.a-contract::after{
+  content:""; position:absolute; top:0; bottom:0; border-inline-start:1px solid #C9A9A0;
+}
+.a-contract::before{inset-inline-start:58px; opacity:.7}
+.a-contract::after{inset-inline-start:62px; opacity:.45}
+
+/* the worn ribbon */
+.a-contract :is(p, li, td, dd){
+  color:transparent;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.011 0.21' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.85 2.4 0 0 0 -1.05'/%3E%3C/filter%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.85 2 0 0 0 -0.95'/%3E%3C/filter%3E%3Cfilter id='c'%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 .1 .2 .3 .4 .5 .5 .5 .5 .5 .5'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Cg filter='url(%23c)'%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 300px 300px, var(--ct-ink);
+  -webkit-background-clip:text; background-clip:text;
+}
+.a-contract .sn-ref a{-webkit-text-fill-color:currentColor}
+
+/* the head: a printed form, filled in */
+.a-ct-title{
+  font-family:'Frank Ruhl Libre',serif; font-weight:700; font-size:30px; line-height:1.3;
+  letter-spacing:.06em; text-align:center; color:var(--ct-ink); margin:0;
+}
+.a-ct-sub{font-family:'Frank Ruhl Libre',serif; text-align:center; margin:2px 0 34px}
+.a-ct-rows{display:grid; grid-template-columns:max-content 1fr; column-gap:14px; row-gap:12px; align-items:end; margin:0}
+.a-ct-row{display:contents}
+.a-ct-rows dt{font-family:'Frank Ruhl Libre',serif; font-weight:700; white-space:nowrap; color:var(--ct-ink)}
+.a-ct-rows dd{margin:0; padding:0 4px 1px; border-bottom:1.5px dotted #8f8577}
+.a-ct-row-sign dd{padding-top:6px; padding-bottom:6px}
+.a-ct-sign{display:block; height:auto; width:auto; max-height:104px; max-width:150px; mix-blend-mode:multiply}
+.a-ct-sign-empty{display:block; width:68px; height:104px; border:1px dashed #B9AB92; border-radius:2px}
+.a-ct-stamped{position:relative}
+.a-stamp{
+  position:absolute; inset-inline-end:40px; top:-38px; width:124px; height:124px;
+  transform:rotate(-14deg); opacity:.9; mix-blend-mode:multiply; pointer-events:none;
+}
+
+/* הואיל: numbered in the margin, the word in bold */
+.a-contract .a-list-num{margin:30px 0 0; padding:0}
+.a-contract .a-list-num li{margin:0 0 .45em}
+.a-contract .a-list-num li::before{
+  inset-inline-start:calc(-1 * var(--ct-start) + 4px); width:calc(var(--ct-start) - 30px);
+  text-align:center; color:var(--ct-ink); font-family:'Miriam Libre',sans-serif; font-weight:400;
+}
+
+/* definitions */
+.a-table-wrap{overflow-x:auto; margin:0 0 1.4em}
+.a-table{width:100%; border-collapse:collapse}
+.a-table th,.a-table td{text-align:start; vertical-align:top; padding:7px 10px; border-bottom:1px solid var(--rule)}
+.a-table th{font-family:'Assistant',sans-serif; font-weight:600; color:var(--head); border-bottom:2px solid var(--gold)}
+.a-contract .a-table-wrap{margin:8px 0 34px}
+.a-contract .a-table th{
+  font-family:'Frank Ruhl Libre',serif; font-weight:700; color:var(--ct-ink);
+  border-top:2px solid #6f6552; border-bottom:2px solid #6f6552;
+}
+.a-contract .a-table td{border-bottom-color:#b9ab92}
+.a-contract .a-table td:first-child{white-space:nowrap; font-weight:700; width:1%}
+
+/* chapters, clause headings, clauses */
+.a-contract .a-sub{
+  font-family:'Frank Ruhl Libre',serif; font-size:21px; text-align:center; color:var(--ct-ink);
+  text-decoration:underline; text-underline-offset:6px; text-decoration-thickness:1px;
+  margin:42px 0 22px;
+}
+.a-contract .a-text p{margin:0 0 .75em}
+.a-contract .a-text p.a-cl-head{font-weight:700; margin:1.4em 0 .4em}
+.a-cl{position:relative}
+.a-cl-no{
+  position:absolute; inset-inline-start:calc(-1 * var(--ct-start) + 4px); width:calc(var(--ct-start) - 30px);
+  text-align:center; font-size:.9em; color:var(--ct-ink);
+}
+
+@media (max-width:640px){
+  .a-article .a-contract{--ct-start:46px; --ct-end:18px; padding-top:36px; padding-bottom:36px; font-size:16px}
+  .a-contract::before{inset-inline-start:28px}
+  .a-contract::after{inset-inline-start:31px}
+  .a-contract .a-list-num li::before,.a-cl-no{inset-inline-start:-46px; width:28px; font-size:12px}
+  .a-ct-title{font-size:24px}
+  .a-ct-rows{grid-template-columns:1fr; row-gap:2px}
+  .a-ct-rows dt{margin-top:12px}
+  .a-contract .a-table td:first-child{white-space:normal}
+  .a-contract .a-table th,.a-contract .a-table td{padding:6px 5px}
+  .a-stamp{width:96px; height:96px; top:-22px; inset-inline-end:8px}
+}
+
+@media print{
+  .a-article .a-contract{width:auto; margin:24px 0 0; box-shadow:none; padding:28px 24px 28px 64px;
+    padding-inline:64px 24px; -webkit-print-color-adjust:exact; print-color-adjust:exact; font-size:10.5pt}
+  .a-contract :is(p, li, td, dd){background:none; color:#2B2A28}
+  .a-ct-head,.a-cl-head,.a-contract .a-sub{break-after:avoid; break-inside:avoid}
+  .a-contract .a-table tr,.a-cl{break-inside:avoid}
+  .a-stamp,.a-ct-sign{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+}

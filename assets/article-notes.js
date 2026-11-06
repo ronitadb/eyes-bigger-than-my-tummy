@@ -49,6 +49,12 @@
     var cs = getComputedStyle(art);
     var colL = ar.left + parseFloat(cs.paddingLeft);
     var colR = ar.right - parseFloat(cs.paddingRight);
+    // A contract's sheet steps out past the column; the notes stand outside it.
+    Array.prototype.forEach.call(art.querySelectorAll('.a-contract'), function (c) {
+      var r = c.getBoundingClientRect();
+      colL = Math.min(colL, r.left);
+      colR = Math.max(colR, r.right);
+    });
     var space = Math.min(colL - Math.max(bounds.left, 0), Math.min(bounds.right, vw) - colR) - GAP - 12;
     var w = Math.min(MAX_W, Math.floor(space));
     var fw = Math.min(FIG_W, Math.floor(space));

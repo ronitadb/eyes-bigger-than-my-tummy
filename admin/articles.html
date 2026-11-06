@@ -8,7 +8,7 @@
 <script>try{if(sessionStorage.getItem("cms-auth"))document.documentElement.setAttribute("data-authing","");}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@400;600&family=Miriam+Libre:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/article.css">
 <script src="/assets/article-notes.js" defer></script>
 <style>
@@ -179,6 +179,8 @@ html[data-authing] .login{display:none}
               <option value="fact">תיבת עובדה</option>
               <option value="jbox">תיבה יפנית (חותמות)</option>
               <option value="scan">סריקה מהספר</option>
+              <option value="contract">חוזה (דף, עד המפריד הבא)</option>
+              <option value="table">טבלה</option>
               <option value="list">רשימה</option>
               <option value="image">תמונה</option>
               <option value="divider">מפריד</option>
@@ -432,7 +434,7 @@ var LABEL={opening:'פתיחה',domino:'קטע',text:'טקסט',subheading:'תת
   term:'תיבת מונח',fact:'תיבת עובדה',list:'רשימה',image:'תמונה',divider:'מפריד',footnotes:'הערות שוליים',
   motto:'מוטו',voices:'קולות',keyline:'שורת מפתח',
   part:'חלק',unit:'יחידה',sidenotes:'הערות צד',sources:'מקורות',
-  jbox:'תיבה יפנית',scan:'סריקה מהספר'};
+  jbox:'תיבה יפנית',scan:'סריקה מהספר',contract:'חוזה',table:'טבלה'};
 function fld(i,k,label,val,ta){
   var v=esc(val==null?'':val);
   return '<div class="f"><label>'+label+'</label>'+
@@ -443,6 +445,13 @@ function setB(i,k,v){state.blocks[i][k]=v;schedulePreview()}
 function setV(i,j,k,v){state.blocks[i].items[j][k]=v;schedulePreview()}
 function addV(i){var t=state.blocks[i].type;(state.blocks[i].items=state.blocks[i].items||[]).push(t==='sidenotes'?{label:'',body:''}:t==='jbox'?{seal:'',name:'',body:''}:{name:'',body:''});drawBlocks()}
 function delV(i,j){state.blocks[i].items.splice(j,1);drawBlocks();schedulePreview()}
+function setR(i,j,k,v){state.blocks[i].rows[j][k]=v;schedulePreview()}
+function addR(i){(state.blocks[i].rows=state.blocks[i].rows||[]).push({label:'',value:''});drawBlocks()}
+function delR(i,j){state.blocks[i].rows.splice(j,1);drawBlocks();schedulePreview()}
+function cells(l){return l.split('|').map(function(c){return c.trim()})}
+function setHead(i,v){state.blocks[i].head=cells(v);schedulePreview()}
+function setRows(i,v){state.blocks[i].rows=v.split('\n').filter(function(x){return x.trim()}).map(cells);schedulePreview()}
+function setStamp(i,j,v){var r=state.blocks[i].rows[j];var l=v.split('\n').filter(function(x){return x.trim()});if(l.length)r.stamp=l;else delete r.stamp;schedulePreview()}
 function setItems(i,v){state.blocks[i].items=v.split('\n').filter(function(x){return x.trim()});schedulePreview()}
 function drawBlocks(){
   el('blocks').innerHTML=state.blocks.map(function(b,i){
@@ -501,6 +510,25 @@ function drawBlocks(){
       else h+=fld(i,'src','כתובת הסריקה — ריק: ריבוע ריק במקומה',b.src)+fld(i,'alt','תיאור',b.alt)+fld(i,'credit','קרדיט (לא חובה)',b.credit)+
         fld(i,'text','טקסט הקטע — שמור כאן, לא מוצג בעמוד',b.text,1);
     }
+    else if(b.type==='contract'){
+      h+='<p class="note">דף החוזה: מכאן ועד המפריד הבא הכול על הדף. בתוכו, פסקה מודגשת כולה היא כותרת סעיף, ופסקה שמתחילה במספר (א.1, 2.3) — המספר בשוליים.</p>'+
+        fld(i,'title','כותרת החוזה',b.title)+fld(i,'sub','שורה מתחתיה',b.sub);
+      h+=(b.rows||[]).map(function(r,j){
+        return '<div class="f" style="border-top:1px solid #EAE4D6;padding-top:8px">'+
+          '<div class="two"><input type="text" placeholder="תווית (בין:)" value="'+esc(r.label||'')+'" oninput="setR('+i+','+j+',\'label\',this.value)" style="flex:0 1 180px">'+
+          '<input type="text" placeholder="'+(r.img!==undefined?'תיאור החתימה':'הערך המוקלד')+'" value="'+esc(r.value||'')+'" oninput="setR('+i+','+j+',\'value\',this.value)">'+
+          '<button onclick="delR('+i+','+j+')" title="מחיקת שורה" style="flex:0 0 auto">✕</button></div>'+
+          (r.img!==undefined?'<input type="text" placeholder="כתובת תמונת החתימה — ריק: מסגרת ריקה" value="'+esc(r.img||'')+'" oninput="setR('+i+','+j+',\'img\',this.value)">':'')+
+          (r.stamp?'<textarea placeholder="חותמת — שורה לכל שורה, הראשונה על השפה" oninput="setStamp('+i+','+j+',this.value)">'+esc(r.stamp.join('\n'))+'</textarea>':'')+
+          '</div>';
+      }).join('');
+      h+='<button onclick="addR('+i+')">+ שורה</button>';
+    }
+    else if(b.type==='table'){
+      h+='<div class="f"><label>כותרות העמודות — מופרדות ב־|</label><input type="text" value="'+esc((b.head||[]).join(' | '))+'" oninput="setHead('+i+',this.value)"></div>'+
+        '<div class="f"><label>שורות — שורה לכל אחת, התאים מופרדים ב־|</label><textarea oninput="setRows('+i+',this.value)">'+
+        esc((b.rows||[]).map(function(r){return r.join(' | ')}).join('\n'))+'</textarea></div>';
+    }
     else if(b.type==='sources'){h+=fld(i,'title','כותרת (ברירת מחדל: מקורות)',b.title)+
       '<div class="f"><label>רשימת מקורות (APA) — מקור אחד בכל שורה, *נטוי* לשם כתב העת או הספר</label>'+
       '<textarea oninput="setItems('+i+',this.value)">'+esc((b.items||[]).join('\n'))+'</textarea></div>'+
@@ -551,6 +579,8 @@ function addBlock(){var t=el('newType').value;var b={type:t};
   if(t==='opening')b.source='book';if(t==='list'||t==='footnotes')b.items=[];
   if(t==='voices')b.items=[{name:'',body:''}];
   if(t==='sidenotes')b.items=[{label:'',body:''}];
+  if(t==='contract')b.rows=[{label:'',value:''}];
+  if(t==='table'){b.head=[];b.rows=[]}
   state.blocks.push(b);drawBlocks();schedulePreview()}
 function delB(i){state.blocks.splice(i,1);drawBlocks();schedulePreview()}
 function moveB(i,d){var j=i+d;if(j<0||j>=state.blocks.length)return;
