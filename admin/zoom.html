@@ -1293,13 +1293,14 @@ function cmBuild(kind,f){
     if(cur){
       var url=SITE+'/library/'+cur.slug;
       var prev=all.filter(function(a){return a.n<cur.n});
+      // One line to the library page rather than a line per earlier article
+      // (Ronit, 7.11.2026: by article 5 the list had grown long and heavy).
       if(prev.length){
         var k=prev.length;
-        var lead=k===1?'המאמר הראשון בסדרה כבר עלה, ואפשר לקרוא אותו כאן —'
-          :(COUNT_HE[k]||k)+' המאמרים הראשונים בסדרה כבר עלו, ואפשר לקרוא אותם כאן —';
-        P.push('לאלה שהצטרפו בזמן האחרון: '+lead+'\n'+
-          prev.map(function(a){return '['+shortTitle(a)+']('+SITE+'/library/'+a.slug+')'}).join('\n')+'\n'+
-          'כותרות כל המאמרים והנושאים שהם מקיפים מופיעות ב[דף הספרייה המשותפת]('+SITE+'/materials#articles), ושם אפשר לראות את הכיוון של הסדרה כולה.');
+        var lib='[דף הספרייה המשותפת]('+SITE+'/materials#articles)';
+        P.push('לאלה שהצטרפו בזמן האחרון: '+(k===1
+          ?'המאמר הקודם כבר עלה, ואפשר לקרוא אותו ב'+lib+'.'
+          :(COUNT_HE[k]||k)+' המאמרים הקודמים כבר עלו, ואפשר לקרוא אותם ב'+lib+'.'));
       }
       P.push(cur.n<=10?'והנה המאמר ה'+ORD_HE[cur.n]+':':'והנה מאמר '+cur.n+':');
       P.push([f.title,f.subtitle].filter(function(x){return String(x||'').trim()}).join('\n')+'\n\n['+'לקריאת המאמר]('+url+')');
@@ -1367,7 +1368,7 @@ function cmSetKind(kind,keep){
   document.getElementById('cmFixed').textContent={
     reminder1:'נוסף לבד: ״שלום [שם],״ בהתחלה · קופסת פרטי המפגש (שם, תאריך, שעה, קישור לזום) · קופסת ״איך נכנסים״ · ״נתראה בזום, רונית״.',
     reminder2:'נוסף לבד: ״שלום [שם],״ בהתחלה · קופסת פרטי המפגש עם הקישור לזום · ״נתראה בזום, רונית״.',
-    article:'נוסף לבד: ״שלום [שם],״ · ״לאלה שהצטרפו בזמן האחרון״ עם קישורים למאמרים הקודמים · ״והנה המאמר ה…״ עם הקישור · ההזמנה לכתוב דרך הטופס · ״להתראות, רונית״.',
+    article:'נוסף לבד: ״שלום [שם],״ · ״לאלה שהצטרפו בזמן האחרון״ עם קישור לדף הספרייה · ״והנה המאמר ה…״ עם הקישור · ההזמנה לכתוב דרך הטופס · ״להתראות, רונית״.',
     free:'נוסף לבד: ״שלום [שם],״ בהתחלה · ״להתראות, רונית״ בסוף. בטקסט אפשר [[לשים פסקה בקופסה]] ו-[קישור](https://…).'
   }[kind];
   if(!keep)document.getElementById('cmMsg').textContent='';
