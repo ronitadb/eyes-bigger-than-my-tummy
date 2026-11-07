@@ -50,6 +50,10 @@
   ],
   "rewrites": [
     {
+      "source": "/cal/:id/:token",
+      "destination": "/api/meetings?ics=:id&t=:token"
+    },
+    {
       "source": "/admin/emails",
       "destination": "/admin/zoom"
     },
