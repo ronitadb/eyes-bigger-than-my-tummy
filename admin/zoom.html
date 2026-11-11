@@ -357,6 +357,8 @@
         <div class="field"><label>כותרת משנה</label><input type="text" id="cmArtSub"></div>
       </div>
       <div class="field"><label>נושא האימייל</label><input type="text" id="cmSubject"></div>
+      <div class="field" id="cmGreetingF"><label>פנייה</label><select id="cmGreeting" onchange="cmSetKind(cm.kind,true)">
+        <option value="name">שלום [שם פרטי],</option><option value="all">שלום לכולם,</option></select></div>
       <div class="field"><label id="cmOpeningL">פתיחה</label><textarea id="cmOpening" dir="auto" style="line-height:1.7"></textarea></div>
       <div class="field" id="cmTopicF"><label>על המפגש (מופיע בקופסה)</label><textarea id="cmTopic" dir="auto" style="line-height:1.7"></textarea>
         <div class="sx-note">מתמלא מתיאור המפגש. אפשר לערוך, או למחוק ואז אין קופסה.</div></div>
@@ -1280,7 +1282,8 @@ function shortTitle(a){return String(a.title_lead||a.title_topic||'').replace(/\
 // The whole email, from what she typed. Each entry is a paragraph; [[…]] is a
 // box; {{details}} is where the meeting box goes.
 function cmBuild(kind,f){
-  var P=['שלום {{first_name}},'];
+  // A free letter to the group as a whole may open "שלום לכולם," instead.
+  var P=[kind==='free'&&f.greeting==='all'?'שלום לכולם,':'שלום {{first_name}},'];
   function add(x){x=String(x||'').trim();if(x)P.push(x)}
   function box(x){x=String(x||'').trim();if(x)P.push('[['+x+']]')}
   if(kind==='reminder1'){
@@ -1336,6 +1339,7 @@ function openCompose(opts){
     document.getElementById('cmOpening').value=f.opening||'';
     document.getElementById('cmTopic').value=f.topic||'';
     document.getElementById('cmClosing').value=f.closing||'';
+    document.getElementById('cmGreeting').value=f.greeting==='all'?'all':'name';
     document.getElementById('cmMsg').textContent='';
     document.getElementById('cmSent').style.display=t&&sentById[t.id]?'':'none';
     cmSetKind(cm.kind||(opts.meetingId?'reminder1':''),true);
@@ -1362,6 +1366,7 @@ function cmSetKind(kind,keep){
   show('cmArtTitles',kind==='article');
   show('cmTopicF',kind==='reminder1');
   show('cmClosingF',kind==='article');
+  show('cmGreetingF',kind==='free');
   document.getElementById('cmOpeningL').textContent=
     kind==='free'?'הטקסט':kind==='reminder2'?'מה לכתוב (משפט או שניים)':'פתיחה';
   document.getElementById('cmOpening').style.minHeight=kind==='free'?'260px':kind==='reminder2'?'80px':'140px';
@@ -1369,7 +1374,7 @@ function cmSetKind(kind,keep){
     reminder1:'נוסף לבד: ״שלום [שם],״ בהתחלה · קופסת פרטי המפגש (שם, תאריך, שעה, קישור לזום) · קופסת ״איך נכנסים״ · ״נתראה בזום, רונית״.',
     reminder2:'נוסף לבד: ״שלום [שם],״ בהתחלה · קופסת פרטי המפגש עם הקישור לזום · ״נתראה בזום, רונית״.',
     article:'נוסף לבד: ״שלום [שם],״ · ״לאלה שהצטרפו בזמן האחרון״ עם קישור לדף הספרייה · ״והנה המאמר ה…״ עם הקישור · ההזמנה לכתוב דרך הטופס · ״להתראות, רונית״.',
-    free:'נוסף לבד: ״שלום [שם],״ בהתחלה · ״להתראות, רונית״ בסוף. בטקסט אפשר [[לשים פסקה בקופסה]] ו-[קישור](https://…).'
+    free:'נוסף לבד: '+(document.getElementById('cmGreeting').value==='all'?'״שלום לכולם,״':'״שלום [שם],״')+' בהתחלה · ״להתראות, רונית״ בסוף. בטקסט אפשר [[לשים פסקה בקופסה]] ו-[קישור](https://…), ו-{{details}} בשורה נפרדת מכניס את קופסת המפגש שנבחר בשליחה.'
   }[kind];
   if(!keep)document.getElementById('cmMsg').textContent='';
   if(meet)cmMeetingChanged(true);
@@ -1396,6 +1401,7 @@ function cmFields(){
   var f={opening:v('cmOpening')};
   if(cm.kind==='reminder1'||cm.kind==='reminder2')f.meeting_id=parseInt(v('cmMeeting'),10)||null;
   if(cm.kind==='reminder1')f.topic=v('cmTopic');
+  if(cm.kind==='free')f.greeting=v('cmGreeting');
   if(cm.kind==='article'){f.article_id=parseInt(v('cmArticle'),10)||null;f.title=v('cmArtTitle');f.subtitle=v('cmArtSub');f.closing=v('cmClosing')}
   return f;
 }
