@@ -51,6 +51,23 @@ async function list(res) {
   // does not exist yet must not empty the library: the catch below returns []
   // on any error, which silently removed every card from /materials until the
   // migration was run. Degrade to the core columns instead.
+  // A page may be unlisted (listed = false): public at its address, reached
+  // from a link in an email, but not in the library (״הכול בסדר?״, 2026-11-19).
+  // The column arrived in a later migration, so its absence falls through to
+  // the queries below rather than emptying the list.
+  try {
+    const { rows } = await sql`
+      SELECT id, slug, title_lead, title_topic, summary, status, published_at,
+             sort_order, external_url
+      FROM articles
+      WHERE status IN ('planned','published') AND listed IS NOT FALSE
+      ORDER BY sort_order, id
+    `;
+    res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=600');
+    return res.status(200).json({ ok: true, articles: rows });
+  } catch (err) {
+    console.error('GET /api/article: list with `listed` failed, falling back:', err.message);
+  }
   try {
     const { rows } = await sql`
       SELECT id, slug, title_lead, title_topic, summary, status, published_at,
@@ -82,7 +99,21 @@ async function list(res) {
 
 async function page(slug, res) {
   let article;
+  // echo_form = false: no response form under the page; indexable = false:
+  // search engines are asked not to index it. Both default true, and both
+  // arrived in a later migration, hence the second attempt without them.
   try {
+    const { rows } = await sql`
+      SELECT id, slug, title_lead, title_topic, summary, blocks, term_name,
+             hero_image, hero_credit, external_pubs, related_ids, status, published_at,
+             echo_form, indexable
+      FROM articles WHERE slug = ${slug}
+    `;
+    article = rows[0];
+  } catch (err) {
+    console.error('article page: settings columns unavailable, falling back:', err.message);
+  }
+  if (!article) try {
     const { rows } = await sql`
       SELECT id, slug, title_lead, title_topic, summary, blocks, term_name,
              hero_image, hero_credit, external_pubs, related_ids, status, published_at
@@ -148,9 +179,10 @@ function titleText(a) {
   return [a.title_lead, a.title_topic].filter(Boolean).join(' — ') || 'הספרייה המשותפת';
 }
 
-function shell(title, description, canonical, image, body) {
+function shell(title, description, canonical, image, body, noindex) {
   return '<!DOCTYPE html>\n<html lang="he" dir="rtl">\n<head>\n' +
     '<meta charset="utf-8">\n' +
+    (noindex ? '<meta name="robots" content="noindex">\n' : '') +
     '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
     '<title>' + esc(title) + '</title>\n' +
     (description ? '<meta name="description" content="' + esc(description) + '">\n' : '') +
@@ -255,9 +287,11 @@ function articlePage(a, related, echoes, texts) {
       }).join('') + '</section>\n';
   }
 
-  body += echoForm(a.id, texts || {});
+  // A page may go without the response form (״הכול בסדר?״: what readers
+  // have to say belongs to the meeting, not to a form beforehand).
+  if (a.echo_form !== false) body += echoForm(a.id, texts || {});
 
-  return shell(titleText(a), description, canonical, image, body);
+  return shell(titleText(a), description, canonical, image, body, a.indexable === false);
 }
 
 // The invitation shapes what arrives more than any rule enforced afterwards,
