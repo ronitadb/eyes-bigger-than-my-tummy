@@ -22,3 +22,4 @@ UPDATE articles SET
   listed = false, echo_form = false, indexable = false,
   status = 'published', published_at = COALESCE(published_at, now())
 WHERE slug = 'hakol-beseder' AND status IN ('draft','published');
+-- Run on production 2026-11-19 (tested on a branch first): ALTER, UPDATE 1.
