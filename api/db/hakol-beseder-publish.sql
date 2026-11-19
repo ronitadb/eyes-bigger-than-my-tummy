@@ -9,8 +9,9 @@
 -- Then hakol-beseder takes all three as false and is published. Its address
 -- /library/hakol-beseder is final: it is in the email.
 --
--- Guard: the UPDATE touches only the hakol-beseder row while it is a draft.
--- Expect: ALTER TABLE, then UPDATE 1.
+-- Ronit published the page herself from the admin (2026-11-19 09:13), so
+-- the UPDATE accepts it as draft or published; published_at is kept.
+-- Guard: only the hakol-beseder row. Expect: ALTER TABLE, then UPDATE 1.
 
 ALTER TABLE articles
   ADD COLUMN IF NOT EXISTS listed    BOOLEAN NOT NULL DEFAULT true,
@@ -20,4 +21,4 @@ ALTER TABLE articles
 UPDATE articles SET
   listed = false, echo_form = false, indexable = false,
   status = 'published', published_at = COALESCE(published_at, now())
-WHERE slug = 'hakol-beseder' AND status = 'draft';
+WHERE slug = 'hakol-beseder' AND status IN ('draft','published');
