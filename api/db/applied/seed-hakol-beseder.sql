@@ -28,6 +28,7 @@
 --
 -- Status 'draft': listed nowhere and not public until Ronit publishes it from
 -- /admin/articles. Guard: inserts only if the slug is free. Expect INSERT 0 1.
+-- Run on production 2026-11-19 (tested on a branch first): INSERT 1, id 19.
 
 INSERT INTO articles (slug, title_lead, title_topic, blocks, status, sort_order)
 SELECT 'hakol-beseder', '״הכול בסדר?״', 'על הנטייה לְרַצּוֹת',
