@@ -198,6 +198,11 @@ function articlePage(a, related, echoes, texts) {
   }
 
   body += renderBlocks(a.blocks) + '\n</article>\n';
+  // דלתות: the doors are hung by their own script, loaded only where a page
+  // has a doors block. Without it the doorways stand open with their text.
+  if (Array.isArray(a.blocks) && a.blocks.some(function (b) { return b && b.type === 'doors'; })) {
+    body += '<script src="/assets/article-doors.js" defer></script>\n';
+  }
 
   // The landing comes straight after the last domino: the reader feels it land,
   // then the apparatus arrives as a distinctly separate zone, before the
